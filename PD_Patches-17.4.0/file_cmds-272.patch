@@ -1,0 +1,31 @@
+diff -rwU5 A/file_cmds-272/file_cmds.xcodeproj/project.pbxproj B/file_cmds-272/file_cmds.xcodeproj/project.pbxproj
+--- A/file_cmds-272/file_cmds.xcodeproj/project.pbxproj	2016-07-29 19:21:04.000000000 +0100
++++ B/file_cmds-272/file_cmds.xcodeproj/project.pbxproj	2018-07-02 12:55:12.000000000 +0100
+@@ -3404,11 +3404,10 @@
+ 					ENABLE_RMD160,
+ 					ENABLE_SHA1,
+ 					ENABLE_SHA256,
+ 				);
+ 				INSTALL_PATH = /usr/sbin;
+-				"OTHER_LDFLAGS[sdk=macosx*]" = "-lCrashReporterClient";
+ 			};
+ 			name = Release;
+ 		};
+ 		FC8A8B9914B648EE001B97AD /* Release */ = {
+ 			isa = XCBuildConfiguration;
+@@ -3532,11 +3531,10 @@
+ 				PRODUCT_NAME = "$(TARGET_NAME)";
+ 				SDKROOT = macosx.internal;
+ 				VERSIONING_SYSTEM = "apple-generic";
+ 				WARNING_CFLAGS = (
+ 					"-Wall",
+-					"-Werror",
+ 					"-Wundef",
+ 				);
+ 			};
+ 			name = Release;
+ 		};
+Only in B/file_cmds-272/file_cmds.xcodeproj: project.xcworkspace
+Only in B/file_cmds-272/file_cmds.xcodeproj: xcuserdata
+Only in B/file_cmds-272: obj
+Only in B/file_cmds-272: sym

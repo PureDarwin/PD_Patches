@@ -1,0 +1,61 @@
+Only in B/system_cmds-790.30.1: build
+Only in B/system_cmds-790.30.1: buildsync_forpd
+diff -rwU5 A/system_cmds-790.30.1/lskq.tproj/lskq.c B/system_cmds-790.30.1/lskq.tproj/lskq.c
+--- A/system_cmds-790.30.1/lskq.tproj/lskq.c	2017-05-26 16:13:08.000000000 +0100
++++ B/system_cmds-790.30.1/lskq.tproj/lskq.c	2018-07-02 13:03:05.000000000 +0100
+@@ -175,11 +175,11 @@
+ filter_is_fd_type(int filter)
+ {
+ 	switch (filter) {
+ 	case EVFILT_VNODE ... EVFILT_READ:
+ 	case EVFILT_SOCK:
+-	case EVFILT_NW_CHANNEL:
++	//case EVFILT_NW_CHANNEL:
+ 		return 1;
+ 	default:
+ 		return 0;
+ 	}
+ }
+Only in B/system_cmds-790.30.1: obj
+Only in B/system_cmds-790.30.1: sym
+diff -rwU5 A/system_cmds-790.30.1/system_cmds.xcodeproj/project.pbxproj B/system_cmds-790.30.1/system_cmds.xcodeproj/project.pbxproj
+--- A/system_cmds-790.30.1/system_cmds.xcodeproj/project.pbxproj	2017-10-27 00:26:55.000000000 +0100
++++ B/system_cmds-790.30.1/system_cmds.xcodeproj/project.pbxproj	2018-07-02 13:03:05.000000000 +0100
+@@ -7127,15 +7127,16 @@
+ 			baseConfigurationReference = BA4FD2FB1372FB710025925C /* BSD.xcconfig */;
+ 			buildSettings = {
+ 				DEBUG_INFORMATION_FORMAT = dwarf;
+ 				GCC_DYNAMIC_NO_PIC = NO;
+ 				GCC_OPTIMIZATION_LEVEL = 0;
+-				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+ 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+ 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+ 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+ 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
++				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
++				SDKROOT = macosx.internal;
+ 				SUPPORTED_PLATFORMS = "macosx watchos iphoneos";
+ 				WARNING_CFLAGS = (
+ 					"-Wall",
+ 					"-Wcast-align",
+ 				);
+@@ -7956,15 +7957,16 @@
+ 		BA2DE91E1372FA9100D1913C /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = BA4FD2FB1372FB710025925C /* BSD.xcconfig */;
+ 			buildSettings = {
+ 				GCC_DYNAMIC_NO_PIC = NO;
+-				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+ 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+ 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+ 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+ 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
++				GCC_WARN_INHIBIT_ALL_WARNINGS = YES;
++				SDKROOT = macosx.internal;
+ 				SUPPORTED_PLATFORMS = "macosx watchos iphoneos";
+ 				WARNING_CFLAGS = (
+ 					"-Wall",
+ 					"-Wcast-align",
+ 				);
+Only in B/system_cmds-790.30.1/system_cmds.xcodeproj/project.xcworkspace/xcshareddata: IDEWorkspaceChecks.plist
+Only in B/system_cmds-790.30.1/system_cmds.xcodeproj/project.xcworkspace: xcuserdata

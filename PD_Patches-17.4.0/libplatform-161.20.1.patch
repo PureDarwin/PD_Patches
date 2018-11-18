@@ -1,0 +1,70 @@
+Only in B/libplatform-161.20.1: libplatform.xcodeproj
+Only in B/libplatform-161.20.1: obj
+diff -rwU5 A/libplatform-161.20.1/src/os/lock.c B/libplatform-161.20.1/src/os/lock.c
+--- A/libplatform-161.20.1/src/os/lock.c	2018-02-01 00:44:27.000000000 +0000
++++ B/libplatform-161.20.1/src/os/lock.c	2018-07-02 12:59:07.000000000 +0100
+@@ -76,10 +76,13 @@
+ OS_ATOMIC_EXPORT void OSSpinLockLock(volatile OSSpinLock *l);
+ OS_ATOMIC_EXPORT bool OSSpinLockTry(volatile OSSpinLock *l);
+ OS_ATOMIC_EXPORT int spin_lock_try(volatile OSSpinLock *l);
+ OS_ATOMIC_EXPORT void OSSpinLockUnlock(volatile OSSpinLock *l);
+ 
++#if !defined(TARGET_OS_EMBEDDED)
++#define TARGET_OS_EMBEDDED 0
++#endif /* TARGET_OS_EMBEDDED */
+ static const OSSpinLock _OSSpinLockLocked = TARGET_OS_EMBEDDED ? 1 : -1;
+ 
+ 
+ #if OS_ATOMIC_UP
+ // Don't spin on UP
+diff -rwU5 A/libplatform-161.20.1/src/string/generic/ffsll.c B/libplatform-161.20.1/src/string/generic/ffsll.c
+--- A/libplatform-161.20.1/src/string/generic/ffsll.c	2015-07-30 16:44:42.000000000 +0100
++++ B/libplatform-161.20.1/src/string/generic/ffsll.c	2018-07-02 12:59:07.000000000 +0100
+@@ -55,11 +55,11 @@
+ 		mask = (unsigned long long)mask >> 1;
+ 	return (bit);
+ #endif
+ }
+ 
+-#if VARIANT_DYLD && TARGET_IPHONE_SIMULATOR
++#if ( VARIANT_DYLD && TARGET_IPHONE_SIMULATOR ) || 1 == 1 /* Always true */
+ int
+ ffsl(long mask)
+ {
+ #if __has_builtin(__builtin_ffsl)
+ 	return __builtin_ffsl(mask);
+@@ -97,7 +97,7 @@
+ 	for (bit = 1; !(mask & 1); bit++)
+ 		mask = (unsigned)mask >> 1;
+ 	return (bit);
+ #endif
+ }
+-#endif
++#endif // ( VARIANT_DYLD && VARIANT_IPHONE_SIMULATOR ) || 1 == 1 /* Always true */
+ 
+diff -rwU5 A/libplatform-161.20.1/src/string/generic/flsll.c B/libplatform-161.20.1/src/string/generic/flsll.c
+--- A/libplatform-161.20.1/src/string/generic/flsll.c	2015-07-30 16:44:42.000000000 +0100
++++ B/libplatform-161.20.1/src/string/generic/flsll.c	2018-07-02 12:59:07.000000000 +0100
+@@ -55,11 +55,11 @@
+ 		mask = (unsigned long long)mask >> 1;
+ 	return (bit);
+ #endif
+ }
+ 
+-#if VARIANT_DYLD && TARGET_IPHONE_SIMULATOR
++#if ( VARIANT_DYLD && TARGET_IPHONE_SIMULATOR ) || 1 == 1 /* Always true */
+ int
+ flsl(long mask)
+ {
+ #if __has_builtin(__builtin_flsl)
+ 	return __builtin_flsl(mask);
+@@ -97,6 +97,6 @@
+ 	for (bit = 1; mask != 1; bit++)
+ 		mask = (unsigned)mask >> 1;
+ 	return (bit);
+ #endif
+ }
+-#endif
++#endif  // ( VARIANT_DYLD && VARIANT_IPHONE_SIMULATOR ) || 1 == 1 /* Always true */
+Only in B/libplatform-161.20.1: sym
+Only in B/libplatform-161.20.1/xcodeconfig: compile_architecture_libraries.sh

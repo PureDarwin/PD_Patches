@@ -1,0 +1,448 @@
+Only in B/syslog-356.1.1: build
+diff -rwU5 A/syslog-356.1.1/libsystem_asl.tproj/src/asl.c B/syslog-356.1.1/libsystem_asl.tproj/src/asl.c
+--- A/syslog-356.1.1/libsystem_asl.tproj/src/asl.c	2017-04-07 19:54:09.000000000 +0100
++++ B/syslog-356.1.1/libsystem_asl.tproj/src/asl.c	2018-07-02 13:02:33.000000000 +0100
+@@ -50,12 +50,16 @@
+ #include <bootstrap_priv.h>
+ #include <pthread.h>
+ #include <dispatch/dispatch.h>
+ #include <libkern/OSAtomic.h>
+ #include <os/activity.h>
++
++#if !defined(__PUREDARWIN__)
+ #include <os/log.h>
+ #include <os/log_private.h>
++#endif /* !defined(__PUREDARWIN__) */
++
+ #include <asl_ipc.h>
+ #include <asl_client.h>
+ #include <asl_core.h>
+ #include <asl_msg.h>
+ #include <asl_msg_list.h>
+@@ -85,20 +89,22 @@
+ /*
+  * Limit the size of messages sent to syslogd.
+  */
+ #define SIZE_LIMIT_MSG "*** ASL MESSAGE SIZE (%u bytes) EXCEEDED MAXIMIMUM SIZE (%u bytes) ***"
+ 
++#if !defined(__PUREDARWIN__)
+ static const os_log_type_t shim_asl_to_log_type[8] = {
+ 	OS_LOG_TYPE_DEFAULT,    // ASL_LEVEL_EMERG
+ 	OS_LOG_TYPE_DEFAULT,    // ASL_LEVEL_ALERT
+ 	OS_LOG_TYPE_DEFAULT,    // ASL_LEVEL_CRIT
+ 	OS_LOG_TYPE_DEFAULT,    // ASL_LEVEL_ERR
+ 	OS_LOG_TYPE_DEFAULT,    // ASL_LEVEL_WARNING
+ 	OS_LOG_TYPE_DEFAULT,    // ASL_LEVEL_NOTICE
+ 	OS_LOG_TYPE_INFO,       // ASL_LEVEL_INFO
+ 	OS_LOG_TYPE_DEBUG       // ASL_LEVEL_DEBUG
+ };
++#endif /* !defined(__PUREDARWIN__) */
+ 
+ /* forward */
+ static ASL_STATUS _asl_send_message(asl_object_t obj, uint32_t eval, asl_msg_t *msg, const char *mstring);
+ static ASL_STATUS _asl_send_message_text(asl_client_t *asl, asl_msg_t *sendmsg, asl_object_t obj, uint32_t eval, asl_msg_t *msg, const char *mstring, bool shimmed);
+ __private_extern__ asl_client_t *_asl_open_default();
+@@ -776,10 +782,11 @@
+ {
+ 	ASL_STATUS status = ASL_STATUS_OK;
+ 	uint32_t eval = _asl_evaluate_send(client, msg, level);
+ 	void *addr = __builtin_return_address(0);
+ 
++    #if !defined(__PUREDARWIN__)
+ 	if ((eval & EVAL_SEND_TRACE) && os_log_shim_enabled(addr))
+ 	{
+ 		va_list ap_copy;
+ 		if (level < ASL_LEVEL_EMERG) level = ASL_LEVEL_EMERG;
+ 		if (level > ASL_LEVEL_DEBUG) level = ASL_LEVEL_DEBUG;
+@@ -798,10 +805,14 @@
+ 	{
+ 		status = _asl_lib_vlog(client, eval, msg, format, ap);
+ 	}
+ 
+ 	return (status == ASL_STATUS_OK) ? 0 : -1;
++    #else /* defined(__PUREDARWIN__) */ /* taken from syslog-267/libsystem_asl.tproj/src/asl.c:(651-652) */
++    //if (eval == EVAL_IGNORE) return 0; /* we don't have EVAL_IGNORE ANYMORE */
++    return (_asl_lib_vlog(client, eval, msg, format, ap) == ASL_STATUS_OK) ? 0 : -1;
++    #endif /* !defined(__PUREDARWIN__) */
+ }
+ 
+ /*
+  * _asl_lib_log
+  * SPI used by legacy (non-shim) ASL_PREFILTER_LOG. Converts format arguments to a va_list and
+@@ -843,10 +854,11 @@
+ {
+ 	ASL_STATUS status = ASL_STATUS_OK;
+ 	uint32_t eval = _asl_evaluate_send(client, msg, level);
+ 	void *addr = __builtin_return_address(0);
+ 
++    #if !defined(__PUREDARWIN__)
+ 	if ((eval & EVAL_SEND_TRACE) && os_log_shim_enabled(addr))
+ 	{
+ 		va_list ap;
+ 		if (level < ASL_LEVEL_EMERG) level = ASL_LEVEL_EMERG;
+ 		if (level > ASL_LEVEL_DEBUG) level = ASL_LEVEL_DEBUG;
+@@ -869,10 +881,16 @@
+ 		va_list ap;
+ 		va_start(ap, format);
+ 		status = _asl_lib_vlog(client, eval, msg, format, ap);
+ 		va_end(ap);
+ 	}
++    #else /* defined(__PUREDARWIN__) */ /* taken from syslog-267/libsystem_asl.proj/src/asl.c:(695-698) */
++    va_list ap;
++    va_start(ap, format);
++    status = _asl_lib_vlog(client, eval, msg, format, ap);
++    va_end(ap);
++    #endif /* !defined(__PUREDARWIN__) */
+ 
+ 	return (status == ASL_STATUS_OK) ? 0 : -1;
+ }
+ 
+ /*
+@@ -888,10 +906,11 @@
+ {
+ 	ASL_STATUS status = ASL_STATUS_OK;
+ 	uint32_t eval = _asl_evaluate_send(NULL, NULL, level);
+ 	void *addr = __builtin_return_address(0);
+ 
++    #if !defined(__PUREDARWIN__)
+ 	if ((eval & EVAL_SEND_TRACE) && os_log_shim_enabled(addr))
+ 	{
+ 		va_list ap;
+ 		if (level < ASL_LEVEL_EMERG) level = ASL_LEVEL_EMERG;
+ 		if (level > ASL_LEVEL_DEBUG) level = ASL_LEVEL_DEBUG;
+@@ -914,10 +933,16 @@
+ 		va_list ap;
+ 		va_start(ap, format);
+ 		status = _asl_lib_vlog(NULL, eval, NULL, format, ap);
+ 		va_end(ap);
+ 	}
++#else /* defined(__PUREDARWIN__) */ /* taken from syslog-267/libsystem_asl.tproj/src/asl.c:(718-721) */
++    va_list ap;
++    va_start(ap, format);
++    status = _asl_lib_vlog(NULL, eval, NULL, format, ap);
++    va_end(ap);
++    #endif /* !defined(__PUREDARWIN__) */
+ 
+ 	return (status == ASL_STATUS_OK) ? 0 : -1;
+ }
+ 
+ /*
+@@ -1026,11 +1051,13 @@
+ asl_base_msg(asl_client_t *asl, uint32_t level, const struct timeval *tv, const char *sstr, const char *fstr, const char *mstr)
+ {
+ 	char aux_val[64];
+ 	asl_msg_t *aux;
+ 	int status;
++    #if !defined(__PUREDARWIN__) /* See lines 1083-1085 */
+ 	os_activity_id_t osaid;
++    #endif /* !defined(__PUREDARWIN__) */
+ 
+ 	aux = asl_msg_new(ASL_TYPE_MSG);
+ 	if (aux == NULL) return NULL;
+ 
+ 	/* Level */
+@@ -1051,17 +1078,21 @@
+ 
+ 	/* PID */
+ 	snprintf(aux_val, sizeof(aux_val), "%u", getpid());
+ 	asl_msg_set_key_val(aux, ASL_KEY_PID, aux_val);
+ 
++    #if !defined(__PUREDARWIN__) /* os_activity (from libtrace's
++                                    libsystem_trace.dylib) is not open source
++                                    and therefore not in PureDarwin. */
+ 	/* OSActivityID */
+ 	osaid = os_activity_get_identifier(OS_ACTIVITY_CURRENT, NULL);
+ 	if (osaid)
+ 	{
+ 		snprintf(aux_val, sizeof(aux_val), "0x%016llx", osaid);
+ 		asl_msg_set_key_val(aux, ASL_KEY_OS_ACTIVITY_ID, aux_val);
+ 	}
++    #endif /* !defined(__PUREDARWIN__) */
+ 
+ 	/* Sender */
+ 	if ((sstr == NULL) && (asl != NULL))
+ 	{
+ 		/* See if the client has a value for ASL_KEY_SENDER */
+@@ -1535,10 +1566,12 @@
+ 	if (use_global_lock != 0) pthread_mutex_unlock(&_asl_global.lock);
+ 
+ 	return outstatus;
+ }
+ 
++
++#if !defined(__PUREDARWIN__)
+ static void
+ os_log_with_args_wrapper(void *addr, int level, const char *format, ...)
+ {
+ 	va_list ap;
+ 	if (level < ASL_LEVEL_EMERG) level = ASL_LEVEL_EMERG;
+@@ -1547,10 +1580,11 @@
+ 
+ 	va_start(ap, format);
+ 	os_log_with_args(OS_LOG_DEFAULT, type, format, ap, addr);
+ 	va_end(ap);
+ }
++#endif /* !defined(__PUREDARWIN__) */
+ 
+ /*
+  * asl_send: send a message 
+  * This routine may be used instead of asl_log() or asl_vlog() if asl_set()
+  * has been used to set all of a message's attributes.
+@@ -1562,10 +1596,11 @@
+ asl_client_internal_send(asl_object_t obj, asl_object_t msg, void *addr)
+ {
+ 	int status = ASL_STATUS_OK;
+ 	uint32_t eval = _asl_evaluate_send(obj, msg, -1);
+ 
++    #if !defined(__PUREDARWIN__)
+ 	const char *message = asl_msg_get_val_for_key((asl_msg_t *)msg, ASL_KEY_MSG);
+ 
+ 	if ((eval & EVAL_SEND_TRACE) && message && message[0] && os_log_shim_enabled(addr))
+ 	{
+ 		int level = ASL_LEVEL_DEBUG;
+@@ -1587,10 +1622,14 @@
+ 	}
+ 	else if (eval & EVAL_ASL)
+ 	{
+ 		status = _asl_send_message(obj, eval, (asl_msg_t *)msg, NULL);
+ 	}
++    #else /* defined(__PUREDARWIN__) */
++    /* Taken from syslog-267/libsystem_asl.tproj/src/asl.c:1220 */
++    if (eval != 0) status = _asl_send_message(obj, eval, (asl_msg_t *)msg, NULL);
++    #endif /* !defined(__PUREDARWIN__) */
+ 
+ 	return status;
+ }
+ 
+ #pragma mark -
+diff -rwU5 A/syslog-356.1.1/libsystem_asl.tproj/src/asl_msg.c B/syslog-356.1.1/libsystem_asl.tproj/src/asl_msg.c
+--- A/syslog-356.1.1/libsystem_asl.tproj/src/asl_msg.c	2016-02-13 05:11:32.000000000 +0000
++++ B/syslog-356.1.1/libsystem_asl.tproj/src/asl_msg.c	2018-07-02 13:02:33.000000000 +0100
+@@ -3032,10 +3032,11 @@
+ }
+ 
+ #pragma mark -
+ #pragma mark xpc conversion
+ 
++#if !defined(__PUREDARWIN__)
+ static void
+ _asl_msg_to_xpc(asl_msg_t *msg, xpc_object_t dict)
+ {
+ 	uint32_t x, len;
+ 	const char *key, *val, *nano;
+@@ -3136,10 +3137,17 @@
+ _asl_log_args_to_xpc(asl_object_t client, asl_object_t msg, xpc_object_t dict)
+ {
+ 	_asl_msg_to_xpc(asl_client_kvdict((asl_client_t *)client), dict);
+ 	_asl_msg_to_xpc((asl_msg_t *)msg, dict);
+ }
++#else /* defined(__PUREDARWIN__) */
++void
++_asl_log_args_to_xpc(asl_object_t client, asl_object_t msg, void* dict)
++{
++    ; /* no XPC on PureDarwin */
++}
++#endif /* !defined(__PUREDARWIN__) */
+ 
+ #pragma mark -
+ #pragma mark asl_object support
+ 
+ static asl_object_private_t *
+diff -rwU5 A/syslog-356.1.1/libsystem_asl.tproj/src/asl_util.c B/syslog-356.1.1/libsystem_asl.tproj/src/asl_util.c
+--- A/syslog-356.1.1/libsystem_asl.tproj/src/asl_util.c	2014-11-06 19:37:58.000000000 +0000
++++ B/syslog-356.1.1/libsystem_asl.tproj/src/asl_util.c	2018-07-02 13:02:33.000000000 +0100
+@@ -31,11 +31,15 @@
+ #include <errno.h>
+ #include <unistd.h>
+ #include <Block.h>
+ #include <dispatch/dispatch.h>
+ #include <os/assumes.h>
++
++#if !defined(__PUREDARWIN__)
+ #include <xpc/xpc.h>
++#endif /* !defined(__PUREDARWIN__) */
++
+ #include <syslog.h>
+ #include <asl_core.h>
+ #include <asl_private.h>
+ 
+ static uint8_t *b64charset = (uint8_t *)"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+@@ -310,10 +314,11 @@
+ 	if (n == LOG_LAUNCHD) return "launchd";
+ 
+ 	return NULL;
+ }
+ 
++#if !defined(__PUREDARWIN__)
+ static xpc_connection_t
+ _create_aslmanager_connection(void)
+ {
+ 	xpc_connection_t connection;
+ 
+@@ -338,5 +343,17 @@
+ 	if (reply != NULL) xpc_release(reply);
+ 	xpc_release(request);
+ 	xpc_release(connection);
+ 	return 0;
+ }
++#else /* defined(__PUREDARWIN__) */
++static void*
++_create_aslmanager_connection(void)
++{
++    return NULL;
++}
++
++int asl_trigger_aslmanager(void)
++{
++    return -1;
++}
++#endif /* !defined(__PUREDARWIN__) */
+diff -rwU5 A/syslog-356.1.1/libsystem_asl.tproj/src/syslog.c B/syslog-356.1.1/libsystem_asl.tproj/src/syslog.c
+--- A/syslog-356.1.1/libsystem_asl.tproj/src/syslog.c	2017-07-20 02:12:17.000000000 +0100
++++ B/syslog-356.1.1/libsystem_asl.tproj/src/syslog.c	2018-07-02 13:02:33.000000000 +0100
+@@ -64,12 +64,15 @@
+ #include <pthread.h>
+ #include <dispatch/dispatch.h>
+ #include <asl.h>
+ #include <asl_msg.h>
+ #include <asl_private.h>
++
++#if !defined(__PUREDARWIN__)
+ #include <os/log.h>
+ #include <os/log_private.h>
++#endif /* !defined(__PUREDARWIN__) */
+ 
+ #define	LOG_NO_NOTIFY	0x1000
+ extern const char *asl_syslog_faciliy_num_to_name(int n);
+ 
+ #ifdef BUILDING_VARIANT
+@@ -88,20 +91,22 @@
+ __private_extern__ int _sl_mask = 0;
+ #endif /* BUILDING_VARIANT */
+ 
+ #define EVAL_ASL (EVAL_SEND_ASL | EVAL_TEXT_FILE | EVAL_ASL_FILE)
+ 
++#if !defined(__PUREDARWIN__)
+ static const os_log_type_t shim_syslog_to_log_type[8] = {
+ 	OS_LOG_TYPE_DEFAULT,    // LOG_EMERG
+ 	OS_LOG_TYPE_DEFAULT,    // LOG_ALERT
+ 	OS_LOG_TYPE_DEFAULT,    // LOG_CRIT
+ 	OS_LOG_TYPE_DEFAULT,    // LOG_ERR
+ 	OS_LOG_TYPE_DEFAULT,    // LOG_WARNING
+ 	OS_LOG_TYPE_DEFAULT,    // LOG_NOTICE
+ 	OS_LOG_TYPE_INFO,       // LOG_INFO
+ 	OS_LOG_TYPE_DEBUG       // LOG_DEBUG
+ };
++#endif /* !defined(__PUREDARWIN__) */
+ 
+ extern uint32_t _asl_evaluate_send(asl_object_t client, asl_object_t m, int slevel);
+ extern uint32_t _asl_lib_vlog(asl_object_t obj, uint32_t eval, asl_object_t msg, const char *format, va_list ap);
+ extern uint32_t _asl_lib_vlog_text(asl_object_t obj, uint32_t eval, asl_object_t msg, const char *format, va_list ap);
+ 
+@@ -119,10 +124,11 @@
+ }
+ 
+ static void
+ _vsyslog(int pri, const char *fmt, va_list ap, void *addr, bool mirror)
+ {
++    #if !defined(__PUREDARWIN__)
+ 	int level = pri & LOG_PRIMASK;
+ 	int fac = pri & LOG_FACMASK;
+ 	asl_object_t msg;
+ 	uint32_t eval;
+ 	bool trace;
+@@ -159,10 +165,44 @@
+ 	{
+ 		_asl_lib_vlog(_sl_asl, eval, msg, fmt, ap);
+ 	}
+ 
+ 	asl_release(msg);
++    #else /* defined(__PUREDARWIN__) */ /* Fallback to syslog-267's vsyslog */
++    /* Copied from syslog-267/libsystem_asl.tproj/src/syslog.c:(122-152) */
++    int fac;
++    asl_msg_t *facmsg;
++    const char *facility;
++    
++    facmsg = NULL;
++    fac = pri & LOG_FACMASK;
++    if (fac != 0)
++    {
++        facility = asl_syslog_faciliy_num_to_name(fac);
++        if (facility != NULL)
++        {
++            facmsg = asl_msg_new(ASL_TYPE_MSG);
++            asl_msg_set_key_val(facmsg, ASL_KEY_FACILITY, facility);
++        }
++    }
++    
++    pthread_mutex_lock(&_sl_lock);
++    
++    /* open syslog ASL client if required */
++    if (_sl_asl == NULL)
++    {
++        _sl_asl = asl_open(NULL, NULL, ASL_OPT_SYSLOG_LEGACY);
++        _sl_mask = ASL_FILTER_MASK_UPTO(ASL_LEVEL_DEBUG);
++        asl_set_filter(_sl_asl, _sl_mask);
++    }
++    
++    asl_vlog(_sl_asl, (aslmsg)facmsg, LOG_PRI(pri), fmt, ap);
++    
++    pthread_mutex_unlock(&_sl_lock);
++    
++    if (facmsg != NULL) asl_msg_release(facmsg);
++    #endif /* !defined(__PUREDARWIN__) */
+ }
+ 
+ #if TARGET_OS_OSX
+ 
+ extern typeof(syslog) syslog_legacy asm("_syslog");
+Only in B/syslog-356.1.1: obj
+Only in B/syslog-356.1.1: sym
+diff -rwU5 A/syslog-356.1.1/syslog.xcodeproj/project.pbxproj B/syslog-356.1.1/syslog.xcodeproj/project.pbxproj
+--- A/syslog-356.1.1/syslog.xcodeproj/project.pbxproj	2016-06-24 06:48:26.000000000 +0100
++++ B/syslog-356.1.1/syslog.xcodeproj/project.pbxproj	2018-07-02 13:02:33.000000000 +0100
+@@ -955,10 +955,12 @@
+ 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+ 				CURRENT_PROJECT_VERSION = "$(RC_ProjectSourceVersion)";
+ 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+ 				GCC_C_LANGUAGE_STANDARD = gnu99;
+ 				GCC_PREFIX_HEADER = "";
++				GCC_PREPROCESSOR_DEFINITIONS = __PUREDARWIN__;
++				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+ 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+ 				GCC_WARN_UNUSED_VARIABLE = YES;
+ 				HEADER_SEARCH_PATHS = (
+ 					"$(BUILT_PRODUCTS_DIR)/$(CURRENT_ARCH)",
+ 					"$(PROJECT_DIR)/libsystem_asl.tproj/include",
+Only in B/syslog-356.1.1/syslog.xcodeproj: project.xcworkspace
+Only in B/syslog-356.1.1/syslog.xcodeproj: xcuserdata
+diff -rwU5 A/syslog-356.1.1/xcodeconfig/libasl.xcconfig B/syslog-356.1.1/xcodeconfig/libasl.xcconfig
+--- A/syslog-356.1.1/xcodeconfig/libasl.xcconfig	2015-02-17 20:20:56.000000000 +0000
++++ B/syslog-356.1.1/xcodeconfig/libasl.xcconfig	2018-07-02 13:02:33.000000000 +0100
+@@ -13,11 +13,11 @@
+ PUBLIC_HEADERS_FOLDER_PATH = /usr/include
+ PRIVATE_HEADERS_FOLDER_PATH = /usr/local/include
+ 
+ LINK_WITH_STANDARD_LIBRARIES = NO
+ 
+-CR_LDFLAGS = -lCrashReporterClient
++CR_LDFLAGS = //-lCrashReporterClient
+ LIBCOMPILER_RT_LDFLAGS = -lcompiler_rt
+ LIBCLOSURE_LDFLAGS = -lsystem_blocks
+ LIBC_LDFLAGS = -lsystem_c
+ LIBMALLOC_LDFLAGS = -lsystem_malloc
+ LIBNOTIFY_LDFLAGS = -lsystem_notify
+@@ -27,11 +27,11 @@
+ LIBPTHREAD_LDFLAGS[sdk=iphonesimulator*] = -lsystem_sim_pthread
+ LIBSYSCALL_LDFLAGS = -lsystem_kernel
+ LIBSYSCALL_LDFLAGS[sdk=iphonesimulator*] = -lsystem_sim_kernel
+ LIBM_LDFLAGS = -lsystem_m
+ LIBDYLD_LDFLAGS = -ldyld
+-LIBTRACE_LDFLAGS = -lsystem_trace
++LIBTRACE_LDFLAGS = //-lsystem_trace
+ LIBUNWIND_LDFLAGS = -lunwind
+ 
+-OTHER_LDFLAGS = -all_load -L/usr/lib/system -umbrella System $(CR_LDFLAGS) $(LIBCOMPILER_RT_LDFLAGS) $(LIBDYLD_LDFLAGS) $(LIBSYSCALL_LDFLAGS) $(LIBPLATFORM_LDFLAGS) $(LIBPTHREAD_LDFLAGS) $(LIBMALLOC_LDFLAGS) $(LIBC_LDFLAGS) $(LIBUNWIND_LDFLAGS) $(LIBCLOSURE_LDFLAGS) -ldispatch $(LIBLAUNCH_LDFLAGS) -lxpc $(LIBTRACE_LDFLAGS) $(LIBNOTIFY_LDFLAGS) $(UPWARD_LINKS)
++OTHER_LDFLAGS = -all_load -L/usr/lib/system -umbrella System $(CR_LDFLAGS) $(LIBCOMPILER_RT_LDFLAGS) $(LIBDYLD_LDFLAGS) $(LIBSYSCALL_LDFLAGS) $(LIBPLATFORM_LDFLAGS) $(LIBPTHREAD_LDFLAGS) $(LIBMALLOC_LDFLAGS) $(LIBC_LDFLAGS) $(LIBUNWIND_LDFLAGS) $(LIBCLOSURE_LDFLAGS) -ldispatch $(LIBLAUNCH_LDFLAGS) -llaunch $(LIBTRACE_LDFLAGS) $(LIBNOTIFY_LDFLAGS) $(UPWARD_LINKS)
+ 
+ UPWARD_LINKS = -Wl,-upward-lsystem_info

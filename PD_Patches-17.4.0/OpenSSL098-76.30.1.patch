@@ -1,0 +1,114 @@
+Only in B/OpenSSL098-76.30.1: System
+Only in B/OpenSSL098-76.30.1: obj
+diff -rwU5 A/OpenSSL098-76.30.1/openssl.xcodeproj/project.pbxproj B/OpenSSL098-76.30.1/openssl.xcodeproj/project.pbxproj
+--- A/OpenSSL098-76.30.1/openssl.xcodeproj/project.pbxproj	2017-05-17 23:44:02.000000000 +0100
++++ B/OpenSSL098-76.30.1/openssl.xcodeproj/project.pbxproj	2018-07-02 12:17:02.000000000 +0100
+@@ -331,11 +331,10 @@
+ 		1C0877240F72F88700A4C5A8 /* asn1_err.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3435520F71AB970045E860 /* asn1_err.c */; };
+ 		1C0877250F72F88700A4C5A8 /* x509_att.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3438E60F71AB980045E860 /* x509_att.c */; };
+ 		1C0877260F72F88700A4C5A8 /* tasn_typ.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3435770F71AB970045E860 /* tasn_typ.c */; };
+ 		1C0877270F72F88700A4C5A8 /* p_lib.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3437580F71AB970045E860 /* p_lib.c */; };
+ 		1C0877280F72F88700A4C5A8 /* cryptlib.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3436490F71AB970045E860 /* cryptlib.c */; };
+-		1C0877290F72F88700A4C5A8 /* x509_vfy_apple.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3438F60F71AB980045E860 /* x509_vfy_apple.c */; };
+ 		1C08772A0F72F88700A4C5A8 /* eng_padlock.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3437070F71AB970045E860 /* eng_padlock.c */; };
+ 		1C08772B0F72F88700A4C5A8 /* e_seed.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3437370F71AB970045E860 /* e_seed.c */; };
+ 		1C08772C0F72F88700A4C5A8 /* sha512.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3438AD0F71AB980045E860 /* sha512.c */; };
+ 		1C08772D0F72F88700A4C5A8 /* bio_b64.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3437210F71AB970045E860 /* bio_b64.c */; };
+ 		1C08772E0F72F88700A4C5A8 /* c_rle.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3436320F71AB970045E860 /* c_rle.c */; };
+@@ -837,11 +836,10 @@
+ 		1C2FE2E80F72E94300BA567E /* dh.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3434BA0F71AB970045E860 /* dh.c */; };
+ 		1C2FE2F20F72E9B200BA567E /* dhparam.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C3434BF0F71AB970045E860 /* dhparam.c */; };
+ 		1C2FE2FB0F72E9EC00BA567E /* cversion.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C34364D0F71AB970045E860 /* cversion.c */; };
+ 		1C34344C0F71AB2E0045E860 /* libcrypto.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C342FEE0F71A9220045E860 /* libcrypto.0.9.8.dylib */; };
+ 		1C34344D0F71AB2E0045E860 /* libssl.0.9.8.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C3430030F71AA900045E860 /* libssl.0.9.8.dylib */; };
+-		1C3434540F71AB5A0045E860 /* TrustEvaluationAgent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C34344E0F71AB450045E860 /* TrustEvaluationAgent.framework */; };
+ 		1C40456A0F9FA544009E0B51 /* e_old.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C4045680F9FA544009E0B51 /* e_old.c */; };
+ 		1C40456E0F9FA5DE009E0B51 /* o_init.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C40456D0F9FA5DE009E0B51 /* o_init.c */; };
+ 		1C40457B0F9FA779009E0B51 /* krb5_asn.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C40457A0F9FA779009E0B51 /* krb5_asn.c */; };
+ 		1C4045820F9FAE33009E0B51 /* dso_vms.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C4045800F9FAE33009E0B51 /* dso_vms.c */; };
+ 		1C4045830F9FAE33009E0B51 /* dso_win32.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C4045810F9FAE33009E0B51 /* dso_win32.c */; };
+@@ -2861,11 +2859,10 @@
+ /* Begin PBXFrameworksBuildPhase section */
+ 		1C342FEC0F71A9220045E860 /* Frameworks */ = {
+ 			isa = PBXFrameworksBuildPhase;
+ 			buildActionMask = 2147483647;
+ 			files = (
+-				1C3434540F71AB5A0045E860 /* TrustEvaluationAgent.framework in Frameworks */,
+ 				1C4D8C5F0F72E5B400732E83 /* libz.dylib in Frameworks */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+ 		1C3430010F71AA900045E860 /* Frameworks */ = {
+@@ -5853,11 +5850,10 @@
+ 				1C0877240F72F88700A4C5A8 /* asn1_err.c in Sources */,
+ 				1C0877250F72F88700A4C5A8 /* x509_att.c in Sources */,
+ 				1C0877260F72F88700A4C5A8 /* tasn_typ.c in Sources */,
+ 				1C0877270F72F88700A4C5A8 /* p_lib.c in Sources */,
+ 				1C0877280F72F88700A4C5A8 /* cryptlib.c in Sources */,
+-				1C0877290F72F88700A4C5A8 /* x509_vfy_apple.c in Sources */,
+ 				1C08772A0F72F88700A4C5A8 /* eng_padlock.c in Sources */,
+ 				1C08772B0F72F88700A4C5A8 /* e_seed.c in Sources */,
+ 				1C08772C0F72F88700A4C5A8 /* sha512.c in Sources */,
+ 				1C08772D0F72F88700A4C5A8 /* bio_b64.c in Sources */,
+ 				1C08772E0F72F88700A4C5A8 /* c_rle.c in Sources */,
+@@ -7659,30 +7655,33 @@
+ 				DYLIB_CURRENT_VERSION = 0.9.8;
+ 				FRAMEWORK_SEARCH_PATHS = /System/Library/PrivateFrameworks;
+ 				GCC_OPTIMIZATION_LEVEL = 3;
+ 				GCC_PREPROCESSOR_DEFINITIONS = "";
+ 				"GCC_PREPROCESSOR_DEFINITIONS[arch=i386]" = (
++					__PUREDARWIN__,
+ 					_REENTRANT,
+ 					DSO_DLFCN,
+ 					HAVE_DLFCN_H,
+ 					L_ENDIAN,
+ 					OPENSSL_NO_IDEA,
+ 					OPENSSL_PIC,
+ 					OPENSSL_THREADS,
+ 					ZLIB,
+ 				);
+ 				"GCC_PREPROCESSOR_DEFINITIONS[arch=ppc]" = (
++					__PUREDARWIN__,
+ 					_REENTRANT,
+ 					B_ENDIAN,
+ 					DSO_DLFCN,
+ 					HAVE_DLFCN_H,
+ 					OPENSSL_NO_IDEA,
+ 					OPENSSL_PIC,
+ 					OPENSSL_THREADS,
+ 					ZLIB,
+ 				);
+ 				"GCC_PREPROCESSOR_DEFINITIONS[arch=x86_64]" = (
++					__PUREDARWIN__,
+ 					_REENTRANT,
+ 					DSO_DLFCN,
+ 					HAVE_DLFCN_H,
+ 					L_ENDIAN,
+ 					"MD32_REG_T=int",
+Only in B/OpenSSL098-76.30.1/openssl.xcodeproj: project.xcworkspace
+Only in B/OpenSSL098-76.30.1/openssl.xcodeproj: xcuserdata
+diff -rwU5 A/OpenSSL098-76.30.1/src/crypto/x509/x509_vfy.c B/OpenSSL098-76.30.1/src/crypto/x509/x509_vfy.c
+--- A/OpenSSL098-76.30.1/src/crypto/x509/x509_vfy.c	2015-07-16 01:35:57.000000000 +0100
++++ B/OpenSSL098-76.30.1/src/crypto/x509/x509_vfy.c	2018-07-02 12:17:02.000000000 +0100
+@@ -69,15 +69,16 @@
+ #include <openssl/x509.h>
+ #include <openssl/x509v3.h>
+ #include <openssl/objects.h>
+ 
+ /*
+- * If we are using Trust Evaluation Agent, rename the original function
++ * If we are using Trust Evaluation Agent (not on PureDarwin), rename the
++ * original function
+  */
+-#ifdef __APPLE__
++#if defined(__APPLE__) && !defined(__PUREDARWIN__)
+ #define X509_verify_cert X509_verify_cert_orig
+-#endif
++#endif /* defined(__APPLE__) && !defined(__PUREDARWIN__) */
+ 
+ static int null_callback(int ok,X509_STORE_CTX *e);
+ static int check_issued(X509_STORE_CTX *ctx, X509 *x, X509 *issuer);
+ static X509 *find_issuer(X509_STORE_CTX *ctx, STACK_OF(X509) *sk, X509 *x);
+ static int check_chain_extensions(X509_STORE_CTX *ctx);
+Only in B/OpenSSL098-76.30.1: sym
+Only in B/OpenSSL098-76.30.1: usr

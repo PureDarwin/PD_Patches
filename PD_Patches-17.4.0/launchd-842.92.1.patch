@@ -1,0 +1,1146 @@
+diff -rwU5 A/launchd-842.92.1/launchd.xcodeproj/project.pbxproj B/launchd-842.92.1/launchd.xcodeproj/project.pbxproj
+--- A/launchd-842.92.1/launchd.xcodeproj/project.pbxproj	2013-04-17 20:46:27.000000000 +0100
++++ B/launchd-842.92.1/launchd.xcodeproj/project.pbxproj	2018-07-02 12:56:03.000000000 +0100
+@@ -76,23 +76,30 @@
+ 		4B1D128C143505CD00A2BDED /* log.c in Sources */ = {isa = PBXBuildFile; fileRef = 4B1D1288143502DA00A2BDED /* log.c */; };
+ 		4B1D92010F8BDE7D00125940 /* launchd.ops in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4B1D91ED0F8BDE1A00125940 /* launchd.ops */; };
+ 		4B287733111A509400C07B35 /* helper.defs in Sources */ = {isa = PBXBuildFile; fileRef = 4B287732111A509400C07B35 /* helper.defs */; settings = {ATTRIBUTES = (Client, Server, ); }; };
+ 		4B28781B111A61A400C07B35 /* helper.defs in Sources */ = {isa = PBXBuildFile; fileRef = 4B287732111A509400C07B35 /* helper.defs */; };
+ 		4B7B6DA8143BD343000BCC80 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC36283E0E93463C0054F1A3 /* IOKit.framework */; };
+-		4B949DD5143D010F008712B9 /* libCrashReporterClient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B949DD4143D010F008712B9 /* libCrashReporterClient.a */; };
+-		4B949DD6143D010F008712B9 /* libCrashReporterClient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B949DD4143D010F008712B9 /* libCrashReporterClient.a */; };
+ 		4B9EDCA20EAFC77E00A78496 /* DiskArbitration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4B9EDCA10EAFC77E00A78496 /* DiskArbitration.framework */; };
+ 		4BF8727C1187A5F000CC7DB5 /* helper.defs in Sources */ = {isa = PBXBuildFile; fileRef = 4B287732111A509400C07B35 /* helper.defs */; };
+-		60416D1B1402EE6900C190AA /* init.defs in Sources */ = {isa = PBXBuildFile; fileRef = 4BA2F5FC1243063D00C2AADD /* init.defs */; };
+-		60416D1D1402EE6A00C190AA /* init.defs in Sources */ = {isa = PBXBuildFile; fileRef = 4BA2F5FC1243063D00C2AADD /* init.defs */; };
+-		60416D1E1402EE7200C190AA /* domain.defs in Sources */ = {isa = PBXBuildFile; fileRef = 4B0FB8E91241FE3F00383109 /* domain.defs */; settings = {ATTRIBUTES = (Server, ); }; };
+-		60416D1F1402EE7300C190AA /* domain.defs in Sources */ = {isa = PBXBuildFile; fileRef = 4B0FB8E91241FE3F00383109 /* domain.defs */; settings = {ATTRIBUTES = (Server, ); }; };
+-		7215DE4C0EFAF2EC00ABD81E /* libauditd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7215DE4B0EFAF2EC00ABD81E /* libauditd.dylib */; };
+ 		726055EC0EA7EC2400D65FE7 /* mach_exc.defs in Sources */ = {isa = PBXBuildFile; fileRef = FC36291F0E9349410054F1A3 /* mach_exc.defs */; settings = {ATTRIBUTES = (Server, ); }; };
+-		72AFE8090EFAF3D9004BDA46 /* libauditd.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7215DE4B0EFAF2EC00ABD81E /* libauditd.dylib */; };
+ 		72FDB15F0EA7D7B200B2AC84 /* ktrace.c in Sources */ = {isa = PBXBuildFile; fileRef = 72FDB15D0EA7D7B200B2AC84 /* ktrace.c */; };
+ 		72FDB1C00EA7E21C00B2AC84 /* job_forward.defs in Sources */ = {isa = PBXBuildFile; fileRef = 72FDB1BF0EA7E21C00B2AC84 /* job_forward.defs */; };
++		AA0754FA1EF01EE800AB1A9A /* launchd.ops in CopyFiles */ = {isa = PBXBuildFile; fileRef = 4B1D91ED0F8BDE1A00125940 /* launchd.ops */; };
++		AA0754FC1EF01EE800AB1A9A /* vproc.h in Headers */ = {isa = PBXBuildFile; fileRef = FC59A0E20E8C8AA600D41150 /* vproc.h */; settings = {ATTRIBUTES = (Public, ); }; };
++		AA0754FD1EF01EE800AB1A9A /* vproc_priv.h in Headers */ = {isa = PBXBuildFile; fileRef = FC59A0E30E8C8AA600D41150 /* vproc_priv.h */; settings = {ATTRIBUTES = (Private, ); }; };
++		AA0754FE1EF01EE800AB1A9A /* vproc_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = FC59A0E40E8C8AA600D41150 /* vproc_internal.h */; };
++		AA0754FF1EF01EE800AB1A9A /* launch.h in Headers */ = {isa = PBXBuildFile; fileRef = FC59A0E60E8C8AA600D41150 /* launch.h */; settings = {ATTRIBUTES = (Public, ); }; };
++		AA0755001EF01EE800AB1A9A /* launch_priv.h in Headers */ = {isa = PBXBuildFile; fileRef = FC59A0E70E8C8AA600D41150 /* launch_priv.h */; settings = {ATTRIBUTES = (Private, ); }; };
++		AA0755011EF01EE800AB1A9A /* launch_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = FC59A0E80E8C8AA600D41150 /* launch_internal.h */; };
++		AA0755021EF01EE800AB1A9A /* bootstrap.h in Headers */ = {isa = PBXBuildFile; fileRef = FC59A0EA0E8C8AA600D41150 /* bootstrap.h */; settings = {ATTRIBUTES = (Public, ); }; };
++		AA0755031EF01EE800AB1A9A /* bootstrap_priv.h in Headers */ = {isa = PBXBuildFile; fileRef = FC59A0EB0E8C8AA600D41150 /* bootstrap_priv.h */; settings = {ATTRIBUTES = (Private, ); }; };
++		AA0755041EF01EE800AB1A9A /* reboot2.h in Headers */ = {isa = PBXBuildFile; fileRef = FC59A0FB0E8C8ACE00D41150 /* reboot2.h */; settings = {ATTRIBUTES = (Private, ); }; };
++		AA0755061EF01EE800AB1A9A /* helper.defs in Sources */ = {isa = PBXBuildFile; fileRef = 4B287732111A509400C07B35 /* helper.defs */; settings = {ATTRIBUTES = (Client, Server, ); }; };
++		AA0755071EF01EE800AB1A9A /* job.defs in Sources */ = {isa = PBXBuildFile; fileRef = FC3627DF0E9344BF0054F1A3 /* job.defs */; };
++		AA0755081EF01EE800AB1A9A /* liblaunch.c in Sources */ = {isa = PBXBuildFile; fileRef = FC59A0E90E8C8AA600D41150 /* liblaunch.c */; };
++		AA0755091EF01EE800AB1A9A /* libvproc.c in Sources */ = {isa = PBXBuildFile; fileRef = FC59A0E50E8C8AA600D41150 /* libvproc.c */; };
++		AA07550A1EF01EE800AB1A9A /* libbootstrap.c in Sources */ = {isa = PBXBuildFile; fileRef = FC59A0EC0E8C8AA600D41150 /* libbootstrap.c */; };
+ 		FC3627BA0E9343220054F1A3 /* StartupItems.c in Sources */ = {isa = PBXBuildFile; fileRef = FC59A0FD0E8C8ADF00D41150 /* StartupItems.c */; };
+ 		FC3627BB0E93432A0054F1A3 /* SystemStarter.c in Sources */ = {isa = PBXBuildFile; fileRef = FC59A1000E8C8ADF00D41150 /* SystemStarter.c */; };
+ 		FC3627D40E93439B0054F1A3 /* StartupItemContext.8 in CopyFiles */ = {isa = PBXBuildFile; fileRef = FC59A0FE0E8C8ADF00D41150 /* StartupItemContext.8 */; };
+ 		FC3627D50E93439B0054F1A3 /* SystemStarter.8 in CopyFiles */ = {isa = PBXBuildFile; fileRef = FC59A1010E8C8ADF00D41150 /* SystemStarter.8 */; };
+ 		FC3627E00E9344BF0054F1A3 /* job.defs in Sources */ = {isa = PBXBuildFile; fileRef = FC3627DF0E9344BF0054F1A3 /* job.defs */; };
+@@ -100,11 +107,10 @@
+ 		FC3628080E9345E10054F1A3 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC3628070E9345E10054F1A3 /* CoreFoundation.framework */; };
+ 		FC3628090E9345E10054F1A3 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC3628070E9345E10054F1A3 /* CoreFoundation.framework */; };
+ 		FC36283F0E93463C0054F1A3 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FC36283E0E93463C0054F1A3 /* IOKit.framework */; };
+ 		FC36290D0E93475F0054F1A3 /* notify.defs in Sources */ = {isa = PBXBuildFile; fileRef = FC36290C0E93475F0054F1A3 /* notify.defs */; settings = {ATTRIBUTES = (Server, ); }; };
+ 		FC3629170E9348390054F1A3 /* job_reply.defs in Sources */ = {isa = PBXBuildFile; fileRef = FC3629160E9348390054F1A3 /* job_reply.defs */; };
+-		FC36292D0E934AA40054F1A3 /* libbsm.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = FC36292C0E934AA40054F1A3 /* libbsm.dylib */; };
+ 		FC59A0A60E8C89C100D41150 /* IPC.c in Sources */ = {isa = PBXBuildFile; fileRef = FC59A0A50E8C89C100D41150 /* IPC.c */; };
+ 		FC59A0AF0E8C8A0E00D41150 /* launchctl.c in Sources */ = {isa = PBXBuildFile; fileRef = FC59A0AE0E8C8A0E00D41150 /* launchctl.c */; settings = {COMPILER_FLAGS = "-I\"$SDKROOT\"/System/Library/Frameworks/System.framework/PrivateHeaders"; }; };
+ 		FC59A0B80E8C8A1F00D41150 /* ipc.c in Sources */ = {isa = PBXBuildFile; fileRef = FC59A0B10E8C8A1F00D41150 /* ipc.c */; };
+ 		FC59A0B90E8C8A1F00D41150 /* kill2.c in Sources */ = {isa = PBXBuildFile; fileRef = FC59A0B30E8C8A1F00D41150 /* kill2.c */; };
+ 		FC59A0BA0E8C8A1F00D41150 /* runtime.c in Sources */ = {isa = PBXBuildFile; fileRef = FC59A0B50E8C8A1F00D41150 /* runtime.c */; settings = {COMPILER_FLAGS = "-I\"$SYMROOT\""; }; };
+@@ -265,10 +271,20 @@
+ 			files = (
+ 				4B1D92010F8BDE7D00125940 /* launchd.ops in CopyFiles */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 1;
+ 		};
++		AA0754F91EF01EE800AB1A9A /* CopyFiles */ = {
++			isa = PBXCopyFilesBuildPhase;
++			buildActionMask = 8;
++			dstPath = usr/local/share/sandbox/operations/;
++			dstSubfolderSpec = 0;
++			files = (
++				AA0754FA1EF01EE800AB1A9A /* launchd.ops in CopyFiles */,
++			);
++			runOnlyForDeploymentPostprocessing = 1;
++		};
+ 		FC3627D60E9343B90054F1A3 /* CopyFiles */ = {
+ 			isa = PBXCopyFilesBuildPhase;
+ 			buildActionMask = 8;
+ 			dstPath = usr/share/man/man8;
+ 			dstSubfolderSpec = 0;
+@@ -397,10 +413,11 @@
+ 		7215DE4B0EFAF2EC00ABD81E /* libauditd.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libauditd.dylib; path = /usr/lib/libauditd.dylib; sourceTree = "<absolute>"; };
+ 		721FBEA50EA7ABC40057462B /* config.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = config.h; path = src/config.h; sourceTree = "<group>"; };
+ 		72FDB15D0EA7D7B200B2AC84 /* ktrace.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ktrace.c; path = src/ktrace.c; sourceTree = "<group>"; };
+ 		72FDB15E0EA7D7B200B2AC84 /* ktrace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ktrace.h; path = src/ktrace.h; sourceTree = "<group>"; };
+ 		72FDB1BF0EA7E21C00B2AC84 /* job_forward.defs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.mig; name = job_forward.defs; path = src/job_forward.defs; sourceTree = "<group>"; };
++		AA07550E1EF01EE800AB1A9A /* liblaunch.a */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = liblaunch.a; sourceTree = BUILT_PRODUCTS_DIR; };
+ 		FC3627DF0E9344BF0054F1A3 /* job.defs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.mig; name = job.defs; path = src/job.defs; sourceTree = "<group>"; };
+ 		FC3628070E9345E10054F1A3 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+ 		FC36283E0E93463C0054F1A3 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+ 		FC36290C0E93475F0054F1A3 /* notify.defs */ = {isa = PBXFileReference; explicitFileType = sourcecode.mig; fileEncoding = 4; name = notify.defs; path = usr/include/mach/notify.defs; sourceTree = SDKROOT; };
+ 		FC3629160E9348390054F1A3 /* job_reply.defs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.mig; name = job_reply.defs; path = src/job_reply.defs; sourceTree = "<group>"; };
+@@ -484,25 +501,20 @@
+ 		};
+ 		FC59A0520E8C884700D41150 /* Frameworks */ = {
+ 			isa = PBXFrameworksBuildPhase;
+ 			buildActionMask = 2147483647;
+ 			files = (
+-				FC36292D0E934AA40054F1A3 /* libbsm.dylib in Frameworks */,
+-				7215DE4C0EFAF2EC00ABD81E /* libauditd.dylib in Frameworks */,
+-				4B949DD5143D010F008712B9 /* libCrashReporterClient.a in Frameworks */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+ 		FC59A06B0E8C888A00D41150 /* Frameworks */ = {
+ 			isa = PBXFrameworksBuildPhase;
+ 			buildActionMask = 2147483647;
+ 			files = (
+ 				FCC841CC0EA7138700C01666 /* IOKit.framework in Frameworks */,
+ 				FC3628080E9345E10054F1A3 /* CoreFoundation.framework in Frameworks */,
+ 				FCD713740E95DE49001B0111 /* libedit.dylib in Frameworks */,
+-				72AFE8090EFAF3D9004BDA46 /* libauditd.dylib in Frameworks */,
+-				4B949DD6143D010F008712B9 /* libCrashReporterClient.a in Frameworks */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+ 		FC59A08F0E8C892300D41150 /* Frameworks */ = {
+ 			isa = PBXFrameworksBuildPhase;
+@@ -701,10 +713,11 @@
+ 				FC59A0910E8C892300D41150 /* SystemStarter */,
+ 				FC59A0CE0E8C8A5C00D41150 /* launchproxy */,
+ 				FCD7132B0E95D64D001B0111 /* wait4path */,
+ 				4B10F1D30F43BE7E00875782 /* launchd */,
+ 				4B10F1F30F43BF5C00875782 /* launchctl */,
++				AA07550E1EF01EE800AB1A9A /* liblaunch.a */,
+ 			);
+ 			name = Products;
+ 			sourceTree = "<group>";
+ 		};
+ 		FC59A0A00E8C899600D41150 /* SystemStarter */ = {
+@@ -737,10 +750,26 @@
+ 			sourceTree = "<group>";
+ 		};
+ /* End PBXGroup section */
+ 
+ /* Begin PBXHeadersBuildPhase section */
++		AA0754FB1EF01EE800AB1A9A /* Headers */ = {
++			isa = PBXHeadersBuildPhase;
++			buildActionMask = 2147483647;
++			files = (
++				AA0754FC1EF01EE800AB1A9A /* vproc.h in Headers */,
++				AA0754FD1EF01EE800AB1A9A /* vproc_priv.h in Headers */,
++				AA0754FE1EF01EE800AB1A9A /* vproc_internal.h in Headers */,
++				AA0754FF1EF01EE800AB1A9A /* launch.h in Headers */,
++				AA0755001EF01EE800AB1A9A /* launch_priv.h in Headers */,
++				AA0755011EF01EE800AB1A9A /* launch_internal.h in Headers */,
++				AA0755021EF01EE800AB1A9A /* bootstrap.h in Headers */,
++				AA0755031EF01EE800AB1A9A /* bootstrap_priv.h in Headers */,
++				AA0755041EF01EE800AB1A9A /* reboot2.h in Headers */,
++			);
++			runOnlyForDeploymentPostprocessing = 0;
++		};
+ 		FC59A05C0E8C885100D41150 /* Headers */ = {
+ 			isa = PBXHeadersBuildPhase;
+ 			buildActionMask = 2147483647;
+ 			files = (
+ 				FC59A0ED0E8C8AA600D41150 /* vproc.h in Headers */,
+@@ -794,10 +823,28 @@
+ 			name = "launchctl-embedded";
+ 			productName = launchctl;
+ 			productReference = 4B10F1F30F43BF5C00875782 /* launchctl */;
+ 			productType = "com.apple.product-type.tool";
+ 		};
++		AA0754F81EF01EE800AB1A9A /* liblaunch_static */ = {
++			isa = PBXNativeTarget;
++			buildConfigurationList = AA07550C1EF01EE800AB1A9A /* Build configuration list for PBXNativeTarget "liblaunch_static" */;
++			buildPhases = (
++				AA0754F91EF01EE800AB1A9A /* CopyFiles */,
++				AA0754FB1EF01EE800AB1A9A /* Headers */,
++				AA0755051EF01EE800AB1A9A /* Sources */,
++				AA07550B1EF01EE800AB1A9A /* ShellScript */,
++			);
++			buildRules = (
++			);
++			dependencies = (
++			);
++			name = liblaunch_static;
++			productName = launchd_libs;
++			productReference = AA07550E1EF01EE800AB1A9A /* liblaunch.a */;
++			productType = "com.apple.product-type.library.dynamic";
++		};
+ 		FC59A0530E8C884700D41150 /* launchd */ = {
+ 			isa = PBXNativeTarget;
+ 			buildConfigurationList = FC59A0590E8C884800D41150 /* Build configuration list for PBXNativeTarget "launchd" */;
+ 			buildPhases = (
+ 				FC59A0510E8C884700D41150 /* Sources */,
+@@ -933,10 +980,11 @@
+ 				FC59A0750E8C88AC00D41150 /* default */,
+ 				726056200EA8088C00D65FE7 /* embedded */,
+ 				FC59A07A0E8C88BB00D41150 /* launchd_libs */,
+ 				FC59A0530E8C884700D41150 /* launchd */,
+ 				FC59A05F0E8C885100D41150 /* liblaunch */,
++				AA0754F81EF01EE800AB1A9A /* liblaunch_static */,
+ 				FC59A06C0E8C888A00D41150 /* launchctl */,
+ 				4B10F1B70F43BE7E00875782 /* launchd-embedded */,
+ 				4B10F1E60F43BF5C00875782 /* launchctl-embedded */,
+ 				FC59A0CD0E8C8A5C00D41150 /* launchproxy */,
+ 				FCD7132A0E95D64D001B0111 /* wait4path */,
+@@ -972,10 +1020,24 @@
+ 			runOnlyForDeploymentPostprocessing = 1;
+ 			shellPath = /bin/sh;
+ 			shellScript = "set -ex\n\n/bin/bash ${BUILD_XCSCRIPTS_DIR}/launchctl-postflight.sh";
+ 			showEnvVarsInLog = 0;
+ 		};
++		AA07550B1EF01EE800AB1A9A /* ShellScript */ = {
++			isa = PBXShellScriptBuildPhase;
++			buildActionMask = 8;
++			files = (
++			);
++			inputPaths = (
++			);
++			outputPaths = (
++			);
++			runOnlyForDeploymentPostprocessing = 1;
++			shellPath = /bin/sh;
++			shellScript = "set -ex\n\n/bin/bash ${BUILD_XCSCRIPTS_DIR}/liblaunch-postflight.sh";
++			showEnvVarsInLog = 0;
++		};
+ 		FC7B87B20EA7195F00542082 /* ShellScript */ = {
+ 			isa = PBXShellScriptBuildPhase;
+ 			buildActionMask = 8;
+ 			files = (
+ 			);
+@@ -1035,12 +1097,10 @@
+ /* Begin PBXSourcesBuildPhase section */
+ 		4B10F1B80F43BE7E00875782 /* Sources */ = {
+ 			isa = PBXSourcesBuildPhase;
+ 			buildActionMask = 2147483647;
+ 			files = (
+-				60416D1D1402EE6A00C190AA /* init.defs in Sources */,
+-				60416D1F1402EE7300C190AA /* domain.defs in Sources */,
+ 				4BF8727C1187A5F000CC7DB5 /* helper.defs in Sources */,
+ 				4B10F1B90F43BE7E00875782 /* internal.defs in Sources */,
+ 				4B10F1BA0F43BE7E00875782 /* job.defs in Sources */,
+ 				4B10F1BB0F43BE7E00875782 /* job_reply.defs in Sources */,
+ 				4B10F1BC0F43BE7E00875782 /* mach_exc.defs in Sources */,
+@@ -1062,22 +1122,32 @@
+ 			files = (
+ 				4B10F1E80F43BF5C00875782 /* launchctl.c in Sources */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
++		AA0755051EF01EE800AB1A9A /* Sources */ = {
++			isa = PBXSourcesBuildPhase;
++			buildActionMask = 2147483647;
++			files = (
++				AA0755061EF01EE800AB1A9A /* helper.defs in Sources */,
++				AA0755071EF01EE800AB1A9A /* job.defs in Sources */,
++				AA0755081EF01EE800AB1A9A /* liblaunch.c in Sources */,
++				AA0755091EF01EE800AB1A9A /* libvproc.c in Sources */,
++				AA07550A1EF01EE800AB1A9A /* libbootstrap.c in Sources */,
++			);
++			runOnlyForDeploymentPostprocessing = 0;
++		};
+ 		FC59A0510E8C884700D41150 /* Sources */ = {
+ 			isa = PBXSourcesBuildPhase;
+ 			buildActionMask = 2147483647;
+ 			files = (
+ 				4B28781B111A61A400C07B35 /* helper.defs in Sources */,
+ 				FC59A0BF0E8C8A2A00D41150 /* internal.defs in Sources */,
+ 				FC3627E10E9344BF0054F1A3 /* job.defs in Sources */,
+ 				FC3629170E9348390054F1A3 /* job_reply.defs in Sources */,
+ 				726055EC0EA7EC2400D65FE7 /* mach_exc.defs in Sources */,
+ 				FC36290D0E93475F0054F1A3 /* notify.defs in Sources */,
+-				60416D1E1402EE7200C190AA /* domain.defs in Sources */,
+-				60416D1B1402EE6900C190AA /* init.defs in Sources */,
+ 				72FDB1C00EA7E21C00B2AC84 /* job_forward.defs in Sources */,
+ 				FC59A0C50E8C8A4700D41150 /* launchd.c in Sources */,
+ 				FC59A0BA0E8C8A1F00D41150 /* runtime.c in Sources */,
+ 				FC59A0B90E8C8A1F00D41150 /* kill2.c in Sources */,
+ 				FC59A0BB0E8C8A1F00D41150 /* core.c in Sources */,
+@@ -1212,21 +1282,35 @@
+ 			buildSettings = {
+ 				PRODUCT_NAME = "launchd-embedded";
+ 			};
+ 			name = Release;
+ 		};
++		AA07550D1EF01EE800AB1A9A /* Release */ = {
++			isa = XCBuildConfiguration;
++			baseConfigurationReference = 4B1D12751433D7BE00A2BDED /* liblaunch.xcconfig */;
++			buildSettings = {
++				CRASHREPORTER_LINKER_FLAGS = "";
++				EXECUTABLE_EXTENSION = a;
++				INSTALL_PATH = /usr/local/lib/system;
++				MACH_O_TYPE = staticlib;
++				PRODUCT_NAME = launch;
++			};
++			name = Release;
++		};
+ 		FC59A0410E8C87FD00D41150 /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				COPY_PHASE_STRIP = YES;
+ 				CURRENT_PROJECT_VERSION = "$(RC_ProjectSourceVersion)";
+ 				DEAD_CODE_STRIPPING = YES;
+ 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+ 				GCC_MODEL_TUNING = "";
++				GCC_PREPROCESSOR_DEFINITIONS = __ESDARWIN__;
+ 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+ 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+ 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
++				GCC_WARN_ABOUT_DEPRECATED_FUNCTIONS = NO;
+ 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+ 				GCC_WARN_SHADOW = YES;
+ 				INSTALL_MODE_FLAG = "ugo-w,a+rX";
+ 				OTHER_CFLAGS = (
+ 					"-D__MigTypeCheck=1",
+@@ -1247,17 +1331,20 @@
+ 		};
+ 		FC59A0580E8C884800D41150 /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 4B1D12741433D79800A2BDED /* launchd.xcconfig */;
+ 			buildSettings = {
++				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
++				WARNING_CFLAGS = "";
+ 			};
+ 			name = Release;
+ 		};
+ 		FC59A0620E8C885100D41150 /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 4B1D12751433D7BE00A2BDED /* liblaunch.xcconfig */;
+ 			buildSettings = {
++				CRASHREPORTER_LINKER_FLAGS = "";
+ 			};
+ 			name = Release;
+ 		};
+ 		FC59A0700E8C888A00D41150 /* Release */ = {
+ 			isa = XCBuildConfiguration;
+@@ -1341,10 +1428,18 @@
+ 				726056210EA8088D00D65FE7 /* Release */,
+ 			);
+ 			defaultConfigurationIsVisible = 0;
+ 			defaultConfigurationName = Release;
+ 		};
++		AA07550C1EF01EE800AB1A9A /* Build configuration list for PBXNativeTarget "liblaunch_static" */ = {
++			isa = XCConfigurationList;
++			buildConfigurations = (
++				AA07550D1EF01EE800AB1A9A /* Release */,
++			);
++			defaultConfigurationIsVisible = 0;
++			defaultConfigurationName = Release;
++		};
+ 		FC59A0420E8C87FD00D41150 /* Build configuration list for PBXProject "launchd" */ = {
+ 			isa = XCConfigurationList;
+ 			buildConfigurations = (
+ 				FC59A0410E8C87FD00D41150 /* Release */,
+ 			);
+Only in B/launchd-842.92.1/launchd.xcodeproj: project.xcworkspace
+Only in B/launchd-842.92.1/launchd.xcodeproj: xcuserdata
+diff -rwU5 A/launchd-842.92.1/liblaunch/vproc_internal.h B/launchd-842.92.1/liblaunch/vproc_internal.h
+--- A/launchd-842.92.1/liblaunch/vproc_internal.h	2014-08-13 18:58:04.000000000 +0100
++++ B/launchd-842.92.1/liblaunch/vproc_internal.h	2018-07-02 12:56:03.000000000 +0100
+@@ -46,11 +46,11 @@
+ #pragma GCC visibility push(default)
+ 
+ vproc_err_t _vprocmgr_init(const char *session_type);
+ vproc_err_t _vproc_post_fork_ping(void);
+ 
+-#if !TARGET_OS_EMBEDDED
++#if !TARGET_OS_EMBEDDED /* && !defined(__ESDARWIN__) turn off "Deprecated Functions" under "Warnings" in build settings */
+ #define _audit_session_self(v) (mach_port_t)syscall(SYS_audit_session_self)
+ #define _audit_session_join(s) (au_asid_t)syscall(SYS_audit_session_join, session)
+ #else
+ #define _audit_session_self(v) MACH_PORT_NULL
+ #define _audit_session_join(s) 0
+Only in B/launchd-842.92.1: obj
+diff -rwU5 A/launchd-842.92.1/src/config.h B/launchd-842.92.1/src/config.h
+--- A/launchd-842.92.1/src/config.h	2013-02-14 23:53:35.000000000 +0000
++++ B/launchd-842.92.1/src/config.h	2018-07-02 12:56:03.000000000 +0100
+@@ -1,10 +1,12 @@
+ #ifndef __CONFIG_H__
+ #define __CONFIG_H__
+ 
+ #include <TargetConditionals.h>
+ 
++#ifndef __ESDARWIN__
++
+ #if __has_include(<quarantine.h>)
+ #define HAVE_QUARANTINE 1
+ #else
+ #define HAVE_QUARANTINE 0
+ #endif
+@@ -27,6 +29,16 @@
+ #define HAVE_SYSTEMSTATS 1
+ #else
+ #define HAVE_SYSTEMSTATS 0
+ #endif
+ 
++#else /* __ESDARWIN__ */
++
++#define HAVE_QUARANTINE     0
++#define HAVE_RESPONSIBILITY 0
++#define HAVE_SANDBOX        0
++#undef  HAVE_LIBAUDITD
++#define HAVE_SYSTEMSTATS    0
++
++#endif /* __ESDARWIN__ */
++
+ #endif /* __CONFIG_H__ */
+Only in B/launchd-842.92.1/src: core.E
+diff -rwU5 A/launchd-842.92.1/src/core.c B/launchd-842.92.1/src/core.c
+--- A/launchd-842.92.1/src/core.c	2014-08-13 18:58:04.000000000 +0100
++++ B/launchd-842.92.1/src/core.c	2018-07-02 12:56:03.000000000 +0100
+@@ -16,12 +16,15 @@
+  * @APPLE_APACHE_LICENSE_HEADER_END@
+  */
+ 
+ #include "config.h"
+ #include "core.h"
++
++//#ifndef __ESDARWIN__
+ #include "internal.h"
+ #include "helper.h"
++//#endif /* __ESDARWIN__ */
+ 
+ #include <TargetConditionals.h>
+ #include <mach/mach.h>
+ #include <mach/mach_error.h>
+ #include <mach/boolean.h>
+@@ -56,11 +59,11 @@
+ #include <sys/kern_memorystatus.h>
+ #include <net/if.h>
+ #include <netinet/in.h>
+ #include <netinet/in_var.h>
+ #include <netinet6/nd6.h>
+-#include <bsm/libbsm.h>
++//#include <bsm/libbsm.h>
+ #include <unistd.h>
+ #include <signal.h>
+ #include <errno.h>
+ #include <libgen.h>
+ #include <stdio.h>
+@@ -81,11 +84,15 @@
+ #include <spawn.h>
+ #include <spawn_private.h>
+ #include <time.h>
+ #include <libinfo.h>
+ #include <os/assumes.h>
++
++#ifndef __ESDARWIN__
+ #include <xpc/launchd.h>
++#endif /* __ESDARWIN__ */
++
+ #include <asl.h>
+ #include <_simple.h>
+ 
+ #include <libproc.h>
+ #include <libproc_internal.h>
+@@ -359,17 +366,25 @@
+ 
+ struct waiting4attach {
+ 	LIST_ENTRY(waiting4attach) le;
+ 	mach_port_t port;
+ 	pid_t dest;
++    #ifndef __ESDARWIN__
+ 	xpc_service_type_t type;
++    #else /* __ESDARWIN__ */
++    void* type;
++    #endif /*s __ESDARWIN__ */
+ 	char name[0];
+ };
+ 
+ static LIST_HEAD(, waiting4attach) _launchd_domain_waiters;
+ 
++#ifndef __ESDARWIN__
+ static struct waiting4attach *waiting4attach_new(jobmgr_t jm, const char *name, mach_port_t port, pid_t dest, xpc_service_type_t type);
++#else /* _ESDARWIN__ */
++static struct waiting4attach *waiting4attach_new(jobmgr_t jm, const char *name, mach_port_t port, pid_t dest, void* type);
++#endif /* __ESDARWIN__ */
+ static void waiting4attach_delete(jobmgr_t jm, struct waiting4attach *w4a);
+ static struct waiting4attach *waiting4attach_find(jobmgr_t jm, job_t j);
+ 
+ #define ACTIVE_JOB_HASH_SIZE 32
+ #define ACTIVE_JOB_HASH(x) (IS_POWER_OF_TWO(ACTIVE_JOB_HASH_SIZE) ? (x & (ACTIVE_JOB_HASH_SIZE - 1)) : (x % ACTIVE_JOB_HASH_SIZE))
+@@ -803,21 +818,26 @@
+ static void job_open_shutdown_transaction(job_t ji);
+ static void job_close_shutdown_transaction(job_t ji);
+ static launch_data_t job_do_legacy_ipc_request(job_t j, launch_data_t request, mach_port_t asport);
+ static void job_setup_per_user_directory(job_t j, uid_t uid, const char *path);
+ static void job_setup_per_user_directories(job_t j, uid_t uid, const char *label);
++#ifndef __ESDARWIN__
+ static void job_update_jetsam_properties(job_t j, xpc_jetsam_band_t band, uint64_t user_data);
++#else
++static void job_update_jetsam_properties(job_t j, void* band, uint64_t user_data);
++#endif /* __ESDARWIN__ */
+ static void job_update_jetsam_memory_limit(job_t j, int32_t limit);
+ 
+ #if TARGET_OS_EMBEDDED
+ static bool job_import_defaults(launch_data_t pload);
+ #endif
+ 
+ static struct priority_properties_t {
+ 	long long band;
+ 	int priority;
+ } _launchd_priority_map[] = {
++#ifndef __ESDARWIN__
+ 	{ XPC_JETSAM_BAND_SUSPENDED, JETSAM_PRIORITY_IDLE },
+ 	{ XPC_JETSAM_BAND_BACKGROUND_OPPORTUNISTIC, JETSAM_PRIORITY_BACKGROUND_OPPORTUNISTIC },
+ 	{ XPC_JETSAM_BAND_BACKGROUND, JETSAM_PRIORITY_BACKGROUND },
+ 	{ XPC_JETSAM_BAND_MAIL, JETSAM_PRIORITY_MAIL },
+ 	{ XPC_JETSAM_BAND_PHONE, JETSAM_PRIORITY_PHONE },
+@@ -826,10 +846,11 @@
+ 	{ XPC_JETSAM_BAND_FOREGROUND, JETSAM_PRIORITY_FOREGROUND },
+ 	{ XPC_JETSAM_BAND_AUDIO, JETSAM_PRIORITY_AUDIO_AND_ACCESSORY },
+ 	{ XPC_JETSAM_BAND_ACCESSORY, JETSAM_PRIORITY_AUDIO_AND_ACCESSORY },
+ 	{ XPC_JETSAM_BAND_CRITICAL, JETSAM_PRIORITY_CRITICAL },
+ 	{ XPC_JETSAM_BAND_TELEPHONY, JETSAM_PRIORITY_TELEPHONY },
++#endif /* __ESDARWIN__ */
+ };
+ 
+ static const struct {
+ 	const char *key;
+ 	int val;
+@@ -1300,19 +1321,21 @@
+ 		(void)jobmgr_assumes_zero(jm, launchd_mport_deallocate(jm->req_excport));
+ 	}
+ 	if (MACH_PORT_VALID(jm->req_asport)) {
+ 		(void)jobmgr_assumes_zero(jm, launchd_mport_deallocate(jm->req_asport));
+ 	}
++    #ifndef __ESDARWIN__
+ 	if (jm->req_rport) {
+ 		kern_return_t kr = xpc_call_wakeup(jm->req_rport, jm->error);
+ 		if (!(kr == KERN_SUCCESS || kr == MACH_SEND_INVALID_DEST)) {
+ 			/* If the originator went away, the reply port will be a dead name,
+ 			 * and we expect this to fail.
+ 			 */
+ 			(void)jobmgr_assumes_zero(jm, kr);
+ 		}
+ 	}
++    #endif /* __ESDARWIN__ */
+ 	if (jm->req_ctx) {
+ 		(void)jobmgr_assumes_zero(jm, vm_deallocate(mach_task_self(), jm->req_ctx, jm->req_ctx_sz));
+ 	}
+ 
+ 	time_t ts = runtime_get_wall_time() / USEC_PER_SEC;
+@@ -1356,10 +1379,21 @@
+ 	}
+ 
+ 	free(jm);
+ }
+ 
++#ifdef __ESDARWIN__
++
++/* The most horrible thing I have ever done */
++
++void
++xpc_release(xpc_object_t obj)
++{
++}
++
++#endif /* __ESDARWIN__ */
++
+ void
+ job_remove(job_t j)
+ {
+ 	struct waiting_for_removal *w4r;
+ 	struct calendarinterval *ci;
+@@ -4567,21 +4601,25 @@
+ 	job_setup_attributes(j);
+ 
+ 	bool use_xpcproxy = false;
+ 	struct waiting4attach *w4a = waiting4attach_find(j->mgr, j);
+ 	if (w4a) {
++        #ifndef __ESDARWIN__
+ 		(void)setenv(XPC_SERVICE_ENV_ATTACHED, "1", 1);
+ 		if (!j->xpc_service) {
+ 			use_xpcproxy = true;
+ 		}
++        #endif /* __ESDARWIN__ */
+ 	}
+ 
+ 	if (use_xpcproxy) {
++        #ifndef __ESDARWIN__
+ 		argv = alloca(3 * sizeof(char *));
+ 		argv[0] = "/usr/libexec/xpcproxy";
+ 		argv[1] = "-debug";
+ 		argv[2] = NULL;
++        #endif /* __ESDARWIN__ */
+ 
+ 		file2exec = argv[0];
+ 	} else if (unlikely(j->argv && j->globargv)) {
+ 		g.gl_offs = 1;
+ 		for (i = 0; i < j->argc; i++) {
+@@ -5407,11 +5445,15 @@
+ 	systemstats_write_process_usage(&info);
+ }
+ #endif /* HAVE_SYSTEMSTATS */
+ 
+ struct waiting4attach *
++#ifndef __ESDARWIN__
+ waiting4attach_new(jobmgr_t jm, const char *name, mach_port_t port, pid_t dest, xpc_service_type_t type)
++#else /* __ESDARWIN__ */
++waiting4attach_new(jobmgr_t jm, const char *name, mach_port_t port, pid_t dest, void* type)
++#endif /* __ESDARWIN__ */
+ {
+ 	size_t xtra = strlen(name) + 1;
+ 
+ 	struct waiting4attach *w4a = malloc(sizeof(*w4a) + xtra);
+ 	if (!w4a) {
+@@ -5456,14 +5498,16 @@
+ {
+ 	char *name2use = (char *)j->label;
+ 	if (j->app) {
+ 		struct envitem *ei = NULL;
+ 		SLIST_FOREACH(ei, &j->env, sle) {
++            #ifndef __ESDARWIN__
+ 			if (strcmp(ei->key, XPC_SERVICE_RENDEZVOUS_TOKEN) == 0) {
+ 				name2use = ei->value;
+ 				break;
+ 			}
++            #endif /* __ESDARWIN__ */
+ 		}
+ 	}
+ 
+ 	struct waiting4attach *w4ai = NULL;
+ 	LIST_FOREACH(w4ai, &jm->attaches, le) {
+@@ -7621,16 +7665,18 @@
+ 	ee->sys = sys;
+ 	ee->state = false;
+ 	ee->wanted_state = true;
+ 	sys->curid++;
+ 
++    #ifndef __ESDARWIN__
+ 	if (flags & XPC_EVENT_FLAG_ENTITLEMENTS) {
+ 		struct ldcred *ldc = runtime_get_caller_creds();
+ 		if (ldc) {
+ 			ee->entitlements = xpc_copy_entitlements_for_pid(ldc->pid);
+ 		}
+ 	}
++    #endif /* __ESDARWIN__ */
+ 
+ 	if (sys == _launchd_support_system) {
+ 		ee->internal = true;
+ 	}
+ 
+@@ -7662,20 +7708,29 @@
+ externalevent_setup(launch_data_t obj, const char *key, void *context)
+ {
+ 	/* This method can ONLY be called on the job_import() path, as it assumes
+ 	 * the input is a launch_data_t.
+ 	 */
++
+ 	struct externalevent_iter_ctx *ctx = (struct externalevent_iter_ctx *)context;
+ 
++    #ifndef __ESDARWIN__
++
+ 	xpc_object_t xobj = ld2xpc(obj);
+ 	if (xobj) {
+ 		job_log(ctx->j, LOG_DEBUG, "Importing stream/event: %s/%s", ctx->sys->name, key);
+ 		externalevent_new(ctx->j, ctx->sys, key, xobj, 0);
+ 		xpc_release(xobj);
+ 	} else {
+ 		job_log(ctx->j, LOG_ERR, "Could not import event for job: %s", key);
+ 	}
++
++    #else /* __ESDARWIN__ */
++
++    job_log(ctx->j, LOG_ERR, "launchd cannot handle XPC routines or requests.\nXPC is closed-source and not included in ESDarwin.");
++
++    #endif /* __ESDARWIN__ */
+ }
+ 
+ struct externalevent *
+ externalevent_find(const char *sysname, uint64_t id)
+ {
+@@ -10367,19 +10422,23 @@
+ 	if (error) {
+ 		j->mgr->error = error;
+ 		jobmgr_log(j->mgr, LOG_ERR, "Obliterating domain.");
+ 		jobmgr_remove(j->mgr);
+ 	} else {
++        #ifndef __ESDARWIN__
+ 		j->mgr->session_initialized = true;
+ 		(void)jobmgr_assumes_zero(j->mgr, xpc_call_wakeup(j->mgr->req_rport, BOOTSTRAP_SUCCESS));
+ 		j->mgr->req_rport = MACH_PORT_NULL;
+ 
+ 		/* Returning a failure code will destroy the message, whereas returning
+ 		 * success will not, so we need to clean up here.
+ 		 */
+ 		mig_deallocate(services_buff, services_sz);
+ 		error = BOOTSTRAP_SUCCESS;
++        #else /* __ESDARWIN__ */
++        error = BOOTSTRAP_NOT_PRIVILEGED;
++        #endif /* __ESDARWIN__ */
+ 	}
+ 
+ 	return error;
+ }
+ 
+@@ -10423,11 +10482,15 @@
+ 
+ 	return KERN_SUCCESS;
+ }
+ 
+ kern_return_t
++#ifndef __ESDARWIN__
+ xpc_domain_get_service_name(job_t j, event_name_t name)
++#else /* __ESDARWIN__ */
++xpc_domain_get_service_name(job_t j, void* name)
++#endif /* __ESDARWIN__ */
+ {
+ 	if (!j) {
+ 		return BOOTSTRAP_NO_MEMORY;
+ 	}
+ 
+@@ -10451,11 +10514,15 @@
+ 	if (!msi) {
+ 		jobmgr_log(j->mgr, LOG_ERR, "Attempt to get service name that does not exist: %s", j->label);
+ 		return BOOTSTRAP_UNKNOWN_SERVICE;
+ 	}
+ 
++    #ifndef __ESDARWIN__
+ 	(void)strlcpy(name, msi->name, sizeof(event_name_t));
++    #else /* __ESDARWIN__ */
++    (void)strlcpy(name, msi->name, sizeof(void*));
++    #endif /* __ESDARWIN__ */
+ 	return BOOTSTRAP_SUCCESS;
+ }
+ 
+ #if XPC_LPI_VERSION >= 20111216
+ kern_return_t
+@@ -10489,13 +10556,17 @@
+ 	return error;
+ }
+ #endif
+ 
+ #pragma mark XPC Events
++
++#ifndef __ESDARWIN__
++
+ int
+ xpc_event_find_channel(job_t j, const char *stream, struct machservice **ms)
+ {
++    #ifndef __ESDARWIN__
+ 	int error = EXNOMEM;
+ 	struct machservice *msi = NULL;
+ 	SLIST_FOREACH(msi, &j->machservices, sle) {
+ 		if (strcmp(stream, msi->name) == 0) {
+ 			break;
+@@ -10537,15 +10608,20 @@
+ 		error = 0;
+ 		*ms = msi;
+ 	}
+ 
+ 	return error;
++    #else /* __ESDARWIN__ */
++    job_log(j, LOG_ERR, "launchd cannot handle XPC routines or requests.\nXPC is closed-source and not included in ESDarwin.")
++    return -1;
++    #endif /* __ESDARWIN__ */
+ }
+ 
+ int
+ xpc_event_get_event_name(job_t j, xpc_object_t request, xpc_object_t *reply)
+ {
++    #ifndef __ESDARWIN__
+ 	const char *stream = xpc_dictionary_get_string(request, XPC_EVENT_ROUTINE_KEY_STREAM);
+ 	if (!stream) {
+ 		return EXINVAL;
+ 	}
+ 
+@@ -10566,15 +10642,19 @@
+ 		job_log(j, LOG_DEBUG, "Found: %s", event->name);
+ 		result = 0;
+ 	}
+ 
+ 	return result;
++    #else /* __ESDARWIN__ */
++    return -1;
++    #endif /* __ESDARWIN__ */
+ }
+ 
+ int
+ xpc_event_copy_entitlements(job_t j, xpc_object_t request, xpc_object_t *reply)
+ {
++    #ifndef __ESDARWIN__
+ 	const char *stream = xpc_dictionary_get_string(request, XPC_EVENT_ROUTINE_KEY_STREAM);
+ 	if (!stream) {
+ 		return EXINVAL;
+ 	}
+ 
+@@ -10595,20 +10675,24 @@
+ 		job_log(j, LOG_DEBUG, "Found: %s", event->name);
+ 		result = 0;
+ 	}
+ 
+ 	return result;
++    #else /* __ESDARWIN__ */
++    return -1;
++    #endif /* __ESDARWIN__ */
+ }
+ 
+ // TODO - can be removed with rdar://problem/12666150
+ #ifndef XPC_EVENT_FLAG_ALLOW_UNMANAGED
+ #define XPC_EVENT_FLAG_ALLOW_UNMANAGED (1 << 1)
+ #endif
+ 	
+ int
+ xpc_event_set_event(job_t j, xpc_object_t request, xpc_object_t *reply)
+ {
++    #ifndef __ESDARWIN__
+ 	const char *stream = xpc_dictionary_get_string(request, XPC_EVENT_ROUTINE_KEY_STREAM);
+ 	if (!stream) {
+ 		return EXINVAL;
+ 	}
+ 
+@@ -10674,15 +10758,19 @@
+ 		xpc_object_t reply2 = xpc_dictionary_create_reply(request);
+ 		*reply = reply2;
+ 	}
+ 
+ 	return result;
++    #else /* __ESDARWIN__ */
++    return 0;
++    #endif /* __ESDARWIN__ */
+ }
+ 
+ int
+ xpc_event_copy_event(job_t j, xpc_object_t request, xpc_object_t *reply)
+ {
++    #ifndef __ESDARWIN__
+ 	const char *stream = xpc_dictionary_get_string(request, XPC_EVENT_ROUTINE_KEY_STREAM);
+ 	const char *key = xpc_dictionary_get_string(request, XPC_EVENT_ROUTINE_KEY_NAME);
+ 
+ 	bool all_streams = (stream == NULL);
+ 	bool all_events = (key == NULL || strcmp(key, "") == 0); // strcmp for libxpc compatibility
+@@ -10729,15 +10817,19 @@
+ 		*reply = reply2;
+ 		result = 0;
+ 	}
+ 
+ 	return result;
++    #else /* __ESDARWIN__ */
++    return -1;
++    #endif /* __ESDARWIN__ */
+ }
+ 
+ int
+ xpc_event_channel_check_in(job_t j, xpc_object_t request, xpc_object_t *reply)
+ {
++    #ifndef __ESDARWIN__
+ 	const char *stream = xpc_dictionary_get_string(request, XPC_EVENT_ROUTINE_KEY_STREAM);
+ 	if (!stream) {
+ 		return EXINVAL;
+ 	}
+ 
+@@ -10758,15 +10850,19 @@
+ 		*reply = reply2;
+ 		error = 0;
+ 	}
+ 
+ 	return error;
++    #else /* __ESDARWIN__ */
++    return -1;
++    #endif /* __ESDARWIN__ */
+ }
+ 
+ int
+ xpc_event_channel_look_up(job_t j, xpc_object_t request, xpc_object_t *reply)
+ {
++    #ifndef __ESDARWIN__
+ 	if (!j->event_monitor) {
+ 		return EPERM;
+ 	}
+ 
+ 	const char *stream = xpc_dictionary_get_string(request, XPC_EVENT_ROUTINE_KEY_STREAM);
+@@ -10796,16 +10892,20 @@
+ 		error = 0;
+ 	} else {
+ 		job_log(j, LOG_ERR, "Could not find event channel for stream/token: %s/%llu: 0x%x: %s", stream, token, error, xpc_strerror(error));
+ 	}
+ 
+-	return error;
++    #else /* __ESDARWIN__ */
++    job_log(j, LOG_ERR, "launchd cannot handle XPC routines or requests.\nXPC is closed-source and not included in ESDarwin.");
++    return -1;
++    #endif /* __ESDARWIN__ */
+ }
+ 
+ int
+ xpc_event_provider_check_in(job_t j, xpc_object_t request, xpc_object_t *reply)
+ {
++    #ifndef __ESDARWIN__
+ 	if (!j->event_monitor) {
+ 		return EPERM;
+ 	}
+ 
+ 	/* This indicates that the event monitor is now safe to signal. This state
+@@ -10851,15 +10951,20 @@
+ 	xpc_dictionary_set_value(reply2, XPC_EVENT_ROUTINE_KEY_EVENTS, events);
+ 	xpc_release(events);
+ 	*reply = reply2;
+ 
+ 	return 0;
++    #else /* __ESDARWIN__ */
++    job_log(j, LOG_ERR, "launchd cannot handle XPC routines or requests.\nXPC is closed-source and not included in ESDarwin.");
++    return -1;
++    #endif /* __ESDARWIN__ */
+ }
+ 
+ int
+ xpc_event_provider_set_state(job_t j, xpc_object_t request, xpc_object_t *reply)
+ {
++    #ifndef __ESDARWIN__
+ 	job_t other_j = NULL;
+ 
+ 	if (!j->event_monitor) {
+ 		return EPERM;
+ 	}
+@@ -10903,10 +11008,14 @@
+ 
+ 	xpc_object_t reply2 = xpc_dictionary_create_reply(request);
+ 	*reply = reply2;
+ 
+ 	return 0;
++    #else /* __ESDARWIN__ */
++        job_log(j, LOG_ERR, "launchd cannot handle XPC routines or requests.\nXPC is closed-source and not included in ESDarwin.");
++        return -1;
++    #endif /* __ESDARWIN__ */
+ }
+ 
+ bool
+ xpc_event_demux(mach_port_t p, xpc_object_t request, xpc_object_t *reply)
+ {
+@@ -11412,10 +11521,14 @@
+ 	}
+ 
+ 	return true;
+ }
+ 
++#pragma mark XPC Events (End)
++
++#endif /* __ESDARWIN__ */
++
+ kern_return_t
+ job_mig_kickstart(job_t j, name_t targetlabel, pid_t *out_pid, unsigned int flags)
+ {
+ 	struct ldcred *ldc = runtime_get_caller_creds();
+ 	job_t otherj;
+@@ -11945,11 +12058,15 @@
+ 		j->jetsam_properties = true;
+ 	}
+ }
+ 
+ void
++#ifndef __ESDARWIN__
+ job_update_jetsam_properties(job_t j, xpc_jetsam_band_t band, uint64_t user_data)
++#else /* __ESDARWIN__ */
++job_update_jetsam_properties(job_t j, void* band, uint64_t user_data)
++#endif /* __ESDARWIN__ */
+ {
+ #if TARGET_OS_EMBEDDED
+ 	j->jetsam_priority = _launchd_priority_map[band - 1].priority;
+ 	j->jetsam_properties = true;
+ 
+diff -rwU5 A/launchd-842.92.1/src/core.h B/launchd-842.92.1/src/core.h
+--- A/launchd-842.92.1/src/core.h	2012-03-29 03:03:19.000000000 +0100
++++ B/launchd-842.92.1/src/core.h	2018-07-02 12:56:03.000000000 +0100
+@@ -22,11 +22,14 @@
+ #define __LAUNCHD_CORE_LOGIC__
+ 
+ #include "runtime.h"
+ #include "bootstrap.h"
+ #include "launch.h"
++
++#ifndef __ESDARWIN__
+ #include <xpc/private.h>
++#endif /* __ESDARWIN__ */
+ 
+ typedef struct job_s *job_t;
+ typedef struct jobmgr_s *jobmgr_t;
+ 
+ extern jobmgr_t root_jobmgr;
+@@ -59,9 +62,18 @@
+ void job_mig_destructor(job_t j);
+ void job_ack_no_senders(job_t j);
+ void job_log(job_t j, int pri, const char *msg, ...) __attribute__((format(printf, 3, 4)));
+ void job_set_pid_crashed(pid_t p);
+ 
++#ifndef __ESDARWIN__DO_NOT_DEFINE_THIS_MACRO_PLEASE__
++
+ bool xpc_event_demux(mach_port_t p, xpc_object_t request, xpc_object_t *reply);
+ bool xpc_process_demux(mach_port_t p, xpc_object_t request, xpc_object_t *reply);
+ 
++#else /* __ESDARWIN__ */
++
++bool xpc_event_demux(mach_port_t p, void* request, void** reply);
++bool xpc_process_demux(mach_port_t p, void* request, void** reply);
++
++#endif /* __ESDARWIN__ */
++
+ #endif /* __LAUNCHD_CORE_LOGIC__ */
+diff -rwU5 A/launchd-842.92.1/src/launchd.c B/launchd-842.92.1/src/launchd.c
+--- A/launchd-842.92.1/src/launchd.c	2012-08-28 00:33:00.000000000 +0100
++++ B/launchd-842.92.1/src/launchd.c	2018-07-02 12:56:03.000000000 +0100
+@@ -463,11 +463,11 @@
+ 
+ 	(void)posix_assumes_zero(setsid());
+ 	(void)posix_assumes_zero(chdir("/"));
+ 	(void)posix_assumes_zero(setlogin("root"));
+ 
+-#if !TARGET_OS_EMBEDDED
++#if HAVE_LIBAUDITD
+ 	auditinfo_addr_t auinfo = {
+ 		.ai_termid = { 
+ 			.at_type = AU_IPv4
+ 		},
+ 		.ai_asid = AU_ASSIGN_ASID,
+@@ -482,11 +482,11 @@
+ 
+ 	launchd_audit_session = auinfo.ai_asid;
+ 	launchd_syslog(LOG_DEBUG, "Audit Session ID: %i", launchd_audit_session);
+ 
+ 	launchd_audit_port = _audit_session_self();
+-#endif // !TARGET_OS_EMBEDDED
++#endif // HAVE_LIBAUDITD
+ }
+ 
+ char *
+ launchd_copy_persistent_store(int type, const char *file)
+ {
+diff -rwU5 A/launchd-842.92.1/src/runtime.c B/launchd-842.92.1/src/runtime.c
+--- A/launchd-842.92.1/src/runtime.c	2013-04-13 00:51:46.000000000 +0100
++++ B/launchd-842.92.1/src/runtime.c	2018-07-02 12:56:03.000000000 +0100
+@@ -75,11 +75,13 @@
+ #include "vproc_priv.h"
+ #include "vproc_internal.h"
+ #include "jobServer.h"
+ #include "job_reply.h"
+ 
++#ifndef __ESDARWIN__
+ #include <xpc/launchd.h>
++#endif /* __ESDARWIN__ */
+ 
+ static mach_port_t ipc_port_set;
+ static mach_port_t demand_port_set;
+ static mach_port_t launchd_internal_port;
+ static int mainkq;
+@@ -162,14 +164,16 @@
+ union internal_max_sz {
+ 	union __RequestUnion__x_internal_subsystem req;
+ 	union __ReplyUnion__internal_subsystem rep;
+ };
+ 
++#ifndef __ESDARWIN__
+ union xpc_domain_max_sz {
+ 	union __RequestUnion__xpc_domain_xpc_domain_subsystem req;
+ 	union __ReplyUnion__xpc_domain_xpc_domain_subsystem rep;
+ };
++#endif /* __ESDARWIN__ */
+ 
+ union mach_exc_max_sz {
+ 	union __RequestUnion__catch_mach_exc_subsystem req;
+ 	union __ReplyUnion__catch_mach_exc_subsystem rep;
+ };
+@@ -192,13 +196,16 @@
+ 
+ 	os_assert_zero(launchd_mport_create_recv(&launchd_internal_port));
+ 	os_assert_zero(launchd_mport_make_send(launchd_internal_port));
+ 
+ 	max_msg_size = sizeof(union vproc_mig_max_sz);
++
++    #ifndef __ESDARWIN__
+ 	if (sizeof(union xpc_domain_max_sz) > max_msg_size) {
+ 		max_msg_size = sizeof(union xpc_domain_max_sz);
+ 	}
++    #endif /* __ESDARWIN__ */
+ 
+ 	os_assert_zero(runtime_add_mport(launchd_internal_port, launchd_internal_demux));
+ 	os_assert_zero(pthread_create(&kqueue_demand_thread, NULL, kqueue_demand_loop, NULL));
+ 	os_assert_zero(pthread_detach(kqueue_demand_thread));
+ 
+@@ -1004,12 +1011,16 @@
+ 		launchd_syslog(LOG_DEBUG, "Demux failed. Trying other subsystems...");
+ 		if (request->msgh_id == MACH_NOTIFY_NO_SENDERS) {
+ 			launchd_syslog(LOG_DEBUG, "MACH_NOTIFY_NO_SENDERS");
+ 			result = notify_server(request, reply);
+ 		} else if (the_demux == job_server) {
++            #ifndef __ESDARWIN__
+ 			launchd_syslog(LOG_DEBUG, "Trying domain subsystem...");
+ 			result = xpc_domain_server(request, reply);
++            #else /* __ESDARWIN__ */
++            launchd_syslog(LOG_ERR, "Cannot handle XPC routines or requests.\nXPC is closed-source and not included in ESDarwin.");
++            #endif /* __ESDARWIN__ */
+ 		} else {
+ 			launchd_syslog(LOG_ERR, "Cannot handle MIG request with ID: 0x%x", request->msgh_id);
+ 		}
+ 	} else {
+ 		launchd_syslog(LOG_DEBUG, "MIG demux succeeded.");
+@@ -1022,11 +1033,14 @@
+ launchd_runtime2(mach_msg_size_t msg_size)
+ {
+ 	for (;;) {
+ 		launchd_log_push();
+ 
++        #ifndef __ESDARWIN__
++
+ 		mach_port_t recvp = MACH_PORT_NULL;
++
+ 		xpc_object_t request = NULL;
+ 		int result = xpc_pipe_try_receive(ipc_port_set, &request, &recvp, launchd_mig_demux, msg_size, 0);
+ 		if (result == 0 && request) {
+ 			boolean_t handled = false;
+ 			time_of_mach_msg_return = runtime_get_opaque_time();
+@@ -1062,10 +1076,14 @@
+ 		} else if (result == 0) {
+ 			launchd_syslog(LOG_DEBUG, "MIG request.");
+ 		} else if (result == EINVAL) {
+ 			launchd_syslog(LOG_ERR, "Rejected invalid request message.");
+ 		}
++        #else /* __ESDARWIN */
++        (void)(msg_size);
++        launchd_syslog(LOG_ERR, "Cannot handle XPC routines or requests.\nXPC is closed-source and not included in ESDarwin.");
++        #endif /* __ESDARWIN__ */
+ 	}
+ }
+ 
+ int
+ runtime_close(int fd)
+Only in B/launchd-842.92.1: sym
+diff -rwU5 A/launchd-842.92.1/xcconfigs/common.xcconfig B/launchd-842.92.1/xcconfigs/common.xcconfig
+--- A/launchd-842.92.1/xcconfigs/common.xcconfig	2012-03-07 01:52:53.000000000 +0000
++++ B/launchd-842.92.1/xcconfigs/common.xcconfig	2018-07-02 12:56:03.000000000 +0100
+@@ -2,11 +2,11 @@
+ 
+ BUILD_XCSUPPORT_DIR = $(PROJECT_DIR)/xcsupport
+ BUILD_XCSCRIPTS_DIR = $(PROJECT_DIR)/xcscripts
+ BUILD_XCCONFIG_DIR = $(PROJECT_DIR)/xcconfig
+ 
+-CRASHREPORTER_LINKER_FLAGS[sdk=macosx*]= -lCrashReporterClient
++CRASHREPORTER_LINKER_FLAGS[sdk=macosx*]= 
+ CRASHREPORTER_LINKER_FLAGS[sdk=macosx10.6] = 
+ CRASHREPORTER_LINKER_FLAGS[sdk=iphoneos*] = 
+ 
+ COPY_PHASE_STRIP = YES
+ STRIP_STYLE = non-global
+diff -rwU5 A/launchd-842.92.1/xcconfigs/liblaunch.xcconfig B/launchd-842.92.1/xcconfigs/liblaunch.xcconfig
+--- A/launchd-842.92.1/xcconfigs/liblaunch.xcconfig	2013-03-18 22:05:13.000000000 +0000
++++ B/launchd-842.92.1/xcconfigs/liblaunch.xcconfig	2018-07-02 12:56:03.000000000 +0100
+@@ -12,11 +12,11 @@
+ DEPLOYMENT_LOCATION = YES
+ INSTALL_PATH = /usr/lib/system
+ ORDER_FILE[sdk=macosx*] = $(SDKROOT)/$(APPLE_INTERNAL_DIR)/OrderFiles/liblaunch.order
+ ORDER_FILE[sdk=iphonesimulator*] = 
+ LINK_WITH_STANDARD_LIBRARIES = NO
+-OTHER_LDFLAGS = -umbrella System -L/usr/lib/system -ldyld -lcompiler_rt -lsystem_kernel -lsystem_platform -lsystem_pthread -lsystem_malloc -lsystem_c -lquarantine -ldispatch $(CRASHREPORTER_LINKER_FLAGS)
++OTHER_LDFLAGS = -umbrella System -L/usr/lib/system -ldyld -lcompiler_rt -lsystem_kernel -lsystem_platform -lsystem_pthread -lsystem_malloc -lsystem_c -ldispatch $(CRASHREPORTER_LINKER_FLAGS)
+ OTHER_LDFLAGS[sdk=iphone*] = -umbrella System -L/usr/lib/system -ldyld -lcompiler_rt -lsystem_kernel -lsystem_platform -lsystem_pthread -lsystem_malloc -lsystem_c -ldispatch $(CRASHREPORTER_LINKER_FLAGS)
+ LD_DYLIB_INSTALL_NAME = $(DYLIB_INSTALL_NAME_BASE:standardizepath)/$(EXECUTABLE_PATH)
+ MACH_O_TYPE = mh_dylib
+ EXECUTABLE_PREFIX = lib
+ PRODUCT_NAME = launch

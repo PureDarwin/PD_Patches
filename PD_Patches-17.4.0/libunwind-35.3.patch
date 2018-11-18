@@ -1,0 +1,31 @@
+diff -rwU5 A/libunwind-35.3/libunwind.xcodeproj/project.pbxproj B/libunwind-35.3/libunwind.xcodeproj/project.pbxproj
+--- A/libunwind-35.3/libunwind.xcodeproj/project.pbxproj	2013-04-17 22:33:15.000000000 +0100
++++ B/libunwind-35.3/libunwind.xcodeproj/project.pbxproj	2018-07-02 12:59:40.000000000 +0100
+@@ -446,10 +446,11 @@
+ 				);
+ 				PRODUCT_NAME = "$(PRODUCT_NAME_$(PLATFORM_NAME))";
+ 				PRODUCT_NAME_iphoneos = libunwind;
+ 				PRODUCT_NAME_iphonesimulator = libunwind_sim;
+ 				PRODUCT_NAME_macosx = libunwind;
++				SDKROOT = macosx10.13.internal;
+ 				WARNING_CFLAGS = "-Wall";
+ 			};
+ 			name = Debug;
+ 		};
+ 		F95A3D940DE3A8AA004B72E5 /* Release */ = {
+@@ -493,10 +494,11 @@
+ 				);
+ 				PRODUCT_NAME = "$(PRODUCT_NAME_$(PLATFORM_NAME))";
+ 				PRODUCT_NAME_iphoneos = libunwind;
+ 				PRODUCT_NAME_iphonesimulator = libunwind_sim;
+ 				PRODUCT_NAME_macosx = libunwind;
++				SDKROOT = macosx10.13.internal;
+ 				VERSIONING_SYSTEM = "apple-generic";
+ 			};
+ 			name = Release;
+ 		};
+ /* End XCBuildConfiguration section */
+Only in B/libunwind-35.3/libunwind.xcodeproj: project.xcworkspace
+Only in B/libunwind-35.3/libunwind.xcodeproj: xcuserdata
+Only in B/libunwind-35.3: obj
+Only in B/libunwind-35.3: sym

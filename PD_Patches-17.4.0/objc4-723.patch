@@ -1,0 +1,83 @@
+Only in B/objc4-723: obj
+diff -rwU5 A/objc4-723/objc.xcodeproj/project.pbxproj B/objc4-723/objc.xcodeproj/project.pbxproj
+--- A/objc4-723/objc.xcodeproj/project.pbxproj	2017-05-19 03:38:11.000000000 +0100
++++ B/objc4-723/objc.xcodeproj/project.pbxproj	2018-07-02 13:00:50.000000000 +0100
+@@ -634,11 +634,10 @@
+ 					"-interposable_list",
+ 					"-Xlinker",
+ 					interposable.txt,
+ 				);
+ 				"OTHER_LDFLAGS[sdk=macosx*]" = (
+-					"-lCrashReporterClient",
+ 					"-lc++abi",
+ 					"-Xlinker",
+ 					"-sectalign",
+ 					"-Xlinker",
+ 					__DATA,
+@@ -704,11 +703,10 @@
+ 					"-interposable_list",
+ 					"-Xlinker",
+ 					interposable.txt,
+ 				);
+ 				"OTHER_LDFLAGS[sdk=macosx*]" = (
+-					"-lCrashReporterClient",
+ 					"-lc++abi",
+ 					"-Xlinker",
+ 					"-sectalign",
+ 					"-Xlinker",
+ 					__DATA,
+@@ -739,11 +737,14 @@
+ 				EXCLUDED_INSTALLSRC_SUBDIRECTORY_PATTERNS = "$(inherited) test";
+ 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+ 				GCC_ENABLE_CPP_RTTI = NO;
+ 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+ 				GCC_OPTIMIZATION_LEVEL = 0;
+-				GCC_PREPROCESSOR_DEFINITIONS = "OS_OBJECT_USE_OBJC=0";
++				GCC_PREPROCESSOR_DEFINITIONS = (
++					"OS_OBJECT_USE_OBJC=0",
++					TARGET_OS_OSX,
++				);
+ 				GCC_STRICT_ALIASING = YES;
+ 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+ 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+ 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+ 				GCC_WARN_ABOUT_INVALID_OFFSETOF_MACRO = NO;
+@@ -755,10 +756,11 @@
+ 				"OTHER_CFLAGS[arch=x86_64]" = "-fobjc-legacy-dispatch";
+ 				OTHER_CPLUSPLUSFLAGS = (
+ 					"$(OTHER_CFLAGS)",
+ 					"-D_LIBCPP_VISIBLE=\"\"",
+ 				);
++				SDKROOT = macosx10.13.internal;
+ 				WARNING_CFLAGS = (
+ 					"-Wall",
+ 					"-Wextra",
+ 					"-Wstrict-aliasing=2",
+ 					"-Wstrict-overflow=4",
+@@ -781,10 +783,11 @@
+ 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+ 				GCC_ENABLE_CPP_RTTI = NO;
+ 				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+ 				GCC_PREPROCESSOR_DEFINITIONS = (
+ 					"OS_OBJECT_USE_OBJC=0",
++					TARGET_OS_OSX,
+ 					"NDEBUG=1",
+ 				);
+ 				GCC_STRICT_ALIASING = YES;
+ 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+ 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+@@ -801,10 +804,11 @@
+ 				);
+ 				OTHER_CPLUSPLUSFLAGS = (
+ 					"$(OTHER_CFLAGS)",
+ 					"-D_LIBCPP_VISIBLE=\"\"",
+ 				);
++				SDKROOT = macosx10.13.internal;
+ 				WARNING_CFLAGS = (
+ 					"-Wall",
+ 					"-Wextra",
+ 					"-Wstrict-aliasing=2",
+ 					"-Wstrict-overflow=4",
+Only in B/objc4-723/objc.xcodeproj: project.xcworkspace
+Only in B/objc4-723/objc.xcodeproj: xcuserdata
+Only in B/objc4-723: sym

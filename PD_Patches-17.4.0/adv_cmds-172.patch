@@ -1,0 +1,143 @@
+diff -rwU5 A/adv_cmds-172/adv_cmds.xcodeproj/project.pbxproj B/adv_cmds-172/adv_cmds.xcodeproj/project.pbxproj
+--- A/adv_cmds-172/adv_cmds.xcodeproj/project.pbxproj	2016-12-07 17:41:19.000000000 +0000
++++ B/adv_cmds-172/adv_cmds.xcodeproj/project.pbxproj	2018-07-02 12:18:19.000000000 +0100
+@@ -24,11 +24,11 @@
+ 			buildConfigurationList = FD201DCE14369D0C00906237 /* Build configuration list for PBXAggregateTarget "pgrep" */;
+ 			buildPhases = (
+ 				FD201DD014369D1000906237 /* ShellScript */,
+ 			);
+ 			dependencies = (
+-				FD201DD214369D5C00906237 /* PBXTargetDependency */,
++				AA5A4FEC20B9A614003B4ACD /* PBXTargetDependency */,
+ 			);
+ 			name = pgrep;
+ 			productName = pgrep;
+ 		};
+ 		FDF2764E0FC60ECD00D7A3C6 /* Embedded */ = {
+@@ -58,12 +58,12 @@
+ 				FDF2775D0FC6102600D7A3C6 /* PBXTargetDependency */,
+ 				FDF2775B0FC6102600D7A3C6 /* PBXTargetDependency */,
+ 				FD0D7FA9108FE5C3004F2A1C /* PBXTargetDependency */,
+ 				FDF277570FC6102600D7A3C6 /* PBXTargetDependency */,
+ 				FDF277530FC6102600D7A3C6 /* PBXTargetDependency */,
+-				FD201DD414369D6300906237 /* PBXTargetDependency */,
+-				FD201DC114369B1D00906237 /* PBXTargetDependency */,
++				AA5A4FEE20B9A62C003B4ACD /* PBXTargetDependency */,
++				AA5A4FF020B9A62C003B4ACD /* PBXTargetDependency */,
+ 				FDF2766F0FC60F0F00D7A3C6 /* PBXTargetDependency */,
+ 				FDF276710FC60F1300D7A3C6 /* PBXTargetDependency */,
+ 				FDF2776D0FC6102B00D7A3C6 /* PBXTargetDependency */,
+ 				FDF2776B0FC6102B00D7A3C6 /* PBXTargetDependency */,
+ 				FDF277690FC6102B00D7A3C6 /* PBXTargetDependency */,
+@@ -126,44 +126,44 @@
+ 		FDF2795E0FC6272500D7A3C6 /* libl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FDF2795D0FC6272500D7A3C6 /* libl.a */; };
+ 		FDF2798F0FC62B0800D7A3C6 /* colldef.1 in Install man1 */ = {isa = PBXBuildFile; fileRef = FDF276E10FC60FDF00D7A3C6 /* colldef.1 */; };
+ /* End PBXBuildFile section */
+ 
+ /* Begin PBXContainerItemProxy section */
+-		FD0D7FA8108FE5C3004F2A1C /* PBXContainerItemProxy */ = {
++		AA5A4FEB20B9A614003B4ACD /* PBXContainerItemProxy */ = {
+ 			isa = PBXContainerItemProxy;
+ 			containerPortal = FDF276430FC60E9000D7A3C6 /* Project object */;
+ 			proxyType = 1;
+-			remoteGlobalIDString = FD0D7F98108FE550004F2A1C;
+-			remoteInfo = localedef;
++			remoteGlobalIDString = FD201DB414369B0300906237;
++			remoteInfo = pkill;
+ 		};
+-		FD201DBE14369B1700906237 /* PBXContainerItemProxy */ = {
++		AA5A4FED20B9A62C003B4ACD /* PBXContainerItemProxy */ = {
+ 			isa = PBXContainerItemProxy;
+ 			containerPortal = FDF276430FC60E9000D7A3C6 /* Project object */;
+ 			proxyType = 1;
+-			remoteGlobalIDString = FD201DB414369B0300906237;
+-			remoteInfo = pkill;
++			remoteGlobalIDString = FD201DCD14369D0C00906237;
++			remoteInfo = pgrep;
+ 		};
+-		FD201DC014369B1D00906237 /* PBXContainerItemProxy */ = {
++		AA5A4FEF20B9A62C003B4ACD /* PBXContainerItemProxy */ = {
+ 			isa = PBXContainerItemProxy;
+ 			containerPortal = FDF276430FC60E9000D7A3C6 /* Project object */;
+ 			proxyType = 1;
+ 			remoteGlobalIDString = FD201DB414369B0300906237;
+ 			remoteInfo = pkill;
+ 		};
+-		FD201DD114369D5C00906237 /* PBXContainerItemProxy */ = {
++		FD0D7FA8108FE5C3004F2A1C /* PBXContainerItemProxy */ = {
+ 			isa = PBXContainerItemProxy;
+ 			containerPortal = FDF276430FC60E9000D7A3C6 /* Project object */;
+ 			proxyType = 1;
+-			remoteGlobalIDString = FD201DB414369B0300906237;
+-			remoteInfo = pkill;
++			remoteGlobalIDString = FD0D7F98108FE550004F2A1C;
++			remoteInfo = localedef;
+ 		};
+-		FD201DD314369D6300906237 /* PBXContainerItemProxy */ = {
++		FD201DBE14369B1700906237 /* PBXContainerItemProxy */ = {
+ 			isa = PBXContainerItemProxy;
+ 			containerPortal = FDF276430FC60E9000D7A3C6 /* Project object */;
+ 			proxyType = 1;
+-			remoteGlobalIDString = FD201DCD14369D0C00906237;
+-			remoteInfo = pgrep;
++			remoteGlobalIDString = FD201DB414369B0300906237;
++			remoteInfo = pkill;
+ 		};
+ 		FD201DD514369D6700906237 /* PBXContainerItemProxy */ = {
+ 			isa = PBXContainerItemProxy;
+ 			containerPortal = FDF276430FC60E9000D7A3C6 /* Project object */;
+ 			proxyType = 1;
+@@ -1332,34 +1332,34 @@
+ 			runOnlyForDeploymentPostprocessing = 0;
+ 		};
+ /* End PBXSourcesBuildPhase section */
+ 
+ /* Begin PBXTargetDependency section */
+-		FD0D7FA9108FE5C3004F2A1C /* PBXTargetDependency */ = {
++		AA5A4FEC20B9A614003B4ACD /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+-			target = FD0D7F98108FE550004F2A1C /* localedef */;
+-			targetProxy = FD0D7FA8108FE5C3004F2A1C /* PBXContainerItemProxy */;
++			target = FD201DB414369B0300906237 /* pkill */;
++			targetProxy = AA5A4FEB20B9A614003B4ACD /* PBXContainerItemProxy */;
+ 		};
+-		FD201DBF14369B1700906237 /* PBXTargetDependency */ = {
++		AA5A4FEE20B9A62C003B4ACD /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+-			target = FD201DB414369B0300906237 /* pkill */;
+-			targetProxy = FD201DBE14369B1700906237 /* PBXContainerItemProxy */;
++			target = FD201DCD14369D0C00906237 /* pgrep */;
++			targetProxy = AA5A4FED20B9A62C003B4ACD /* PBXContainerItemProxy */;
+ 		};
+-		FD201DC114369B1D00906237 /* PBXTargetDependency */ = {
++		AA5A4FF020B9A62C003B4ACD /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+ 			target = FD201DB414369B0300906237 /* pkill */;
+-			targetProxy = FD201DC014369B1D00906237 /* PBXContainerItemProxy */;
++			targetProxy = AA5A4FEF20B9A62C003B4ACD /* PBXContainerItemProxy */;
+ 		};
+-		FD201DD214369D5C00906237 /* PBXTargetDependency */ = {
++		FD0D7FA9108FE5C3004F2A1C /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+-			target = FD201DB414369B0300906237 /* pkill */;
+-			targetProxy = FD201DD114369D5C00906237 /* PBXContainerItemProxy */;
++			target = FD0D7F98108FE550004F2A1C /* localedef */;
++			targetProxy = FD0D7FA8108FE5C3004F2A1C /* PBXContainerItemProxy */;
+ 		};
+-		FD201DD414369D6300906237 /* PBXTargetDependency */ = {
++		FD201DBF14369B1700906237 /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+-			target = FD201DCD14369D0C00906237 /* pgrep */;
+-			targetProxy = FD201DD314369D6300906237 /* PBXContainerItemProxy */;
++			target = FD201DB414369B0300906237 /* pkill */;
++			targetProxy = FD201DBE14369B1700906237 /* PBXContainerItemProxy */;
+ 		};
+ 		FD201DD614369D6700906237 /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+ 			target = FD201DCD14369D0C00906237 /* pgrep */;
+ 			targetProxy = FD201DD514369D6700906237 /* PBXContainerItemProxy */;
+Only in B/adv_cmds-172/adv_cmds.xcodeproj/project.xcworkspace: xcshareddata
+Only in B/adv_cmds-172/adv_cmds.xcodeproj/project.xcworkspace: xcuserdata
+Only in B/adv_cmds-172/adv_cmds.xcodeproj: xcuserdata
+Only in B/adv_cmds-172: obj
+Only in B/adv_cmds-172: sym

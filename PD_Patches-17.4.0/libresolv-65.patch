@@ -1,0 +1,117 @@
+diff -rwU5 A/libresolv-65/dns.c B/libresolv-65/dns.c
+--- A/libresolv-65/dns.c	2009-03-05 17:53:23.000000000 +0000
++++ B/libresolv-65/dns.c	2018-07-02 12:59:28.000000000 +0100
+@@ -522,10 +522,13 @@
+  * Open a named resolver client from the system config data.
+  */
+ static pdns_handle_t *
+ _pdns_sc_open(const char *name)
+ {
++    #if defined(__BUILDING_PUREDARWIN__)
++    return NULL;
++    #else /* !defined(__BUILDING_PUREDARWIN__) */
+ 	pdns_handle_t *pdns;
+ 	int i;
+ 	dns_config_t *sc_dns;
+ 	dns_resolver_t *sc_res;
+ 
+@@ -578,10 +581,11 @@
+ 	else if (name != NULL) _pdns_set_name(pdns, name);
+ 
+ 	if (name != NULL) pdns->search_count = SEARCH_COUNT_INIT;
+ 
+ 	return pdns;
++    #endif /* defined(__BUILDING_PUREDARWIN__) */
+ }
+ 
+ /*
+  * Open a named resolver client from file.
+  */
+@@ -777,12 +781,16 @@
+ 
+ 	sdns->client_count = 0;
+ 	if (sdns->client != NULL) free(sdns->client);
+ 	sdns->client = NULL;
+ 
++    #if defined(__BUILDING_PUREDARWIN__)
++    sc_dns = NULL;
++    #else /* !defined(__BUILDING_PUREDARWIN__) */
+ 	/* Fetch clients from System Configuration */
+ 	sc_dns = dns_configuration_copy();
++    #endif /* defined(__BUILDING_PUREDARWIN__) */
+ 
+ 	/* Set up Primary resolver.  It's the one we consult for a search list */
+ 	sc_dns_count = 0;
+ 	if ((sc_dns != NULL) && (sc_dns->n_resolver > 0))
+ 	{
+@@ -1030,15 +1038,17 @@
+ 		status = notify_register_check(DNS_DELAY_NAME, &(sdns->notify_delay_token));
+ 		if (status != NOTIFY_STATUS_OK) sdns->notify_delay_token = -1;
+ 		else status = notify_check(sdns->notify_delay_token, &n);
+ 	}
+ 
++    #if !defined(__BUILDING_PUREDARWIN__)
+ 	if (sdns->notify_sys_config_token == -1)
+ 	{
+ 		status = notify_register_check(dns_configuration_notify_key(), &(sdns->notify_sys_config_token));
+ 		if (status != NOTIFY_STATUS_OK) sdns->notify_sys_config_token = -1;
+ 	}
++    #endif /* !defined(__BUILDING_PUREDARWIN__) */
+ 
+ 	if (sdns->notify_dir_token == -1)
+ 	{
+ 		status = notify_register_check(NOTIFY_DIR_NAME, &(sdns->notify_dir_token));
+ 		if (status == NOTIFY_STATUS_OK)
+diff -rwU5 A/libresolv-65/libresolv.xcodeproj/project.pbxproj B/libresolv-65/libresolv.xcodeproj/project.pbxproj
+--- A/libresolv-65/libresolv.xcodeproj/project.pbxproj	2013-12-18 01:56:08.000000000 +0000
++++ B/libresolv-65/libresolv.xcodeproj/project.pbxproj	2018-07-02 12:59:28.000000000 +0100
+@@ -280,10 +280,12 @@
+ 
+ /* Begin XCBuildConfiguration section */
+ 		FC585ED914EDAEA400C8F63A /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
++				GCC_PREPROCESSOR_DEFINITIONS = __BUILDING_PUREDARWIN__;
++				SDKROOT = macosx.internal;
+ 			};
+ 			name = Release;
+ 		};
+ 		FC585EDC14EDAEA400C8F63A /* Release */ = {
+ 			isa = XCBuildConfiguration;
+Only in B/libresolv-65/libresolv.xcodeproj: project.xcworkspace
+Only in B/libresolv-65/libresolv.xcodeproj: xcuserdata
+Only in B/libresolv-65: obj
+diff -rwU5 A/libresolv-65/res_init.c B/libresolv-65/res_init.c
+--- A/libresolv-65/res_init.c	2008-08-18 23:55:15.000000000 +0100
++++ B/libresolv-65/res_init.c	2018-07-02 12:59:28.000000000 +0100
+@@ -1152,11 +1152,15 @@
+ 	uint16_t port;
+ 
+ 	nsearch = 0;
+ 	send_timeout = 0;
+ 
++    #if defined(__BUILDING_PUREDARWIN__)
++    sc_dns = NULL;
++    #else /* !defined(__BUILDING_PUREDARWIN__) */
+ 	sc_dns = dns_configuration_copy();
++    #endif /* defined(__BUILDING_PUREDARWIN__) */
+ 	if (sc_dns == NULL) return res_vinit_from_file(statp, preinit, _PATH_RESCONF);
+ 
+ 	sc_res = sc_dns->resolver[0];
+ 	port = sc_res->port;
+ 	if (port == 0) port = NS_DEFAULTPORT;
+@@ -1329,11 +1333,13 @@
+ 	{
+ 		if (send_timeout == 0) total_timeout = RES_MAXRETRANS;
+ 		else total_timeout = send_timeout * statp->retry * n;
+ 	}
+ 
++    #if !defined(__BUILDING_PUREDARWIN__)
+ 	dns_configuration_free(sc_dns);
++    #endif /* !defined(__BUILDING_PUREDARWIN__) */
+ 
+ 	res_build_finish(statp, total_timeout, port);
+ 
+ 	return 0;
+ }
+Only in B/libresolv-65: sym

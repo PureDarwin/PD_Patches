@@ -1,0 +1,362 @@
+Only in B/hfs-407.30.1: build-pd-hfs
+diff -rwU5 A/hfs-407.30.1/core/hfs_iokit.cpp B/hfs-407.30.1/core/hfs_iokit.cpp
+--- A/hfs-407.30.1/core/hfs_iokit.cpp	2016-12-01 21:47:35.000000000 +0000
++++ B/hfs-407.30.1/core/hfs_iokit.cpp	2018-07-02 12:55:41.000000000 +0100
+@@ -249,10 +249,11 @@
+ 	return KERN_SUCCESS;
+ }
+ 
+ // Interface with AKS
+ 
++#if !defined(__BUILDING_PUREDARWIN__)
+ static aks_file_system_key_services_t *
+ key_services(void)
+ {
+ 	static aks_file_system_key_services_t *g_key_services;
+ 
+@@ -303,5 +304,42 @@
+ 	aks_file_system_key_services_t *ks = key_services();
+ 	if (!ks || !ks->backup_key)
+ 		return ENXIO;
+ 	return ks->backup_key(access, wrapped_key_in, wrapped_key_out);
+ }
++#else /* defined(__BUILDING_PUREDARWIN__) */
++static void*
++key_services(void)
++{
++	printf("hfs: unable to get AppleKeyStore FileSystemKeyServices on PureDarwin, as it is not open source\n");
++	return NULL;
++}
++
++int hfs_unwrap_key(void* access, const void* wrapped_key_in,
++				   void* key_out)
++{
++	printf("hfs: hfs_unwrap_key failed: No AppleKeyStore on PureDarwin, as it is not open source\n");
++	return NULL;
++}
++
++int hfs_rewrap_key(void* access, void* dp_class,
++				   const void* wrapped_key_in,
++				   void* wrapped_key_out)
++{
++	printf("hfs: hfs_rewrap_key failed: No AppleKeyStore on PureDarwin, as it is not open source\n");
++	return NULL;
++}
++
++int hfs_new_key(void* access, void* dp_class,
++				void* key_out, void* wrapped_key_out)
++{
++	printf("hfs: hfs_new_key failed: No AppleKeyStore on PureDarwin, as it is not open source\n");
++	return NULL;
++}
++
++int hfs_backup_key(void* access, const void* wrapped_key_in,
++				   void* wrapped_key_out)
++{
++	printf("hfs: hfs_backup_key failed: No AppleKeyStore on PureDarwin, as it is not open source\n");
++	return NULL;
++}
++#endif /* !defined(__BUILDING_PUREDARWIN__) */
+diff -rwU5 A/hfs-407.30.1/core/hfs_iokit.h B/hfs-407.30.1/core/hfs_iokit.h
+--- A/hfs-407.30.1/core/hfs_iokit.h	2016-03-07 23:44:16.000000000 +0000
++++ B/hfs-407.30.1/core/hfs_iokit.h	2018-07-02 12:55:41.000000000 +0100
+@@ -28,11 +28,13 @@
+ 
+ #ifndef hfs_iokit_h
+ #define hfs_iokit_h
+ 
+ #include <sys/cdefs.h>
++#if !defined(__BUILDING_PUREDARWIN__)
+ #include <AppleKeyStore/AppleKeyStoreFSServices.h>
++#endif /* !defined(__BUILDING_PUREDARWIN__) */
+ 
+ __BEGIN_DECLS
+ 
+ int hfs_is_ejectable(const char *cdev_name);
+ void hfs_iterate_media_with_content(const char *content_uuid_cstring,
+@@ -40,18 +42,31 @@
+ 												const char *uuid_str,
+ 												void *arg),
+ 									void *arg);
+ kern_return_t hfs_get_platform_serial_number(char *serial_number_str,
+ 											 uint32_t len);
++
++#if !defined(__BUILDING_PUREDARWIN__)
+ int hfs_unwrap_key(aks_cred_t access, const aks_wrapped_key_t wrapped_key_in,
+ 				   aks_raw_key_t key_out);
+ int hfs_rewrap_key(aks_cred_t access, cp_key_class_t dp_class,
+ 				   const aks_wrapped_key_t wrapped_key_in,
+ 				   aks_wrapped_key_t wrapped_key_out);
+ int hfs_new_key(aks_cred_t access, cp_key_class_t dp_class,
+ 				aks_raw_key_t key_out, aks_wrapped_key_t wrapped_key_out);
+ int hfs_backup_key(aks_cred_t access, const aks_wrapped_key_t wrapped_key_in,
+ 				   aks_wrapped_key_t wrapped_key_out);
++#else /* defined(__BUILDING_PUREDARWIN__) */
++int hfs_unwrap_key(void* access, const void* wrapped_key_in,
++				   void* key_out);
++int hfs_rewrap_key(void* access, void* dp_class,
++				   const void* wrapped_key_in,
++				   void* wrapped_key_out);
++int hfs_new_key(void* access, void* dp_class,
++				void* key_out, void* wrapped_key_out);
++int hfs_backup_key(void* access, const void* wrapped_key_in,
++				   void* wrapped_key_out);
++#endif /* !defined(__BUILDING_PUREDARWIN__) */
+ 
+ __END_DECLS
+ 
+ #endif /* hfs_iokit_h */
+diff -rwU5 A/hfs-407.30.1/hfs.xcodeproj/project.pbxproj B/hfs-407.30.1/hfs.xcodeproj/project.pbxproj
+--- A/hfs-407.30.1/hfs.xcodeproj/project.pbxproj	2017-02-01 23:31:43.000000000 +0000
++++ B/hfs-407.30.1/hfs.xcodeproj/project.pbxproj	2018-07-02 12:55:42.000000000 +0100
+@@ -42,11 +42,10 @@
+ 			buildConfigurationList = 4DD302581538DB2700001AA0 /* Build configuration list for PBXAggregateTarget "All_MacOSX" */;
+ 			buildPhases = (
+ 			);
+ 			dependencies = (
+ 				07CA47231DA859CA00138D78 /* PBXTargetDependency */,
+-				FBE3A5A51BBEE34400CB9A33 /* PBXTargetDependency */,
+ 				FB48E4BC1BB30CC400523121 /* PBXTargetDependency */,
+ 				FBC234C61B4EC6B90002D849 /* PBXTargetDependency */,
+ 				4DBD52511548A4D2007AA736 /* PBXTargetDependency */,
+ 				4DBD52531548A4D4007AA736 /* PBXTargetDependency */,
+ 			);
+@@ -588,17 +587,10 @@
+ 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+ 			proxyType = 1;
+ 			remoteGlobalIDString = FB55AE651B7D47B300701D03;
+ 			remoteInfo = "ios-tests";
+ 		};
+-		FBE3A5A41BBEE34400CB9A33 /* PBXContainerItemProxy */ = {
+-			isa = PBXContainerItemProxy;
+-			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+-			proxyType = 1;
+-			remoteGlobalIDString = FBAA82651B56F2AB00EE6863;
+-			remoteInfo = "osx-tests";
+-		};
+ 		FBE3F7861AF6793E005BB768 /* PBXContainerItemProxy */ = {
+ 			isa = PBXContainerItemProxy;
+ 			containerPortal = 08FB7793FE84155DC02AAC07 /* Project object */;
+ 			proxyType = 1;
+ 			remoteGlobalIDString = FB20E0DF1AE950C200CEBE7B;
+@@ -2742,15 +2734,10 @@
+ 		FBE3A5A31BBEE33D00CB9A33 /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+ 			target = FB55AE651B7D47B300701D03 /* ios-tests */;
+ 			targetProxy = FBE3A5A21BBEE33D00CB9A33 /* PBXContainerItemProxy */;
+ 		};
+-		FBE3A5A51BBEE34400CB9A33 /* PBXTargetDependency */ = {
+-			isa = PBXTargetDependency;
+-			target = FBAA82651B56F2AB00EE6863 /* osx-tests */;
+-			targetProxy = FBE3A5A41BBEE34400CB9A33 /* PBXContainerItemProxy */;
+-		};
+ 		FBE3F7871AF6793E005BB768 /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+ 			target = FB20E0DF1AE950C200CEBE7B /* kext */;
+ 			targetProxy = FBE3F7861AF6793E005BB768 /* PBXContainerItemProxy */;
+ 		};
+@@ -2803,10 +2790,11 @@
+ 		};
+ 		1DEB928B08733DD80010E9CD /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 4DFD953D15377C7D0039B6BA /* hfs.xcconfig */;
+ 			buildSettings = {
++				GCC_PREPROCESSOR_DEFINITIONS = __BUILDING_PUREDARWIN__;
+ 			};
+ 			name = Release;
+ 		};
+ 		4D07DCBF1538EF3A002B57CB /* Release */ = {
+ 			isa = XCBuildConfiguration;
+@@ -2892,11 +2880,14 @@
+ 		4DFD94AE153649070039B6BA /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = newfs_hfs/newfs_hfs.entitlements;
+ 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "-";
+-				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG_BUILD=1";
++				GCC_PREPROCESSOR_DEFINITIONS = (
++					"DEBUG_BUILD=1",
++					__BUILDING_PUREDARWIN__,
++				);
+ 				PRODUCT_NAME = newfs_hfs_debug;
+ 				SDKROOT = macosx.internal;
+ 			};
+ 			name = Release;
+ 		};
+@@ -2980,10 +2971,14 @@
+ 				COMBINE_HIDPI_IMAGES = YES;
+ 				COPY_HEADERS_RUN_UNIFDEF = YES;
+ 				COPY_HEADERS_UNIFDEF_FLAGS = "-UKERNEL";
+ 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+ 				GCC_C_LANGUAGE_STANDARD = gnu99;
++				GCC_PREPROCESSOR_DEFINITIONS = (
++					"$(PREPROC_DEFN_$(CONFIGURATION))",
++					__BUILDING_PUREDARWIN__,
++				);
+ 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+ 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+ 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+ 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+ 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+@@ -3859,10 +3854,11 @@
+ 		FBD5C7D71B1D591800B4620E /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 4DFD953D15377C7D0039B6BA /* hfs.xcconfig */;
+ 			buildSettings = {
+ 				ENABLE_TESTABILITY = YES;
++				GCC_PREPROCESSOR_DEFINITIONS = __BUILDING_PUREDARWIN__;
+ 			};
+ 			name = Debug;
+ 		};
+ 		FBD5C7D81B1D591800B4620E /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+@@ -3953,11 +3949,14 @@
+ 		FBD5C7E01B1D591800B4620E /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = newfs_hfs/newfs_hfs.entitlements;
+ 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "-";
+-				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG_BUILD=1";
++				GCC_PREPROCESSOR_DEFINITIONS = (
++					"DEBUG_BUILD=1",
++					__BUILDING_PUREDARWIN__,
++				);
+ 				PRODUCT_NAME = newfs_hfs_debug;
+ 				SDKROOT = macosx.internal;
+ 			};
+ 			name = Debug;
+ 		};
+@@ -4056,10 +4055,14 @@
+ 				COMBINE_HIDPI_IMAGES = YES;
+ 				COPY_HEADERS_RUN_UNIFDEF = YES;
+ 				COPY_HEADERS_UNIFDEF_FLAGS = "-UKERNEL";
+ 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+ 				GCC_C_LANGUAGE_STANDARD = gnu99;
++				GCC_PREPROCESSOR_DEFINITIONS = (
++					"$(PREPROC_DEFN_$(CONFIGURATION))",
++					__BUILDING_PUREDARWIN__,
++				);
+ 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+ 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+ 				GCC_TREAT_INCOMPATIBLE_POINTER_TYPE_WARNINGS_AS_ERRORS = YES;
+ 				GCC_WARN_ABOUT_MISSING_FIELD_INITIALIZERS = YES;
+ 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
+@@ -4102,10 +4105,11 @@
+ 		FBD69B161B94E9990022ECAD /* Coverage */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 4DFD953D15377C7D0039B6BA /* hfs.xcconfig */;
+ 			buildSettings = {
+ 				ENABLE_TESTABILITY = YES;
++				GCC_PREPROCESSOR_DEFINITIONS = __BUILDING_PUREDARWIN__;
+ 			};
+ 			name = Coverage;
+ 		};
+ 		FBD69B171B94E9990022ECAD /* Coverage */ = {
+ 			isa = XCBuildConfiguration;
+@@ -4196,11 +4200,14 @@
+ 		FBD69B1F1B94E9990022ECAD /* Coverage */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				"CODE_SIGN_ENTITLEMENTS[sdk=iphoneos*]" = newfs_hfs/newfs_hfs.entitlements;
+ 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "-";
+-				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG_BUILD=1";
++				GCC_PREPROCESSOR_DEFINITIONS = (
++					"DEBUG_BUILD=1",
++					__BUILDING_PUREDARWIN__,
++				);
+ 				PRODUCT_NAME = newfs_hfs_debug;
+ 				SDKROOT = macosx.internal;
+ 			};
+ 			name = Coverage;
+ 		};
+@@ -4713,10 +4720,11 @@
+ 				07828B5A1E3FDD25009D2106 /* Release */,
+ 				07828B5B1E3FDD25009D2106 /* Debug */,
+ 				07828B5C1E3FDD25009D2106 /* Coverage */,
+ 			);
+ 			defaultConfigurationIsVisible = 0;
++			defaultConfigurationName = Release;
+ 		};
+ 		1DEB928508733DD80010E9CD /* Build configuration list for PBXNativeTarget "hfs.util" */ = {
+ 			isa = XCConfigurationList;
+ 			buildConfigurations = (
+ 				1DEB928708733DD80010E9CD /* Release */,
+Only in B/hfs-407.30.1/hfs.xcodeproj/project.xcworkspace/xcshareddata: IDEWorkspaceChecks.plist
+Only in B/hfs-407.30.1/hfs.xcodeproj/project.xcworkspace: xcuserdata
+diff -rwU5 A/hfs-407.30.1/hfs.xcodeproj/xcshareddata/xcschemes/mount_hfs.xcscheme B/hfs-407.30.1/hfs.xcodeproj/xcshareddata/xcschemes/mount_hfs.xcscheme
+--- A/hfs-407.30.1/hfs.xcodeproj/xcshareddata/xcschemes/mount_hfs.xcscheme	2015-11-04 23:13:38.000000000 +0000
++++ B/hfs-407.30.1/hfs.xcodeproj/xcshareddata/xcschemes/mount_hfs.xcscheme	2018-07-02 12:55:42.000000000 +0100
+@@ -87,8 +87,9 @@
+    <ArchiveAction
+       buildConfiguration = "Release"
+       revealArchiveInOrganizer = "YES">
+    </ArchiveAction>
+    <InstallAction
+-      buildConfiguration = "Release">
++      buildConfiguration = "Release"
++      includeDebugSupportFiles = "YES">
+    </InstallAction>
+ </Scheme>
+diff -rwU5 A/hfs-407.30.1/mount_hfs/mount_hfs.c B/hfs-407.30.1/mount_hfs/mount_hfs.c
+--- A/hfs-407.30.1/mount_hfs/mount_hfs.c	2018-02-03 22:31:58.000000000 +0000
++++ B/hfs-407.30.1/mount_hfs/mount_hfs.c	2018-07-02 12:55:41.000000000 +0100
+@@ -646,21 +646,21 @@
+     printf("\tmode = %o\n", args.hfs_mask);
+     printf("\tencoding = %ld\n", args.hfs_encoding);
+ 
+ #endif
+ 
+-#if !TARGET_OS_EMBEDDED
++#if !TARGET_OS_EMBEDDED && !defined(__BUILDING_PUREDARWIN__)
+     /*
+      * We shouldn't really be calling up to other layers, but
+      * an exception was made in this case to fix the situation
+      * where HFS was writable on optical media.
+      */
+     
+     if ((_optical_is_writable(dev) & _OPTICAL_WRITABLE_PACKET)) {
+ 	    mntflags |= MNT_RDONLY;
+     }
+-#endif
++#endif /* !TARGET_OS_EMBEDDED && !defined(__BUILDING_PUREDARWIN__) */
+ 	
+     if (is_hfs_std)
+ 	    mntflags |= MNT_RDONLY;
+     
+     if ((mntflags & MNT_RDONLY) == 0) {
+diff -rwU5 A/hfs-407.30.1/newfs_hfs/makehfs.c B/hfs-407.30.1/newfs_hfs/makehfs.c
+--- A/hfs-407.30.1/newfs_hfs/makehfs.c	2015-09-21 20:02:14.000000000 +0100
++++ B/hfs-407.30.1/newfs_hfs/makehfs.c	2018-07-02 12:55:42.000000000 +0100
+@@ -49,11 +49,11 @@
+ #include <unistd.h>
+ #include <wipefs.h>
+ 
+ #include <TargetConditionals.h>
+ 
+-#if TARGET_OS_IPHONE
++#if TARGET_OS_IPHONE || defined(__BUILDING_PUREDARWIN__)
+ 
+ // CoreServices is not available, so...
+ 
+ /*
+  * Mac OS Finder flags
+@@ -72,15 +72,15 @@
+ 
+ enum {
+     kTextEncodingMacUnicode		= 0x7E,
+ };
+ 
+-#else // !TARGET_OS_IPHONE
++#else // !TARGET_OS_IPHONE && !defined(__BUILDING_PUREDARWIN__)
+ 
+ #include <CoreServices/CoreServices.h>
+ 
+-#endif // !TARGET_OS_IPHONE
++#endif // TARGET_OS_IPHONE || defined(__BUILDING_PUREDARWIN__)
+ 
+ /*
+  * CommonCrypto is meant to be a more stable API than OpenSSL.
+  * Defining COMMON_DIGEST_FOR_OPENSSL gives API-compatibility
+  * with OpenSSL, so we don't have to change the code.
+Only in B/hfs-407.30.1: obj
+Only in B/hfs-407.30.1: sym

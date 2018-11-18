@@ -1,0 +1,402 @@
+Only in B/xnu-4570.41.2: .vscode
+Only in B/xnu-4570.41.2: BUILD
+diff -rwU5 A/xnu-4570.41.2/bsd/kern/mach_loader.c B/xnu-4570.41.2/bsd/kern/mach_loader.c
+--- A/xnu-4570.41.2/bsd/kern/mach_loader.c	2018-02-04 14:01:04.000000000 +0000
++++ B/xnu-4570.41.2/bsd/kern/mach_loader.c	2018-07-02 13:05:46.000000000 +0100
+@@ -2273,11 +2273,11 @@
+             }
+         }
+     }
+ #endif
+ 
+-#if !(DEVELOPMENT || DEBUG)
++#if !(DEVELOPMENT || DEBUG) && !defined(__PUREDARWIN__)
+ 	if (0 != strcmp(name, DEFAULT_DYLD_PATH)) {
+ 		return (LOAD_BADMACHO);
+ 	}
+ #endif
+ 
+diff -rwU5 A/xnu-4570.41.2/bsd/miscfs/nullfs/null_vfsops.c B/xnu-4570.41.2/bsd/miscfs/nullfs/null_vfsops.c
+--- A/xnu-4570.41.2/bsd/miscfs/nullfs/null_vfsops.c	2018-02-04 14:01:19.000000000 +0000
++++ B/xnu-4570.41.2/bsd/miscfs/nullfs/null_vfsops.c	2018-07-02 13:05:46.000000000 +0100
+@@ -135,14 +135,17 @@
+ 	 */
+ 	if (vfs_isupdate(mp)) {
+ 		return ENOTSUP;
+ 	}
+ 
++	/* nullfs is very useful when developing PureDarwin! */
++	#if !defined(__PUREDARWIN__)
+ 	/* check entitlement */
+ 	if (!IOTaskHasEntitlement(current_task(), NULLFS_ENTITLEMENT)) {
+ 		return EPERM;
+ 	}
++	#endif /* !defined(__PUREDARWIN__) */
+ 
+ 	/*
+ 	 * Get argument
+ 	 */
+ 	error = copyinstr(user_data, data, MAXPATHLEN - 1, &count);
+@@ -317,13 +320,19 @@
+ 	struct vnode * vp;
+ 	int error, flags;
+ 
+ 	NULLFSDEBUG("nullfs_unmount: mp = %p\n", (void *)mp);
+ 
++	#if defined(__PUREDARWIN__)
++	/* check superuser only */
++	if (vfs_context_suser(ctx) != 0)
++	#else /* !defined(__PUREDARWIN__) */
+ 	/* check entitlement or superuser*/
+ 	if (!IOTaskHasEntitlement(current_task(), NULLFS_ENTITLEMENT) &&
+-		vfs_context_suser(ctx) != 0) {
++		vfs_context_suser(ctx) != 0)
++	#endif /* defined(__PUREDARWIN__) */
++	{
+ 		return EPERM;
+ 	}
+ 
+ 	if (mntflags & MNT_FORCE) {
+ 		flags = FORCECLOSE;
+@@ -552,6 +561,5 @@
+     .vfs_sync               = nullfs_sync,
+     .vfs_init               = nullfs_init,
+     .vfs_sysctl             = NULL,
+     .vfs_setattr            = NULL,
+ };
+-
+diff -rwU5 A/xnu-4570.41.2/config/newvers.pl B/xnu-4570.41.2/config/newvers.pl
+--- A/xnu-4570.41.2/config/newvers.pl	2017-09-13 02:11:55.000000000 +0100
++++ B/xnu-4570.41.2/config/newvers.pl	2018-07-02 13:05:46.000000000 +0100
+@@ -52,14 +52,17 @@
+ $BUILD_SRCROOT =~ s,/+$,,;
+ my $BUILD_OBJROOT=$ENV{'OBJROOT'};
+ $BUILD_OBJROOT =~ s,/+$,,;
+ my $BUILD_OBJPATH=$ENV{'TARGET'} || $ENV{'OBJROOT'};
+ $BUILD_OBJPATH =~ s,/+$,,;
+-my $BUILD_DATE = `date`;
+-$BUILD_DATE =~ s/[\n\t]//g;
+-my $BUILDER=`whoami`;
+-$BUILDER =~ s/[\n\t]//g;
++#my $BUILD_DATE = `date`;
++#$BUILD_DATE =~ s/[\n\t]//g;
++#my $BUILD_DATE=`echo -n $(date "+%A %-e"); if [[ $(date "+%e" | grep "^[23]?1$") != "" ]]; then echo -n "st"; elif [[ $(date "+%e" | grep "^[23]?2$") != "" ]]; then echo -n "nd"; elif [[ $(date "+%e" | grep "^[23]?3$") != "" ]]; then echo -n "rd"; else echo -n "th"; fi; echo -n " "$(date "+%B %Y %r")`
++my $BUILD_DATE = "Tuesday 27th March 2018 00:00:00 GMT";
++#my $BUILDER=`whoami`;
++#$BUILDER =~ s/[\n\t]//g;
++my $BUILDER = "\@libsystem_ethan";
+ my $RC_STRING = $ENV{'RC_ProjectNameAndSourceVersion'} . "~" . $ENV{'RC_ProjectBuildVersion'} if defined($ENV{'RC_XBS'});
+ 
+ # Handle four scenarios:
+ # SRCROOT=/tmp/xnu
+ # OBJROOT=/tmp/xnu/BUILD/obj
+diff -rwU5 A/xnu-4570.41.2/config/version.c B/xnu-4570.41.2/config/version.c
+--- A/xnu-4570.41.2/config/version.c	2018-02-04 14:00:58.000000000 +0000
++++ B/xnu-4570.41.2/config/version.c	2018-07-02 13:05:46.000000000 +0100
+@@ -33,11 +33,11 @@
+  * xnu/config/MasterVersion.
+  */
+ 
+ #include <libkern/version.h>
+ 
+-const char version[] = OSTYPE " Kernel Version ###KERNEL_VERSION_LONG###: ###KERNEL_BUILD_DATE###; ###KERNEL_BUILDER###:###KERNEL_BUILD_OBJROOT###";
++const char version[] = OSTYPE " (PureDarwin) Kernel Version ###KERNEL_VERSION_LONG###: ###KERNEL_BUILD_DATE###; ###KERNEL_BUILDER###:###KERNEL_BUILD_OBJROOT###";
+ const int  version_major = VERSION_MAJOR;
+ const int  version_minor = VERSION_MINOR;
+ const int  version_revision = VERSION_REVISION;
+ const int  version_stage = VERSION_STAGE;
+ const int  version_prerelease_level = VERSION_PRERELEASE_LEVEL;
+Only in B/xnu-4570.41.2: k.patch
+Only in B/xnu-4570.41.2: libkxld-for-pd
+diff -rwU5 A/xnu-4570.41.2/libsyscall/Libsyscall.xcconfig B/xnu-4570.41.2/libsyscall/Libsyscall.xcconfig
+--- A/xnu-4570.41.2/libsyscall/Libsyscall.xcconfig	2017-10-10 00:32:31.000000000 +0100
++++ B/xnu-4570.41.2/libsyscall/Libsyscall.xcconfig	2018-07-02 13:05:48.000000000 +0100
+@@ -26,11 +26,11 @@
+ WARNING_CFLAGS = -Wmost
+ GCC_TREAT_WARNINGS_AS_ERRORS = YES
+ GCC_WARN_ABOUT_MISSING_NEWLINE = YES
+ CODE_SIGN_IDENTITY = -
+ DYLIB_CURRENT_VERSION = $(RC_ProjectSourceVersion)
+-DYLIB_LDFLAGS = -umbrella System -all_load -lCrashReporterClient
++DYLIB_LDFLAGS = -umbrella System -all_load // -lCrashReporterClient
+ DYLIB_LDFLAGS[sdk=iphoneos*] = $(inherited) -Wl,-sectalign,__DATA,__data,1000
+ DYLIB_LDFLAGS[sdk=watchos*] = $(inherited) -Wl,-sectalign,__DATA,__data,1000
+ DYLIB_LDFLAGS[sdk=tvos*] = $(inherited) -Wl,-sectalign,__DATA,__data,1000
+ DYLIB_LDFLAGS[sdk=appletvos*] = $(inherited) -Wl,-sectalign,__DATA,__data,1000
+ DYLIB_LDFLAGS[sdk=bridgeos*] = $(inherited) -Wl,-sectalign,__DATA,__data,1000
+diff -rwU5 A/xnu-4570.41.2/libsyscall/Libsyscall.xcodeproj/project.pbxproj B/xnu-4570.41.2/libsyscall/Libsyscall.xcodeproj/project.pbxproj
+--- A/xnu-4570.41.2/libsyscall/Libsyscall.xcodeproj/project.pbxproj	2017-08-19 00:57:49.000000000 +0100
++++ B/xnu-4570.41.2/libsyscall/Libsyscall.xcodeproj/project.pbxproj	2018-07-02 13:05:48.000000000 +0100
+@@ -108,17 +108,10 @@
+ 		29A59AE6183B110C00E8B896 /* unlinkat.c in Sources */ = {isa = PBXBuildFile; fileRef = 29A59AE5183B110C00E8B896 /* unlinkat.c */; };
+ 		2BA88DCC1810A3CE00EB63F6 /* coalition.c in Sources */ = {isa = PBXBuildFile; fileRef = 2BA88DCB1810A3CE00EB63F6 /* coalition.c */; };
+ 		3695DCC91F3D2C5F0072C0B3 /* reboot.c in Sources */ = {isa = PBXBuildFile; fileRef = 3695DCC81F3D2C5A0072C0B3 /* reboot.c */; };
+ 		374A36E314748F1300AAF39D /* varargs_wrappers.s in Sources */ = {isa = PBXBuildFile; fileRef = 374A36E214748EE400AAF39D /* varargs_wrappers.s */; };
+ 		3F538F891A659C5600B37EFD /* persona.c in Sources */ = {isa = PBXBuildFile; fileRef = 3F538F881A659C5600B37EFD /* persona.c */; };
+-		401BB71A1BCAE57B005080D3 /* os_channel.c in Sources */ = {isa = PBXBuildFile; fileRef = 401BB7161BCAE539005080D3 /* os_channel.c */; settings = {COMPILER_FLAGS = "-fno-builtin"; }; };
+-		401BB71C1BCAE57B005080D3 /* os_nexus.c in Sources */ = {isa = PBXBuildFile; fileRef = 401BB7181BCAE539005080D3 /* os_nexus.c */; settings = {COMPILER_FLAGS = "-fno-builtin"; }; };
+-		402AF43F1E5CD88600F1A4B9 /* cpu_in_cksum_gen.c in Sources */ = {isa = PBXBuildFile; fileRef = 402AF43E1E5CD88100F1A4B9 /* cpu_in_cksum_gen.c */; settings = {COMPILER_FLAGS = "-fno-builtin"; }; };
+-		403C7CEE1E1F4E4400D6FEEF /* os_packet.c in Sources */ = {isa = PBXBuildFile; fileRef = 405FA3381E0C669D007D66EA /* os_packet.c */; settings = {COMPILER_FLAGS = "-fno-builtin"; }; };
+-		406E0B721E4ACD2000295EA3 /* cpu_copy_in_cksum.s in Sources */ = {isa = PBXBuildFile; fileRef = 40DD162F1E4ACCAA003297CC /* cpu_copy_in_cksum.s */; };
+-		409A78321E4EB3E300E0699B /* cpu_in_cksum.s in Sources */ = {isa = PBXBuildFile; fileRef = 409A78301E4EB3D900E0699B /* cpu_in_cksum.s */; };
+-		40DF0F741E5CD7BB0035A864 /* cpu_copy_in_cksum_gen.c in Sources */ = {isa = PBXBuildFile; fileRef = 40DF0F731E5CD7B30035A864 /* cpu_copy_in_cksum_gen.c */; settings = {COMPILER_FLAGS = "-fno-builtin"; }; };
+ 		435F3CAA1B06B7BA005ED9EF /* work_interval.c in Sources */ = {isa = PBXBuildFile; fileRef = 435F3CA91B06B7BA005ED9EF /* work_interval.c */; };
+ 		467DAFD4157E8AF200CE68F0 /* guarded_open_np.c in Sources */ = {isa = PBXBuildFile; fileRef = 467DAFD3157E8AF200CE68F0 /* guarded_open_np.c */; };
+ 		4BDD5F1D1891AB2F004BF300 /* mach_approximate_time.c in Sources */ = {isa = PBXBuildFile; fileRef = 4BDD5F1B1891AB2F004BF300 /* mach_approximate_time.c */; };
+ 		4BDD5F1E1891AB2F004BF300 /* mach_approximate_time.s in Sources */ = {isa = PBXBuildFile; fileRef = 4BDD5F1C1891AB2F004BF300 /* mach_approximate_time.s */; };
+ 		729B7D0A15C8938C000E2501 /* carbon_delete.c in Sources */ = {isa = PBXBuildFile; fileRef = FB50F1B315AB7DE700F814BA /* carbon_delete.c */; };
+@@ -136,14 +129,10 @@
+ 		9299E14B1B841F59005B7350 /* thread_state.h in Headers */ = {isa = PBXBuildFile; fileRef = 928336A21B8412C100873B90 /* thread_state.h */; };
+ 		929FD46F1C5711DB0087B9C8 /* mach_timebase_info.c in Sources */ = {isa = PBXBuildFile; fileRef = 929FD46E1C5711CF0087B9C8 /* mach_timebase_info.c */; };
+ 		978228281B8678DC008385AC /* pselect-darwinext.c in Sources */ = {isa = PBXBuildFile; fileRef = 978228271B8678CB008385AC /* pselect-darwinext.c */; };
+ 		978228291B8678DF008385AC /* pselect-darwinext-cancel.c in Sources */ = {isa = PBXBuildFile; fileRef = 978228261B8678C2008385AC /* pselect-darwinext-cancel.c */; };
+ 		9CCF28271E68E993002EE6CD /* pid_shutdown_networking.c in Sources */ = {isa = PBXBuildFile; fileRef = 9CCF28261E68E993002EE6CD /* pid_shutdown_networking.c */; };
+-		A50845861DDA69AC0041C0E0 /* thread_self_restrict.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A50BD52E1DDA548F006622C8 /* thread_self_restrict.h */; };
+-		A50845871DDA69C90041C0E0 /* thread_self_restrict.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = A50BD52E1DDA548F006622C8 /* thread_self_restrict.h */; };
+-		A50BD52F1DDA548F006622C8 /* thread_self_restrict.h in Headers */ = {isa = PBXBuildFile; fileRef = A50BD52E1DDA548F006622C8 /* thread_self_restrict.h */; };
+-		A50BD5301DDA5500006622C8 /* thread_self_restrict.h in Headers */ = {isa = PBXBuildFile; fileRef = A50BD52E1DDA548F006622C8 /* thread_self_restrict.h */; };
+ 		A59CB95616669EFB00B064B3 /* stack_logging_internal.h in Headers */ = {isa = PBXBuildFile; fileRef = A59CB95516669DB700B064B3 /* stack_logging_internal.h */; };
+ 		A59CB9581666A1A200B064B3 /* munmap.c in Sources */ = {isa = PBXBuildFile; fileRef = A59CB9571666A1A200B064B3 /* munmap.c */; };
+ 		BA0D9FB1199031AD007E8A73 /* kdebug_trace.c in Sources */ = {isa = PBXBuildFile; fileRef = BA0D9FB0199031AD007E8A73 /* kdebug_trace.c */; };
+ 		BA4414AA18336A5F00AAE813 /* mach in CopyFiles */ = {isa = PBXBuildFile; fileRef = BA4414A51833697C00AAE813 /* mach */; };
+ 		BA4414AB18336A6400AAE813 /* servers in CopyFiles */ = {isa = PBXBuildFile; fileRef = BA4414A6183369A100AAE813 /* servers */; };
+@@ -386,22 +375,20 @@
+ 			isa = PBXCopyFilesBuildPhase;
+ 			buildActionMask = 8;
+ 			dstPath = "$(OS_PRIVATE_HEADERS_FOLDER_PATH)";
+ 			dstSubfolderSpec = 0;
+ 			files = (
+-				A50845871DDA69C90041C0E0 /* thread_self_restrict.h in CopyFiles */,
+ 				C9FD8508166D6BD400963B73 /* tsd.h in CopyFiles */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 1;
+ 		};
+ 		C6D3EFCA16542C510052CF30 /* CopyFiles */ = {
+ 			isa = PBXCopyFilesBuildPhase;
+ 			buildActionMask = 8;
+ 			dstPath = "$(OS_PRIVATE_HEADERS_FOLDER_PATH)";
+ 			dstSubfolderSpec = 0;
+ 			files = (
+-				A50845861DDA69AC0041C0E0 /* thread_self_restrict.h in CopyFiles */,
+ 				C9A3D6EB1672AD1000A5CAA3 /* tsd.h in CopyFiles */,
+ 			);
+ 			runOnlyForDeploymentPostprocessing = 1;
+ 		};
+ /* End PBXCopyFilesBuildPhase section */
+@@ -1078,11 +1065,10 @@
+ 				9299E14B1B841F59005B7350 /* thread_state.h in Headers */,
+ 				C6D3EFBB16542C510052CF30 /* mach_init.h in Headers */,
+ 				C6D3EFBC16542C510052CF30 /* mach_interface.h in Headers */,
+ 				C6D3EFBD16542C510052CF30 /* port_obj.h in Headers */,
+ 				C6D3EFBE16542C510052CF30 /* sync.h in Headers */,
+-				A50BD52F1DDA548F006622C8 /* thread_self_restrict.h in Headers */,
+ 				C6D3EFC116542C510052CF30 /* vm_task.h in Headers */,
+ 				C6D3EFC216542C510052CF30 /* key_defs.h in Headers */,
+ 				C6D3EFC316542C510052CF30 /* ls_defs.h in Headers */,
+ 				C6D3EFC416542C510052CF30 /* netname_defs.h in Headers */,
+ 				C6D3EFC516542C510052CF30 /* nm_defs.h in Headers */,
+@@ -1113,11 +1099,10 @@
+ 				9299E14A1B841E74005B7350 /* thread_state.h in Headers */,
+ 				C6C40122174155E3000AE69F /* gethostuuid_private.h in Headers */,
+ 				C9D9BD29114B00600000D8B9 /* mach_interface.h in Headers */,
+ 				C9D9BD2B114B00600000D8B9 /* port_obj.h in Headers */,
+ 				C9D9BD2C114B00600000D8B9 /* sync.h in Headers */,
+-				A50BD5301DDA5500006622C8 /* thread_self_restrict.h in Headers */,
+ 				C9D9BD2F114B00600000D8B9 /* vm_task.h in Headers */,
+ 				C9D9BD50114B00600000D8B9 /* key_defs.h in Headers */,
+ 				C9D9BD51114B00600000D8B9 /* ls_defs.h in Headers */,
+ 				C9D9BD54114B00600000D8B9 /* netname_defs.h in Headers */,
+ 				C9D9BD55114B00600000D8B9 /* nm_defs.h in Headers */,
+@@ -1302,18 +1287,16 @@
+ 		};
+ 		D2AAC0610554660B00DB518D /* Sources */ = {
+ 			isa = PBXSourcesBuildPhase;
+ 			buildActionMask = 2147483647;
+ 			files = (
+-				403C7CEE1E1F4E4400D6FEEF /* os_packet.c in Sources */,
+ 				E214BDC81C2E358300CEE8A3 /* clonefile.c in Sources */,
+ 				C9D9BD19114B00600000D8B9 /* clock_priv.defs in Sources */,
+ 				C9D9BD1A114B00600000D8B9 /* clock_reply.defs in Sources */,
+ 				C9D9BD1C114B00600000D8B9 /* clock.defs in Sources */,
+ 				C9D9BD22114B00600000D8B9 /* exc.defs in Sources */,
+ 				C9D9BD30114B00600000D8B9 /* host_priv.defs in Sources */,
+-				409A78321E4EB3E300E0699B /* cpu_in_cksum.s in Sources */,
+ 				C9D9BD31114B00600000D8B9 /* host_security.defs in Sources */,
+ 				C9D9BD35114B00600000D8B9 /* lock_set.defs in Sources */,
+ 				C9D9BD38114B00600000D8B9 /* mach_host.defs in Sources */,
+ 				C9D9BD3D114B00600000D8B9 /* mach_port.defs in Sources */,
+ 				C9D9BD3F114B00600000D8B9 /* mach_vm.defs in Sources */,
+@@ -1391,11 +1374,10 @@
+ 				139D584B1C7BDE41003D3B17 /* terminate_with_reason.c in Sources */,
+ 				248BA05C121C9649008C073F /* fcntl-cancel.c in Sources */,
+ 				248BA069121D9E27008C073F /* getrlimit.c in Sources */,
+ 				C6460B7C182025DF00F73CCA /* sfi.c in Sources */,
+ 				248BA080121DA36B008C073F /* ioctl.c in Sources */,
+-				401BB71A1BCAE57B005080D3 /* os_channel.c in Sources */,
+ 				C6BEE9181806840200D25AAB /* posix_sem_obsolete.c in Sources */,
+ 				248BA082121DA4F3008C073F /* kill.c in Sources */,
+ 				248BA085121DA5E4008C073F /* kill.c in Sources */,
+ 				9CCF28271E68E993002EE6CD /* pid_shutdown_networking.c in Sources */,
+ 				2BA88DCC1810A3CE00EB63F6 /* coalition.c in Sources */,
+@@ -1413,25 +1395,21 @@
+ 				4BDD5F1E1891AB2F004BF300 /* mach_approximate_time.s in Sources */,
+ 				248BA0B3121DE760008C073F /* select-cancel.c in Sources */,
+ 				248BA0BE121DE902008C073F /* select.c in Sources */,
+ 				248BA0CD121DEBEF008C073F /* setrlimit.c in Sources */,
+ 				24B223B0121DFD36007DAEDE /* sigsuspend.c in Sources */,
+-				401BB71C1BCAE57B005080D3 /* os_nexus.c in Sources */,
+ 				24B223B2121DFE6D007DAEDE /* sigsuspend-cancel.c in Sources */,
+ 				E4216C311822D404006F2632 /* mach_voucher.defs in Sources */,
+ 				24B223B5121DFF29007DAEDE /* sigsuspend.c in Sources */,
+ 				248AA963122C7B2A0085F5B1 /* unlink.c in Sources */,
+ 				248AA965122C7C330085F5B1 /* rmdir.c in Sources */,
+ 				435F3CAA1B06B7BA005ED9EF /* work_interval.c in Sources */,
+ 				248AA967122C7CDA0085F5B1 /* rename.c in Sources */,
+-				406E0B721E4ACD2000295EA3 /* cpu_copy_in_cksum.s in Sources */,
+ 				24B8C2621237F53900D36CC3 /* remove-counter.c in Sources */,
+ 				C99A4F501305B2BD0054B7B7 /* __get_cpu_capabilities.s in Sources */,
+ 				978228291B8678DF008385AC /* pselect-darwinext-cancel.c in Sources */,
+-				40DF0F741E5CD7BB0035A864 /* cpu_copy_in_cksum_gen.c in Sources */,
+ 				C99A4F531305B43F0054B7B7 /* init_cpu_capabilities.c in Sources */,
+-				402AF43F1E5CD88600F1A4B9 /* cpu_in_cksum_gen.c in Sources */,
+ 				030B179B135377B400DAD1F0 /* open_dprotected_np.c in Sources */,
+ 				E4D45C3116F868ED0002AF25 /* proc_listpidspath.c in Sources */,
+ 				374A36E314748F1300AAF39D /* varargs_wrappers.s in Sources */,
+ 				291D3C281354FDD100D46061 /* mach_port.c in Sources */,
+ 				291D3C291354FDD100D46061 /* mach_vm.c in Sources */,
+@@ -1494,10 +1472,11 @@
+ 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+ 				GCC_WARN_UNUSED_FUNCTION = YES;
+ 				GCC_WARN_UNUSED_PARAMETER = YES;
+ 				GCC_WARN_UNUSED_VARIABLE = YES;
+ 				OTHER_MIGFLAGS = "-novouchers";
++				SDKROOT = macosx.internal;
+ 			};
+ 			name = Release;
+ 		};
+ 		24614EF411E7C98600E78584 /* Release */ = {
+ 			isa = XCBuildConfiguration;
+Only in B/xnu-4570.41.2/libsyscall/Libsyscall.xcodeproj: project.xcworkspace
+Only in B/xnu-4570.41.2/libsyscall/Libsyscall.xcodeproj: xcuserdata
+diff -rwU5 A/xnu-4570.41.2/libsyscall/mach/mach_vm.c B/xnu-4570.41.2/libsyscall/mach/mach_vm.c
+--- A/xnu-4570.41.2/libsyscall/mach/mach_vm.c	2018-02-04 14:01:26.000000000 +0000
++++ B/xnu-4570.41.2/libsyscall/mach/mach_vm.c	2018-07-02 13:05:48.000000000 +0100
+@@ -240,11 +240,11 @@
+ }
+ 
+ kern_return_t
+ vm_map(
+ 	mach_port_name_t target,
+-	vm_address_t *address,
++	mach_vm_address_t *address,
+ 	vm_size_t size,
+ 	vm_offset_t mask,
+ 	int flags,
+ 	mem_entry_name_port_t object,
+ 	vm_offset_t offset,
+@@ -268,11 +268,11 @@
+ }
+ 
+ kern_return_t
+ vm_remap(
+ 	mach_port_name_t target,
+-	vm_address_t *address,
++	mach_vm_address_t *address,
+ 	vm_size_t size,
+ 	vm_offset_t mask,
+ 	int flags,
+ 	mach_port_name_t src_task,
+ 	vm_address_t src_address,
+Only in B/xnu-4570.41.2/libsyscall: obj
+Only in B/xnu-4570.41.2/libsyscall: sym
+diff -rwU5 A/xnu-4570.41.2/makedefs/MakeInc.def B/xnu-4570.41.2/makedefs/MakeInc.def
+--- A/xnu-4570.41.2/makedefs/MakeInc.def	2018-02-04 14:01:53.000000000 +0000
++++ B/xnu-4570.41.2/makedefs/MakeInc.def	2018-07-02 13:05:48.000000000 +0100
+@@ -7,11 +7,11 @@
+ #
+ 
+ #
+ # Architecture Configuration options
+ #
+-SUPPORTED_ARCH_CONFIGS := X86_64 X86_64H
++SUPPORTED_ARCH_CONFIGS := X86_64 X86_64H ARM ARM64
+ 
+ #
+ # Kernel Configuration options
+ #
+ SUPPORTED_KERNEL_CONFIGS = RELEASE DEVELOPMENT DEBUG PROFILE KASAN
+@@ -20,10 +20,12 @@
+ # Machine Configuration options
+ #
+ 
+ SUPPORTED_X86_64_MACHINE_CONFIGS = NONE
+ SUPPORTED_X86_64H_MACHINE_CONFIGS = NONE
++SUPPORTED_ARM_MACHINE_CONFIGS = NONE
++SUPPORTED_ARM64_MACHINE_CONFIGS = NONE
+ 
+ 
+ #
+ # Setup up *_LC variables during recursive invocations
+ #
+@@ -73,11 +75,11 @@
+ 
+ 
+ #
+ # Standard defines list
+ #
+-DEFINES = -DAPPLE -DKERNEL -DKERNEL_PRIVATE -DXNU_KERNEL_PRIVATE \
++DEFINES = -DAPPLE -D__PUREDARWIN__ -DKERNEL -DKERNEL_PRIVATE -DXNU_KERNEL_PRIVATE \
+ 	-DPRIVATE -D__MACHO__=1 -Dvolatile=__volatile $(CONFIG_DEFINES) \
+ 	$(SEED_DEFINES)
+ 
+ #
+ # Compiler command
+@@ -462,11 +464,11 @@
+ #
+ INCFLAGS_IMPORT	= $(patsubst %, -I$(OBJROOT)/EXPORT_HDRS/%, $(COMPONENT_IMPORT_LIST))
+ INCFLAGS_EXTERN	= -I$(SRCROOT)/EXTERNAL_HEADERS
+ INCFLAGS_GEN	= -I$(SRCROOT)/$(COMPONENT) -I$(OBJROOT)/EXPORT_HDRS/$(COMPONENT)
+ INCFLAGS_LOCAL	= -I.
+-INCFLAGS_SDK	= -I$(SDKROOT)/usr/local/include/kernel
++INCFLAGS_SDK	= -I$(SDKROOT)/usr/local/include/kernel -I$(SDKROOT)/System/Library/Frameworks/Kernel.framework/Headers
+ 
+ INCFLAGS	= $(INCFLAGS_LOCAL) $(INCFLAGS_GEN) $(INCFLAGS_IMPORT) $(INCFLAGS_EXTERN) $(INCFLAGS_MAKEFILE) $(INCFLAGS_SDK)
+ 
+ #
+ # Default MIGFLAGS
+diff -rwU5 A/xnu-4570.41.2/makedefs/MakeInc.top B/xnu-4570.41.2/makedefs/MakeInc.top
+--- A/xnu-4570.41.2/makedefs/MakeInc.top	2018-02-04 14:01:53.000000000 +0000
++++ B/xnu-4570.41.2/makedefs/MakeInc.top	2018-07-02 13:05:48.000000000 +0100
+@@ -85,11 +85,12 @@
+ #
+ 
+ override DEFAULT_I386_MACHINE_CONFIG := NONE
+ override DEFAULT_X86_64_MACHINE_CONFIG := NONE
+ override DEFAULT_X86_64H_MACHINE_CONFIG := NONE
+-
++override DEFAULT_ARM_MACHINE_CONFIG := NONE
++override DEFAULT_ARM64_MACHINE_CONFIG := NONE
+ 
+ # This is typically never specified (TARGET_CONFIGS is used)
+ ifndef MACHINE_CONFIGS
+ MACHINE_CONFIGS	:= DEFAULT
+ endif
+Only in B/xnu-4570.41.2: obj
+diff -rwU5 A/xnu-4570.41.2/osfmk/i386/cpu_topology.c B/xnu-4570.41.2/osfmk/i386/cpu_topology.c
+--- A/xnu-4570.41.2/osfmk/i386/cpu_topology.c	2018-02-04 14:01:34.000000000 +0000
++++ B/xnu-4570.41.2/osfmk/i386/cpu_topology.c	2018-07-02 13:05:50.000000000 +0100
+@@ -35,10 +35,11 @@
+ #include <i386/machine_cpu.h>
+ #include <i386/bit_routines.h>
+ #include <i386/cpu_data.h>
+ #include <i386/lapic.h>
+ #include <i386/machine_routines.h>
++#include <stddef.h>
+ 
+ __private_extern__ void qsort(
+     void * array,
+     size_t nmembers,
+     size_t member_size,
+Only in B/xnu-4570.41.2: pdbuild
+Only in B/xnu-4570.41.2: sym
+Only in B/xnu-4570.41.2: xnu-arm-hdrs

@@ -1,0 +1,21 @@
+diff -rwU5 A/cctools-895/libmacho/Makefile B/cctools-895/libmacho/Makefile
+--- A/cctools-895/libmacho/Makefile	2016-12-09 18:02:59.000000000 +0000
++++ B/cctools-895/libmacho/Makefile	2018-07-02 12:21:14.000000000 +0100
+@@ -322,11 +322,11 @@
+ 		     $(DSTROOT)$(ARCHIVEDIR)/libmacho_static.a;		\
+ 	    $(RANLIB) $(DSTROOT)$(ARCHIVEDIR)/libmacho_static.a;	\
+ 	    install -c -m 555 dtmp_obj/libmacho.dylib			\
+ 		     $(DSTROOT)$(DYLIBDIR)/libmacho.dylib;		\
+ 	    $(STRIP) -S $(DSTROOT)$(DYLIBDIR)/libmacho.dylib;		\
+-	    install -c -m 555 dtmp_obj/libmacho_profile.dylib		\
++	    install -c -m 555 ptmp_obj/libmacho_profile.dylib		\
+ 		     $(DSTROOT)$(DYLIBDIR)/libmacho_profile.dylib;	\
+ 	    $(STRIP) -S $(DSTROOT)$(DYLIBDIR)/libmacho_profile.dylib;	\
+ 	    install -c -m 555 dtmp_obj/libmacho_debug.dylib		\
+ 		     $(DSTROOT)$(DYLIBDIR)/libmacho_debug.dylib;	\
+ 	    $(STRIP) -S $(DSTROOT)$(DYLIBDIR)/libmacho_debug.dylib;	\
+Only in B/cctools-895/libmacho: obj
+Only in B/cctools-895/libmacho: sym
+Only in B/cctools-895: obj
+Only in B/cctools-895: pd_build
+Only in B/cctools-895: sym

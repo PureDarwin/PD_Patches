@@ -1,0 +1,383 @@
+diff -rwU5 A/dyld-519.2.2/configs/base.xcconfig B/dyld-519.2.2/configs/base.xcconfig
+--- A/dyld-519.2.2/configs/base.xcconfig	2017-10-05 07:39:24.000000000 +0100
++++ B/dyld-519.2.2/configs/base.xcconfig	2018-07-02 12:53:28.000000000 +0100
+@@ -0,0 +1 @@
++GCC_PREPROCESSOR_DEFINITIONS = __PUREDARWIN__=1
+diff -rwU5 A/dyld-519.2.2/configs/dyld.xcconfig B/dyld-519.2.2/configs/dyld.xcconfig
+--- A/dyld-519.2.2/configs/dyld.xcconfig	2017-06-15 02:39:50.000000000 +0100
++++ B/dyld-519.2.2/configs/dyld.xcconfig	2018-07-02 12:53:28.000000000 +0100
+@@ -13,9 +13,9 @@
+ PRODUCT_NAME[sdk=macosx*]     = dyld
+ 
+ INSTALL_PATH   = /usr/lib
+ 
+ //:configuration = Debug
+-GCC_PREPROCESSOR_DEFINITIONS = DYLD_IN_PROCESS=1 DYLD_VERSION=$(RC_ProjectSourceVersion) BUILDING_DYLD=1 DEBUG=1
++GCC_PREPROCESSOR_DEFINITIONS = DYLD_IN_PROCESS=1 DYLD_VERSION=$(RC_ProjectSourceVersion) BUILDING_DYLD=1 __PUREDARWIN__=1 DEBUG=1
+ 
+ //:configuration = Release
+-GCC_PREPROCESSOR_DEFINITIONS = DYLD_IN_PROCESS=1 DYLD_VERSION=$(RC_ProjectSourceVersion) BUILDING_DYLD=1
++GCC_PREPROCESSOR_DEFINITIONS = DYLD_IN_PROCESS=1 DYLD_VERSION=$(RC_ProjectSourceVersion) BUILDING_DYLD=1 __PUREDARWIN__=1
+diff -rwU5 A/dyld-519.2.2/configs/libdyld.xcconfig B/dyld-519.2.2/configs/libdyld.xcconfig
+--- A/dyld-519.2.2/configs/libdyld.xcconfig	2017-08-04 00:39:58.000000000 +0100
++++ B/dyld-519.2.2/configs/libdyld.xcconfig	2018-07-02 12:53:28.000000000 +0100
+@@ -1,14 +1,14 @@
+ 
+ LIBSYSTEM_LIBS[sdk=*simulator*]     = -Wl,-upward-lsystem_sim_platform -Wl,-upward-lsystem_malloc -Wl,-upward-lsystem_c -Wl,-upward-lsystem_sim_pthread -Wl,-upward-lxpc -Wl,-upward-lsystem_blocks -Wl,-upward-lsystem_sim_kernel -Wl,-upward-lsystem_sandbox -Wl,-upward-ldispatch -Wl,-upward-lcommonCrypto  -Wl,-upward-lclosured
+ LIBSYSTEM_LIBS[sdk=embedded*]       = -Wl,-upward-lsystem_platform     -Wl,-upward-lsystem_malloc -Wl,-upward-lsystem_c -Wl,-upward-lsystem_pthread     -Wl,-upward-lxpc -Wl,-upward-lsystem_blocks -Wl,-upward-lsystem_kernel     -Wl,-upward-lsystem_sandbox -Wl,-upward-ldispatch -Wl,-upward-lcommonCrypto  -Wl,-upward-lclosured  -Wl,-upward-lcompiler_rt
+-LIBSYSTEM_LIBS[sdk=macosx*]         = -Wl,-upward-lsystem_platform     -Wl,-upward-lsystem_malloc -Wl,-upward-lsystem_c -Wl,-upward-lsystem_pthread     -Wl,-upward-lxpc -Wl,-upward-lsystem_blocks -Wl,-upward-lsystem_kernel     -Wl,-upward-lsystem_sandbox -Wl,-upward-ldispatch -Wl,-upward-lcommonCrypto  -Wl,-upward-lclosured
++LIBSYSTEM_LIBS[sdk=macosx*]         = -Wl,-upward-lsystem_platform     -Wl,-upward-lsystem_malloc -Wl,-upward-lsystem_c -Wl,-upward-lsystem_pthread     -Wl,-upward-llaunch -Wl,-upward-lsystem_blocks -Wl,-upward-lsystem_kernel                                 -Wl,-upward-ldispatch -Wl,-upward-lcommonCrypto  -Wl,-upward-lclosured
+ 
+ INSTALL_PATH = /usr/lib/system
+ 
+ 
+ //:configuration = Debug
+-GCC_PREPROCESSOR_DEFINITIONS = DYLD_IN_PROCESS=1 BUILDING_LIBDYLD=1 DEBUG=1
++GCC_PREPROCESSOR_DEFINITIONS = DYLD_IN_PROCESS=1 BUILDING_LIBDYLD=1 __PUREDARWIN__=1 DEBUG=1
+ 
+ //:configuration = Release
+-GCC_PREPROCESSOR_DEFINITIONS = DYLD_IN_PROCESS=1 BUILDING_LIBDYLD=1
++GCC_PREPROCESSOR_DEFINITIONS = DYLD_IN_PROCESS=1 BUILDING_LIBDYLD=1 __PUREDARWIN__=1
+ 
+diff -rwU5 A/dyld-519.2.2/dyld.xcodeproj/project.pbxproj B/dyld-519.2.2/dyld.xcodeproj/project.pbxproj
+--- A/dyld-519.2.2/dyld.xcodeproj/project.pbxproj	2017-08-04 00:39:58.000000000 +0100
++++ B/dyld-519.2.2/dyld.xcodeproj/project.pbxproj	2018-07-02 12:53:31.000000000 +0100
+@@ -303,10 +303,17 @@
+ 			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
+ 			proxyType = 1;
+ 			remoteGlobalIDString = 37A0AD0A1C15FFF500731E50;
+ 			remoteInfo = update_dyld_shared_cache;
+ 		};
++		AA8A9E2D20391BA10070CCFB /* PBXContainerItemProxy */ = {
++			isa = PBXContainerItemProxy;
++			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
++			proxyType = 1;
++			remoteGlobalIDString = F9AB02B71F329FAA00EE96C4;
++			remoteInfo = libclosured;
++		};
+ 		D8668ACF1ECE335F005E7D31 /* PBXContainerItemProxy */ = {
+ 			isa = PBXContainerItemProxy;
+ 			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
+ 			proxyType = 1;
+ 			remoteGlobalIDString = F97C61A61DBAD1A900A84CD7;
+@@ -324,17 +331,10 @@
+ 			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
+ 			proxyType = 1;
+ 			remoteGlobalIDString = F9AB02B71F329FAA00EE96C4;
+ 			remoteInfo = libclosured;
+ 		};
+-		F922C81D1F33B96300D8F479 /* PBXContainerItemProxy */ = {
+-			isa = PBXContainerItemProxy;
+-			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
+-			proxyType = 1;
+-			remoteGlobalIDString = F922C8161F33B73800D8F479;
+-			remoteInfo = "libclosured-stub";
+-		};
+ 		F94182D71E60F0BE00D8EF25 /* PBXContainerItemProxy */ = {
+ 			isa = PBXContainerItemProxy;
+ 			containerPortal = F9ED4C8B0630A72300DF4E74 /* Project object */;
+ 			proxyType = 1;
+ 			remoteGlobalIDString = F99B8E550FEC10F600701838;
+@@ -1334,11 +1334,11 @@
+ 			buildRules = (
+ 				F921D31E070376F1000D1056 /* PBXBuildRule */,
+ 				F9574C4906C94DA700142BFA /* PBXBuildRule */,
+ 			);
+ 			dependencies = (
+-				F922C81E1F33B96300D8F479 /* PBXTargetDependency */,
++				AA8A9E2E20391BA10070CCFB /* PBXTargetDependency */,
+ 			);
+ 			name = libdyld.dylib;
+ 			productName = libdyld;
+ 			productReference = F9ED4C9F0630A76B00DF4E74 /* libdyld.dylib */;
+ 			productType = "com.apple.product-type.library.dynamic";
+@@ -1979,10 +1979,15 @@
+ 		37A0AD0F1C16000F00731E50 /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+ 			target = 37A0AD0A1C15FFF500731E50 /* update_dyld_shared_cache */;
+ 			targetProxy = 37A0AD0E1C16000F00731E50 /* PBXContainerItemProxy */;
+ 		};
++		AA8A9E2E20391BA10070CCFB /* PBXTargetDependency */ = {
++			isa = PBXTargetDependency;
++			target = F9AB02B71F329FAA00EE96C4 /* libclosured */;
++			targetProxy = AA8A9E2D20391BA10070CCFB /* PBXContainerItemProxy */;
++		};
+ 		D8668AD01ECE335F005E7D31 /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+ 			target = F97C61A61DBAD1A900A84CD7 /* dyld_closure_util */;
+ 			targetProxy = D8668ACF1ECE335F005E7D31 /* PBXContainerItemProxy */;
+ 		};
+@@ -1994,15 +1999,10 @@
+ 		F922C8121F33B62700D8F479 /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+ 			target = F9AB02B71F329FAA00EE96C4 /* libclosured */;
+ 			targetProxy = F922C8111F33B62700D8F479 /* PBXContainerItemProxy */;
+ 		};
+-		F922C81E1F33B96300D8F479 /* PBXTargetDependency */ = {
+-			isa = PBXTargetDependency;
+-			target = F922C8161F33B73800D8F479 /* libclosured-stub */;
+-			targetProxy = F922C81D1F33B96300D8F479 /* PBXContainerItemProxy */;
+-		};
+ 		F94182D81E60F0BE00D8EF25 /* PBXTargetDependency */ = {
+ 			isa = PBXTargetDependency;
+ 			target = F99B8E550FEC10F600701838 /* dyld_shared_cache_util */;
+ 			targetProxy = F94182D71E60F0BE00D8EF25 /* PBXContainerItemProxy */;
+ 		};
+Only in B/dyld-519.2.2/dyld.xcodeproj: project.xcworkspace
+Only in B/dyld-519.2.2/dyld.xcodeproj: xcuserdata
+diff -rwU5 A/dyld-519.2.2/dyld3/Loading.cpp B/dyld-519.2.2/dyld3/Loading.cpp
+--- A/dyld-519.2.2/dyld3/Loading.cpp	2018-02-03 22:14:47.000000000 +0000
++++ B/dyld-519.2.2/dyld3/Loading.cpp	2018-07-02 12:53:27.000000000 +0100
+@@ -38,12 +38,16 @@
+ #include <System/sys/mman.h>
+ #include <System/sys/csr.h>
+ #include <System/machine/cpu_capabilities.h>
+ #include <bootstrap.h>
+ #include <CommonCrypto/CommonDigest.h>
++
++#if !defined(__PUREDARWIN__)
+ #include <sandbox.h>
+ #include <sandbox/private.h>
++#endif /* !defined(__PUREDARWIN__) */
++
+ #include <dispatch/dispatch.h>
+ 
+ #include "LaunchCache.h"
+ #include "LaunchCacheFormat.h"
+ #include "Logging.h"
+@@ -65,17 +69,17 @@
+ 
+ #if DYLD_IN_PROCESS
+ 
+ static bool sandboxBlocked(const char* path, const char* kind)
+ {
+-#if BUILDING_LIBDYLD || !TARGET_IPHONE_SIMULATOR
++#if (BUILDING_LIBDYLD || !TARGET_IPHONE_SIMULATOR) && !defined(__PUREDARWIN__)
+     sandbox_filter_type filter = (sandbox_filter_type)(SANDBOX_FILTER_PATH | SANDBOX_CHECK_NO_REPORT);
+     return ( sandbox_check(getpid(), kind, filter, path) > 0 );
+-#else
++#else /* (!BUILDING_LIBDYLD && TARGET_IPHONE_SIMULATOR) || defined(__PUREDARWIN__) */
+     // sandbox calls not yet supported in dyld_sim
+     return false;
+-#endif
++#endif /* (BUILDING_LIBDYLD || !TARGET_IPHONE_SIMULATOR) && !defined(__PUREDARWIN__) */
+ }
+ 
+ static bool sandboxBlockedMmap(const char* path)
+ {
+     return sandboxBlocked(path, "file-map-executable");
+diff -rwU5 A/dyld-519.2.2/dyld3/MachOParser.cpp B/dyld-519.2.2/dyld3/MachOParser.cpp
+--- A/dyld-519.2.2/dyld3/MachOParser.cpp	2018-02-03 22:14:47.000000000 +0000
++++ B/dyld-519.2.2/dyld3/MachOParser.cpp	2018-07-02 12:53:27.000000000 +0100
+@@ -35,11 +35,15 @@
+ #include <sys/sysctl.h>
+ #include <sys/resource.h>
+ #include <sys/types.h>
+ #include <sys/stat.h>
+ #include <sys/mman.h>
++
++#if !defined(__PUREDARWIN__)
+ #include <rootless.h>
++#endif /* !defined(__PUREDARWIN__) */
++
+ #include <dirent.h>
+ #include <mach/mach.h>
+ #include <mach/machine.h>
+ #include <mach-o/loader.h>
+ #include <mach-o/nlist.h>
+diff -rwU5 A/dyld-519.2.2/dyld3/shared-cache/FileUtils.cpp B/dyld-519.2.2/dyld3/shared-cache/FileUtils.cpp
+--- A/dyld-519.2.2/dyld3/shared-cache/FileUtils.cpp	2017-08-04 00:39:58.000000000 +0100
++++ B/dyld-519.2.2/dyld3/shared-cache/FileUtils.cpp	2018-07-02 12:53:27.000000000 +0100
+@@ -36,11 +36,14 @@
+ #include <sys/mount.h>
+ #include <sys/mman.h>
+ #include <dispatch/dispatch.h>
+ #include <mach-o/dyld.h>
+ #include <System/sys/csr.h>
++
++#if !defined(__PUREDARWIN__)
+ #include <rootless.h>
++#endif /* !defined(__PUREDARWIN__) */
+ 
+ #include <string>
+ #include <fstream>
+ #include <sstream>
+ 
+@@ -145,18 +148,25 @@
+     return rootlessEnabled;
+ }
+ 
+ bool isProtectedBySIP(const std::string& path)
+ {
++    #if defined(__PUREDARWIN__) /* No SIP on PureDarwin */
++    return false;
++    #else /* !defined(__PUREDARWIN__) */
+     if ( !sipIsEnabled() )
+         return false;
+ 
+     return (rootless_check_trusted(path.c_str()) == 0);
++    #endif /* defined(__PUREDARWIN__) */
+ }
+ 
+ bool isProtectedBySIP(int fd)
+ {
++#if defined(__PUREDARWIN__)
++    return false;
++#else /* !defined(__PUREDARWIN__) */
+     if ( !sipIsEnabled() )
+         return false;
+ 
+ #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 101200
+     return (rootless_check_trusted_fd(fd) == 0);
+@@ -165,10 +175,11 @@
+     char realPath[MAXPATHLEN];
+     if ( fcntl(fd, F_GETPATH, realPath) == 0 )
+         return (rootless_check_trusted(realPath) == 0);
+     return false;
+ #endif
++#endif /* defined(__PUREDARWIN__) */
+ }
+ 
+ bool fileExists(const std::string& path)
+ {
+     struct stat statBuf;
+diff -rwU5 A/dyld-519.2.2/dyld3/shared-cache/update_dyld_shared_cache.cpp B/dyld-519.2.2/dyld3/shared-cache/update_dyld_shared_cache.cpp
+--- A/dyld-519.2.2/dyld3/shared-cache/update_dyld_shared_cache.cpp	2017-07-15 01:28:25.000000000 +0100
++++ B/dyld-519.2.2/dyld3/shared-cache/update_dyld_shared_cache.cpp	2018-07-02 12:53:27.000000000 +0100
+@@ -41,15 +41,19 @@
+ #include <unistd.h>
+ #include <sys/param.h>
+ #include <sys/sysctl.h>
+ #include <sys/resource.h>
+ #include <dirent.h>
++
++#if !defined(__PUREDARWIN__)
+ #include <rootless.h>
+ #include <dscsym.h>
++#include <Bom/Bom.h>
++#endif /* !defined(__PUREDARWIN__) */
++
+ #include <dispatch/dispatch.h>
+ #include <pthread/pthread.h>
+-#include <Bom/Bom.h>
+ #include <CoreFoundation/CoreFoundation.h>
+ 
+ #include <algorithm>
+ #include <vector>
+ #include <unordered_set>
+Only in B/dyld-519.2.2: dyld_shared_cache_arm64
+Only in B/dyld-519.2.2: obj
+diff -rwU5 A/dyld-519.2.2/src/ImageLoader.cpp B/dyld-519.2.2/src/ImageLoader.cpp
+--- A/dyld-519.2.2/src/ImageLoader.cpp	2018-02-03 22:14:48.000000000 +0000
++++ B/dyld-519.2.2/src/ImageLoader.cpp	2018-07-02 12:53:31.000000000 +0100
+@@ -1337,9 +1337,5 @@
+ 	return (intptr_t)result;
+ }
+ 
+ 
+ VECTOR_NEVER_DESTRUCTED_IMPL(ImageLoader::InterposeTuple);
+-VECTOR_NEVER_DESTRUCTED_IMPL(ImagePair);
+-
+-
+-
+diff -rwU5 A/dyld-519.2.2/src/dyld.cpp B/dyld-519.2.2/src/dyld.cpp
+--- A/dyld-519.2.2/src/dyld.cpp	2018-02-03 22:14:48.000000000 +0000
++++ B/dyld-519.2.2/src/dyld.cpp	2018-07-02 12:53:31.000000000 +0100
+@@ -57,12 +57,15 @@
+ #include <_simple.h>
+ #include <os/lock_private.h>
+ #include <System/machine/cpu_capabilities.h>
+ #include <System/sys/reason.h>
+ #include <kern/kcdata.h>
++
++#if !defined(__PUREDARWIN__)
+ #include <sandbox.h>
+ #include <sandbox/private.h>
++#endif /* !defined(__PUREDARWIN__) */
+ 
+ extern "C" int __fork();
+ 
+ #include <array>
+ #include <algorithm>
+@@ -108,11 +111,13 @@
+ #include "ImageLoader.h"
+ #include "ImageLoaderMachO.h"
+ #include "dyldLibSystemInterface.h"
+ #include "dyld_cache_format.h"
+ #include "dyld_process_info_internal.h"
++#if !defined(__PUREDARWIN__)
+ #include <coreSymbolicationDyldSupport.h>
++#endif /* !defined(__PUREDARWIN__) */
+ #if TARGET_IPHONE_SIMULATOR
+ 	extern "C" void xcoresymbolication_load_notifier(void *connection, uint64_t load_timestamp, const char *image_path, const struct mach_header *mach_header);
+ 	extern "C" void xcoresymbolication_unload_notifier(void *connection, uint64_t unload_timestamp, const char *image_path, const struct mach_header *mach_header);
+ 	#define coresymbolication_load_notifier(c, t, p, h) xcoresymbolication_load_notifier(c, t, p, h)
+ 	#define coresymbolication_unload_notifier(c, t, p, h) xcoresymbolication_unload_notifier(c, t, p, h)
+@@ -953,11 +958,13 @@
+ 		if ( sEnv.DYLD_PRINT_CS_NOTIFICATIONS ) {
+ 			dyld::log("dyld: coresymbolication_unload_notifier(%p, 0x%016llX, %p, %s)\n",
+ 					  dyld::gProcessInfo->coreSymbolicationShmPage, loadTimestamp, image->machHeader(), image->getPath());
+ 		}
+ 		if ( dyld::gProcessInfo->coreSymbolicationShmPage != NULL) {
++			#if !defined(__PUREDARWIN__)
+ 			coresymbolication_unload_notifier(dyld::gProcessInfo->coreSymbolicationShmPage, loadTimestamp, image->getPath(), image->machHeader());
++			#endif /* !defined(__PUREDARWIN__) */
+ 		}
+ 		for (int slot=0; slot < DYLD_MAX_PROCESS_INFO_NOTIFY_COUNT; ++slot) {
+ 			if ( dyld::gProcessInfo->notifyPorts[slot] != 0 ) {
+ 				dyld_image_info info;
+ 				info.imageLoadAddress	= image->machHeader();
+@@ -1149,11 +1156,13 @@
+ 				for (unsigned j=0; j < imageCount; ++j) {
+ 					if ( sEnv.DYLD_PRINT_CS_NOTIFICATIONS ) {
+ 						dyld::log("dyld: coresymbolication_load_notifier(%p, 0x%016llX, %p, %s)\n",
+ 								  dyld::gProcessInfo->coreSymbolicationShmPage, loadTimestamp, infos[j].imageLoadAddress, infos[j].imageFilePath);
+ 					}
++					#if !defined(__PUREDARWIN__)
+ 					coresymbolication_load_notifier(dyld::gProcessInfo->coreSymbolicationShmPage, loadTimestamp, infos[j].imageFilePath, infos[j].imageLoadAddress);
++					#endif /* !defined(__PUREDARWIN__) */
+ 				}
+ 			}
+ 			for (int slot=0; slot < DYLD_MAX_PROCESS_INFO_NOTIFY_COUNT; ++slot) {
+ 				if ( dyld::gProcessInfo->notifyPorts[slot] )
+ 					notifyMonitoringDyld(false, slot, imageCount, infos);
+@@ -1222,17 +1231,17 @@
+ }
+ #endif
+ 
+ static bool sandboxBlocked(const char* path, const char* kind)
+ {
+-#if TARGET_IPHONE_SIMULATOR
++#if TARGET_IPHONE_SIMULATOR || defined(__PUREDARWIN__)
+ 	// sandbox calls not yet supported in simulator runtime
+ 	return false;
+-#else
++#else /* !(TARGET_IPHONE_SIMULATOR && defined(__PUREDARWIN__)) */
+ 	sandbox_filter_type filter = (sandbox_filter_type)(SANDBOX_FILTER_PATH | SANDBOX_CHECK_NO_REPORT);
+ 	return ( sandbox_check(getpid(), kind, filter, path) > 0 );
+-#endif
++#endif /* TARGET_IPHONE_SIMULATOR || defined(__PUREDARWIN__) */
+ }
+ 
+ bool sandboxBlockedMmap(const char* path)
+ {
+ 	return sandboxBlocked(path, "file-map-executable");
+@@ -4812,12 +4821,17 @@
+ 		// added in version 3
+ 		&opendir,
+ 		&readdir_r,
+ 		&closedir,
+ 		// added in version 4
++#if !defined(__PUREDARWIN__)
+ 		&coresymbolication_load_notifier,
+ 		&coresymbolication_unload_notifier,
++#else /* defined(__PUREDARWIN__) */
++		NULL,
++		NULL,
++#endif /* !defined(__PUREDARWIN__) */
+ 		// Added in version 5
+ 		&proc_regionfilename,
+ 		&getpid,
+ 		&mach_port_insert_right,
+ 		&mach_port_allocate,
+Only in B/dyld-519.2.2: sym

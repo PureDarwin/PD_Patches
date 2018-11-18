@@ -1,0 +1,516 @@
+diff -rwU5 A/mDNSResponder-878.30.4/mDNSMacOSX/DNS64.c B/mDNSResponder-878.30.4/mDNSMacOSX/DNS64.c
+--- A/mDNSResponder-878.30.4/mDNSMacOSX/DNS64.c	2017-05-26 23:25:33.000000000 +0100
++++ B/mDNSResponder-878.30.4/mDNSMacOSX/DNS64.c	2018-07-02 13:00:28.000000000 +0100
+@@ -180,14 +180,14 @@
+     uint32_t                prefixCount;
+     uint32_t                i;
+     struct in_addr          v4Addr;
+     struct in6_addr         synthV6;
+ 
+-    require_action_quiet(inQ->qDNSServer, exit, err = mStatus_BadParamErr);
++    __Require_Action_Quiet(inQ->qDNSServer, exit, err = mStatus_BadParamErr);
+ 
+     err = DNS64GetPrefixes(m, inQ->qDNSServer->resGroupID, &prefixes, &prefixCount);
+-    require_noerr_quiet(err, exit);
++    __Require_noErr_Quiet(err, exit);
+ 
+     newRR               = *inRR;
+     newRR.rrtype        = kDNSType_AAAA;
+     newRR.rdlength      = 16;
+     rdata.MaxRDLength   = newRR.rdlength;
+@@ -228,11 +228,11 @@
+             uint32_t                i;
+             struct in_addr          v4Addr;
+             char                    qnameStr[MAX_REVERSE_MAPPING_NAME_V4];
+ 
+             err = DNS64GetPrefixes(m, inQ->qDNSServer->resGroupID, &prefixes, &prefixCount);
+-            require_noerr_quiet(err, exit);
++            __Require_noErr_Quiet(err, exit);
+ 
+             for (i = 0; i < prefixCount; i++)
+             {
+                 if (nw_nat64_extract_v4(&prefixes[i], &v6Addr, &v4Addr))
+                 {
+@@ -356,24 +356,24 @@
+     struct in6_addr *       addrs = NULL;
+     uint32_t                addrCount;
+     uint32_t                recordCount;
+ 
+     cg = CacheGroupForName(m, DNS64IPv4OnlyFQDNHash(), kDNS64IPv4OnlyFQDN);
+-    require_action_quiet(cg, exit, err = mStatus_NoSuchRecord);
++    __Require_Action_Quiet(cg, exit, err = mStatus_NoSuchRecord);
+ 
+     recordCount = 0;
+     for (cr = cg->members; cr; cr = cr->next)
+     {
+         if (IsPositiveAAAAFromResGroup(&cr->resrec, inResGroupID))
+         {
+             recordCount++;
+         }
+     }
+-    require_action_quiet(recordCount > 0, exit, err = mStatus_NoSuchRecord);
++    __Require_Action_Quiet(recordCount > 0, exit, err = mStatus_NoSuchRecord);
+ 
+     addrs = (struct in6_addr *)calloc(recordCount, sizeof(*addrs));
+-    require_action_quiet(addrs, exit, err = mStatus_NoMemoryErr);
++    __Require_Action_Quiet(addrs, exit, err = mStatus_NoMemoryErr);
+ 
+     addrCount = 0;
+     for (cr = cg->members; cr && (addrCount < recordCount); cr = cr->next)
+     {
+         if (IsPositiveAAAAFromResGroup(&cr->resrec, inResGroupID))
+@@ -404,15 +404,15 @@
+     uint32_t                v6AddrCount;
+     nw_nat64_prefix_t *     prefixes;
+     int32_t                 prefixCount;
+ 
+     err = DNS64GetIPv6Addrs(m, inResGroupID, &v6Addrs, &v6AddrCount);
+-    require_noerr_quiet(err, exit);
++    __Require_noErr_Quiet(err, exit);
+ 
+     prefixCount = nw_nat64_copy_prefixes_from_ipv4only_records(v6Addrs, v6AddrCount, &prefixes);
+     free(v6Addrs);
+-    require_action_quiet(prefixCount > 0, exit, err = mStatus_UnknownErr);
++    __Require_Action_Quiet(prefixCount > 0, exit, err = mStatus_UnknownErr);
+ 
+     *outPrefixes    = prefixes;
+     *outPrefixCount = prefixCount;
+ 
+ exit:
+@@ -538,11 +538,11 @@
+     struct in_addr          v4Addr;
+     struct in6_addr         synthV6;
+     mDNSBool                result      = mDNSfalse;
+ 
+     err = DNS64GetPrefixes(m, inResGroupID, &prefixes, &prefixCount);
+-    require_noerr_quiet(err, exit);
++    __Require_noErr_Quiet(err, exit);
+ 
+     memcpy(&v4Addr.s_addr, inV4Addr->b, 4);
+     for (i = 0; i < prefixCount; i++)
+     {
+         if (nw_nat64_synthesize_v6(&prefixes[i], &v4Addr, &synthV6))
+diff -rwU5 A/mDNSResponder-878.30.4/mDNSMacOSX/P2PPacketFilter.c B/mDNSResponder-878.30.4/mDNSMacOSX/P2PPacketFilter.c
+--- A/mDNSResponder-878.30.4/mDNSMacOSX/P2PPacketFilter.c	2015-08-04 20:32:39.000000000 +0100
++++ B/mDNSResponder-878.30.4/mDNSMacOSX/P2PPacketFilter.c	2018-07-02 13:00:28.000000000 +0100
+@@ -233,42 +233,42 @@
+     u_int32_t poolTicket = 0;
+     int devFD = -1;
+     char * anchorPath = MDNS_ANCHOR_PATH;
+ 
+     result = openPFDevice( &devFD );
+-    require( result == 0, exit );
++    __Require( result == 0, exit );
+ 
+     result = getTicket( devFD, &ticket, anchorPath );
+-    require( result == 0, exit );
++    __Require( result == 0, exit );
+ 
+     result = getPoolTicket( devFD, &poolTicket );
+-    require( result == 0, exit );
++    __Require( result == 0, exit );
+ 
+     struct pfioc_rule pr;
+ 
+     // allow inbound Bonjour traffice to port 5353
+     initBonjourRule( &pr, interfaceName, ticket, poolTicket, anchorPath);
+ 
+     result = addRule( devFD, &pr );
+-    require( result == 0, exit );
++    __Require( result == 0, exit );
+ 
+     // open inbound port for each service
+     for (i = 0; i < count; i++)
+     {
+         initPortRule( &pr, interfaceName, ticket, poolTicket, anchorPath, portArray[i], protocolArray[i] );
+         result = addRule( devFD, &pr );
+-        require( result == 0, exit );
++        __Require( result == 0, exit );
+     }
+ 
+     // allow outbound TCP connections and return traffic for those connections
+     initOutboundTCPRule( &pr, interfaceName, ticket, poolTicket, anchorPath);
+ 
+     result = addRule( devFD, &pr );
+-    require( result == 0, exit );
++    __Require( result == 0, exit );
+ 
+     result = commitChange( devFD, ticket, anchorPath );
+-    require( result == 0, exit );
++    __Require( result == 0, exit );
+ 
+ exit:
+ 
+     if( devFD >= 0 )
+         close( devFD );
+@@ -282,14 +282,14 @@
+     int pfDev = -1;
+     u_int32_t ticket = 0;
+     char * anchorPath = MDNS_ANCHOR_PATH;
+ 
+     result = openPFDevice( &pfDev );
+-    require( result == 0, exit );
++    __Require( result == 0, exit );
+ 
+     result = getTicket( pfDev, &ticket, anchorPath );
+-    require( result == 0, exit );
++    __Require( result == 0, exit );
+ 
+     result = commitChange( pfDev, ticket, anchorPath );
+ 
+ exit:
+ 
+diff -rwU5 A/mDNSResponder-878.30.4/mDNSMacOSX/PreferencePane/BonjourPrefTool/BonjourPrefTool.m B/mDNSResponder-878.30.4/mDNSMacOSX/PreferencePane/BonjourPrefTool/BonjourPrefTool.m
+--- A/mDNSResponder-878.30.4/mDNSMacOSX/PreferencePane/BonjourPrefTool/BonjourPrefTool.m	2017-04-04 00:01:46.000000000 +0100
++++ B/mDNSResponder-878.30.4/mDNSMacOSX/PreferencePane/BonjourPrefTool/BonjourPrefTool.m	2018-07-02 13:00:28.000000000 +0100
+@@ -109,17 +109,17 @@
+     char                keyname[kDNSServiceMaxDomainName];
+     char                domain[kDNSServiceMaxDomainName];
+     char                secret[kDNSServiceMaxDomainName];
+     
+     keyNameString = (__bridge CFStringRef)[secretDictionary objectForKey:(NSString *)SC_DYNDNS_KEYNAME_KEY];
+-    require(keyNameString != NULL, exit);
++    __Require(keyNameString != NULL, exit);
+     
+     domainString  = (__bridge CFStringRef)[secretDictionary objectForKey:(NSString *)SC_DYNDNS_DOMAIN_KEY];
+-    require(domainString != NULL, exit);
++    __Require(domainString != NULL, exit);
+     
+     secretString  = (__bridge CFStringRef)[secretDictionary objectForKey:(NSString *)SC_DYNDNS_SECRET_KEY];
+-    require(secretString != NULL, exit);
++    __Require(secretString != NULL, exit);
+     
+     CFStringGetCString(keyNameString, keyname, kDNSServiceMaxDomainName, kCFStringEncodingUTF8);
+     CFStringGetCString(domainString,   domain, kDNSServiceMaxDomainName, kCFStringEncodingUTF8);
+     CFStringGetCString(secretString,   secret, kDNSServiceMaxDomainName, kCFStringEncodingUTF8);
+     
+diff -rwU5 A/mDNSResponder-878.30.4/mDNSMacOSX/SettingsBundle/BonjourSCStore.m B/mDNSResponder-878.30.4/mDNSMacOSX/SettingsBundle/BonjourSCStore.m
+--- A/mDNSResponder-878.30.4/mDNSMacOSX/SettingsBundle/BonjourSCStore.m	2017-04-04 00:01:46.000000000 +0100
++++ B/mDNSResponder-878.30.4/mDNSMacOSX/SettingsBundle/BonjourSCStore.m	2018-07-02 13:00:29.000000000 +0100
+@@ -27,12 +27,12 @@
+     SCPreferencesRef	store;
+     OSStatus            err;
+     NSDictionary *		origDict;
+     
+     store = SCPreferencesCreateWithAuthorization(kCFAllocatorDefault, SC_DYNDNS_PREFS_KEY, NULL, NULL);
+-    require_action(store != NULL, SysConfigErr, err = SCError());
+-    require_action(true == SCPreferencesLock(store, true), LockFailed, err = SCError());
++    __Require_Action(store != NULL, SysConfigErr, err = SCError());
++    __Require_Action(true == SCPreferencesLock(store, true), LockFailed, err = SCError());
+     
+     origDict = (__bridge NSDictionary *)SCPreferencesPathGetValue(store, SC_DYNDNS_SYSTEM_KEY);
+     if (origDict)  origDict = [NSDictionary dictionaryWithDictionary: origDict];
+     
+     result = [origDict objectForKey: key];
+@@ -51,27 +51,27 @@
+     OSStatus				err;
+     NSMutableDictionary *   origDict;
+     Boolean					success;
+     
+     store = SCPreferencesCreateWithAuthorization(kCFAllocatorDefault, SC_DYNDNS_PREFS_KEY, NULL, NULL);
+-    require_action(store != NULL, SysConfigErr, err = SCError());
+-    require_action(true == SCPreferencesLock(store, true), LockFailed, err = SCError());
++    __Require_Action(store != NULL, SysConfigErr, err = SCError());
++    __Require_Action(true == SCPreferencesLock(store, true), LockFailed, err = SCError());
+     
+     origDict = (__bridge NSMutableDictionary *)SCPreferencesPathGetValue(store, SC_DYNDNS_SYSTEM_KEY);
+     if (!origDict)     origDict = [NSMutableDictionary dictionary];
+     else               origDict = [NSMutableDictionary dictionaryWithDictionary: origDict];
+     
+     if (value.count)   [origDict setObject: value forKey: key];
+     else               [origDict removeObjectForKey: key];
+     
+     success = SCPreferencesPathSetValue(store, SC_DYNDNS_SYSTEM_KEY, (__bridge CFDictionaryRef)origDict);
+-    require_action(success, SCError, err = SCError(););
++    __Require_Action(success, SCError, err = SCError(););
+     
+     success = SCPreferencesCommitChanges(store);
+-    require_action(success, SCError, err = SCError());
++    __Require_Action(success, SCError, err = SCError());
+     success = SCPreferencesApplyChanges(store);
+-    require_action(success, SCError, err = SCError());
++    __Require_Action(success, SCError, err = SCError());
+     
+ SCError:
+     SCPreferencesUnlock(store);
+ LockFailed:
+     CFRelease(store);
+Only in B/mDNSResponder-878.30.4/mDNSMacOSX: build
+diff -rwU5 A/mDNSResponder-878.30.4/mDNSMacOSX/mDNSResponder.xcodeproj/project.pbxproj B/mDNSResponder-878.30.4/mDNSMacOSX/mDNSResponder.xcodeproj/project.pbxproj
+--- A/mDNSResponder-878.30.4/mDNSMacOSX/mDNSResponder.xcodeproj/project.pbxproj	2017-05-26 23:25:33.000000000 +0100
++++ B/mDNSResponder-878.30.4/mDNSMacOSX/mDNSResponder.xcodeproj/project.pbxproj	2018-07-02 13:00:28.000000000 +0100
+@@ -3052,11 +3052,10 @@
+ 			buildSettings = {
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_ANALYZER_NONNULL = YES;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "libc++";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+@@ -3100,11 +3099,10 @@
+ 			buildSettings = {
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_ANALYZER_NONNULL = YES;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "libc++";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+@@ -3145,10 +3143,11 @@
+ 			name = Debug;
+ 		};
+ 		0C419F121BA20DF600A70FF7 /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
++				CLANG_ENABLE_MODULES = NO;
+ 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/Debug";
+ 				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/Debug";
+ 				COPY_PHASE_STRIP = NO;
+ 				DEAD_CODE_STRIPPING = YES;
+ 				GCC_OPTIMIZATION_LEVEL = 0;
+@@ -3629,11 +3628,10 @@
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_ANALYZER_NONNULL = YES;
+ 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "libc++";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+@@ -3674,11 +3672,10 @@
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_ANALYZER_NONNULL = YES;
+ 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "libc++";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+@@ -4114,11 +4111,10 @@
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "libc++";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CODE_SIGN_IDENTITY = "-";
+ 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+ 				ENABLE_NS_ASSERTIONS = NO;
+ 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+@@ -4145,11 +4141,10 @@
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "libc++";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CODE_SIGN_IDENTITY = "-";
+ 				DEBUG_INFORMATION_FORMAT = dwarf;
+ 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+ 				ENABLE_TESTABILITY = YES;
+@@ -4183,11 +4178,10 @@
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_ANALYZER_NONNULL = YES;
+ 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "compiler-default";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+ 				CLANG_WARN_EMPTY_BODY = YES;
+ 				CLANG_WARN_INFINITE_RECURSION = YES;
+@@ -4227,11 +4221,10 @@
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_ANALYZER_NONNULL = YES;
+ 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "compiler-default";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+ 				CLANG_WARN_EMPTY_BODY = YES;
+ 				CLANG_WARN_INFINITE_RECURSION = YES;
+@@ -4291,11 +4284,10 @@
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_ANALYZER_NONNULL = YES;
+ 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "compiler-default";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+@@ -4340,11 +4332,10 @@
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				CLANG_ANALYZER_NONNULL = YES;
+ 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "compiler-default";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+@@ -4395,11 +4386,10 @@
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				ASSETCATALOG_COMPRESSION = "respect-asset-catalog";
+ 				CLANG_ANALYZER_NONNULL = YES;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "libc++";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_EMPTY_BODY = YES;
+@@ -4445,11 +4435,10 @@
+ 				ALWAYS_SEARCH_USER_PATHS = NO;
+ 				ASSETCATALOG_COMPRESSION = lossless;
+ 				CLANG_ANALYZER_NONNULL = YES;
+ 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+ 				CLANG_CXX_LIBRARY = "libc++";
+-				CLANG_ENABLE_MODULES = YES;
+ 				CLANG_ENABLE_OBJC_ARC = YES;
+ 				CLANG_WARN_BOOL_CONVERSION = YES;
+ 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+ 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ 				CLANG_WARN_EMPTY_BODY = YES;
+@@ -4636,10 +4625,11 @@
+ 			name = Release;
+ 		};
+ 		D284BE2C0ADD78180027CCDF /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
++				CLANG_ENABLE_MODULES = NO;
+ 				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/Release";
+ 				CONFIGURATION_TEMP_DIR = "$(PROJECT_TEMP_DIR)/Release";
+ 				COPY_PHASE_STRIP = NO;
+ 				DEAD_CODE_STRIPPING = YES;
+ 				GCC_PREPROCESSOR_DEFINITIONS = (
+Only in B/mDNSResponder-878.30.4/mDNSMacOSX/mDNSResponder.xcodeproj: project.xcworkspace
+Only in B/mDNSResponder-878.30.4/mDNSMacOSX/mDNSResponder.xcodeproj: xcuserdata
+Only in B/mDNSResponder-878.30.4/mDNSMacOSX: obj
+Only in B/mDNSResponder-878.30.4/mDNSMacOSX: sym
+diff -rwU5 A/mDNSResponder-878.30.4/mDNSShared/dnsextd_parser.y B/mDNSResponder-878.30.4/mDNSShared/dnsextd_parser.y
+--- A/mDNSResponder-878.30.4/mDNSShared/dnsextd_parser.y	2015-06-28 19:33:56.000000000 +0100
++++ B/mDNSResponder-878.30.4/mDNSShared/dnsextd_parser.y	2018-07-02 13:00:29.000000000 +0100
+@@ -14,10 +14,11 @@
+  * See the License for the specific language governing permissions and
+  * limitations under the License.
+  */
+ 
+ %{
++#include <AssertMacros.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
+ #include "mDNSEmbeddedAPI.h"
+ #include "DebugServices.h"
+@@ -472,31 +473,31 @@
+ 		}
+ 
+ 	d->zones = NULL;
+ 	
+ 	yyin = fopen( file, "r" );
+-	require_action( yyin, exit, err = 0 );
++	__Require_Action( yyin, exit, err = 0 );
+ 
+ 	err = yyparse( ( void* ) d );
+-	require_action( !err, exit, err = 1 );
++	__Require_Action( !err, exit, err = 1 );
+ 
+ 	for ( zoneSpec = g_zones; zoneSpec; zoneSpec = zoneSpec->next )
+ 		{
+ 		StringListElem  *   elem;
+ 		mDNSu8			*	ok;
+ 
+ 		zone = ( DNSZone* ) malloc( sizeof( DNSZone ) );
+-		require_action( zone, exit, err = 1 );
++		__Require_Action( zone, exit, err = 1 );
+ 		memset( zone, 0, sizeof( DNSZone ) );
+ 
+ 		zone->next	= d->zones;
+ 		d->zones	= zone;
+ 
+ 		// Fill in the domainname
+ 
+ 		ok = MakeDomainNameFromDNSNameString( &zone->name, zoneSpec->name );
+-		require_action( ok, exit, err = 1 );
++		__Require_Action( ok, exit, err = 1 );
+ 
+ 		// Fill in the type
+ 
+ 		zone->type = zoneSpec->type;
+ 
+@@ -510,11 +511,11 @@
+ 				{
+ 				if ( strcmp( elem->string, keySpec->name ) == 0 )
+ 					{
+ 					DomainAuthInfo	*	authInfo = malloc( sizeof( DomainAuthInfo ) );
+ 					mDNSs32				keylen;
+-					require_action( authInfo, exit, err = 1 );
++					__Require_Action( authInfo, exit, err = 1 );
+ 					memset( authInfo, 0, sizeof( DomainAuthInfo ) );
+ 
+ 					ok = MakeDomainNameFromDNSNameString( &authInfo->keyname, keySpec->name );
+ 					if (!ok) { free(authInfo); err = 1; goto exit; }
+ 
+@@ -529,11 +530,11 @@
+ 					break;
+ 					}
+ 				}
+ 
+ 			// Log this
+-			require_action( found, exit, err = 1 );
++			__Require_Action( found, exit, err = 1 );
+ 			}
+ 
+ 		// Fill in the allow-query keys
+ 
+ 		for ( elem = zoneSpec->allowQuery; elem; elem = elem->next )
+@@ -544,11 +545,11 @@
+ 				{
+ 				if ( strcmp( elem->string, keySpec->name ) == 0 )
+ 					{
+ 					DomainAuthInfo	*	authInfo = malloc( sizeof( DomainAuthInfo ) );
+ 					mDNSs32				keylen;
+-					require_action( authInfo, exit, err = 1 );
++					__Require_Action( authInfo, exit, err = 1 );
+ 					memset( authInfo, 0, sizeof( DomainAuthInfo ) );
+ 
+ 					ok = MakeDomainNameFromDNSNameString( &authInfo->keyname, keySpec->name );
+ 					if (!ok) { free(authInfo); err = 1; goto exit; }
+ 
+@@ -563,11 +564,11 @@
+ 					break;
+ 					}
+ 				}
+ 
+ 			// Log this
+-			require_action( found, exit, err = 1 );
++			__Require_Action( found, exit, err = 1 );
+ 			}
+ 		}
+ 
+ exit:
+ 

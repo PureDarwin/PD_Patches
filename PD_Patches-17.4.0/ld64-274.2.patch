@@ -1,0 +1,110 @@
+Only in B/ld64-274.2: build
+diff -rwU5 A/ld64-274.2/ld64.xcodeproj/project.pbxproj B/ld64-274.2/ld64.xcodeproj/project.pbxproj
+--- A/ld64-274.2/ld64.xcodeproj/project.pbxproj	2016-04-07 20:40:05.000000000 +0100
++++ B/ld64-274.2/ld64.xcodeproj/project.pbxproj	2018-07-02 12:56:13.000000000 +0100
+@@ -1461,20 +1461,30 @@
+ 			name = Release;
+ 		};
+ 		F933D92409291AC90083EAC8 /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
++				ARCHS = (
++					i386,
++					x86_64,
++				);
++				DT_TOOLCHAIN_DIR = "";
+ 				GCC_DYNAMIC_NO_PIC = NO;
+ 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+ 				ONLY_ACTIVE_ARCH = YES;
+ 				SDKROOT = macosx.internal;
+ 			};
+ 			name = Debug;
+ 		};
+ 		F933D92509291AC90083EAC8 /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
++				ARCHS = (
++					i386,
++					x86_64,
++				);
++				DT_TOOLCHAIN_DIR = "";
+ 				GCC_DYNAMIC_NO_PIC = NO;
+ 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+ 				SDKROOT = macosx.internal;
+ 			};
+ 			name = Release;
+@@ -1498,10 +1508,15 @@
+ 			name = Release;
+ 		};
+ 		F9849FF810B5DE8E009E9878 /* Release-assert */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
++				ARCHS = (
++					i386,
++					x86_64,
++				);
++				DT_TOOLCHAIN_DIR = "";
+ 				GCC_DYNAMIC_NO_PIC = NO;
+ 				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+ 				SDKROOT = macosx.internal;
+ 			};
+ 			name = "Release-assert";
+Only in B/ld64-274.2/ld64.xcodeproj: project.xcworkspace
+Only in B/ld64-274.2/ld64.xcodeproj: xcuserdata
+Only in B/ld64-274.2: obj
+diff -rwU5 A/ld64-274.2/src/ld/parsers/macho_relocatable_file.cpp B/ld64-274.2/src/ld/parsers/macho_relocatable_file.cpp
+--- A/ld64-274.2/src/ld/parsers/macho_relocatable_file.cpp	2017-01-20 22:24:10.000000000 +0000
++++ B/ld64-274.2/src/ld/parsers/macho_relocatable_file.cpp	2018-07-02 12:56:13.000000000 +0100
+@@ -4408,11 +4408,11 @@
+ 	return false;
+ }
+ 
+ template <>
+ void CFISection<x86_64>::cfiParse(class Parser<x86_64>& parser, uint8_t* buffer,
+-									libunwind::CFI_Atom_Info<CFISection<x86_64>::OAS>::CFI_Atom_Info cfiArray[], 
++									libunwind::CFI_Atom_Info<CFISection<x86_64>::OAS> cfiArray[],
+ 									uint32_t& count, const pint_t cuStarts[], uint32_t cuCount)
+ {
+ 	const uint32_t sectionSize = this->_machOSection->size();
+ 	// copy __eh_frame data to buffer
+ 	memcpy(buffer, file().fileContent() + this->_machOSection->offset(), sectionSize);
+@@ -4473,11 +4473,11 @@
+ 		throwf("malformed __eh_frame section: %s", msg);
+ }
+ 
+ template <>
+ void CFISection<x86>::cfiParse(class Parser<x86>& parser, uint8_t* buffer, 
+-									libunwind::CFI_Atom_Info<CFISection<x86>::OAS>::CFI_Atom_Info cfiArray[], 
++									libunwind::CFI_Atom_Info<CFISection<x86>::OAS> cfiArray[],
+ 									uint32_t& count, const pint_t cuStarts[], uint32_t cuCount)
+ {
+ 	// create ObjectAddressSpace object for use by libunwind
+ 	OAS oas(*this, (uint8_t*)this->file().fileContent()+this->_machOSection->offset());
+ 	
+@@ -4494,11 +4494,11 @@
+ 
+ 
+ 
+ template <>
+ void CFISection<arm>::cfiParse(class Parser<arm>& parser, uint8_t* buffer, 
+-									libunwind::CFI_Atom_Info<CFISection<arm>::OAS>::CFI_Atom_Info cfiArray[], 
++									libunwind::CFI_Atom_Info<CFISection<arm>::OAS> cfiArray[],
+ 									uint32_t& count, const pint_t cuStarts[], uint32_t cuCount)
+ {
+ 	if ( !parser.armUsesZeroCostExceptions() ) {
+ 		// most arm do not use zero cost exceptions
+ 		assert(count == 0);
+@@ -4520,11 +4520,11 @@
+ 
+ 
+ 
+ template <>
+ void CFISection<arm64>::cfiParse(class Parser<arm64>& parser, uint8_t* buffer, 
+-									libunwind::CFI_Atom_Info<CFISection<arm64>::OAS>::CFI_Atom_Info cfiArray[], 
++									libunwind::CFI_Atom_Info<CFISection<arm64>::OAS> cfiArray[], 
+ 									uint32_t& count, const pint_t cuStarts[], uint32_t cuCount)
+ {
+ 	// copy __eh_frame data to buffer
+ 	const uint32_t sectionSize = this->_machOSection->size();
+ 	memcpy(buffer, file().fileContent() + this->_machOSection->offset(), sectionSize);
+Only in B/ld64-274.2: sym

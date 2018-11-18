@@ -1,0 +1,33 @@
+Only in B/text_cmds-99: build
+Only in B/text_cmds-99: obj
+Only in B/text_cmds-99: sym
+diff -rwU5 A/text_cmds-99/text_cmds.xcodeproj/project.pbxproj B/text_cmds-99/text_cmds.xcodeproj/project.pbxproj
+--- A/text_cmds-99/text_cmds.xcodeproj/project.pbxproj	2016-10-13 01:45:31.000000000 +0100
++++ B/text_cmds-99/text_cmds.xcodeproj/project.pbxproj	2018-07-02 13:04:21.000000000 +0100
+@@ -3360,11 +3360,10 @@
+ 		};
+ 		FC7A7D6114986A390086576A /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				INSTALL_PATH = /sbin;
+-				"OTHER_LDFLAGS[sdk=macosx*]" = "-lCrashReporterClient";
+ 				PRODUCT_NAME = "$(TARGET_NAME)";
+ 				SDKROOT = macosx.internal;
+ 			};
+ 			name = Release;
+ 		};
+@@ -3415,10 +3414,11 @@
+ 		};
+ 		FC7A7D9914986A470086576A /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = FDF2836E1DAED24800CF8C36 /* sort.xcconfig */;
+ 			buildSettings = {
++				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+ 			};
+ 			name = Release;
+ 		};
+ 		FC7A7DA114986A480086576A /* Release */ = {
+ 			isa = XCBuildConfiguration;
+Only in B/text_cmds-99/text_cmds.xcodeproj/project.xcworkspace: xcshareddata
+Only in B/text_cmds-99/text_cmds.xcodeproj/project.xcworkspace: xcuserdata
+Only in B/text_cmds-99/text_cmds.xcodeproj: xcuserdata

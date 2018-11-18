@@ -1,0 +1,65 @@
+diff -rwU5 A/OpenSSH-220.30.2/OpenSSH.xcodeproj/project.pbxproj B/OpenSSH-220.30.2/OpenSSH.xcodeproj/project.pbxproj
+--- A/OpenSSH-220.30.2/OpenSSH.xcodeproj/project.pbxproj	2017-10-22 23:16:50.000000000 +0100
++++ B/OpenSSH-220.30.2/OpenSSH.xcodeproj/project.pbxproj	2018-07-02 12:15:27.000000000 +0100
+@@ -544,10 +544,11 @@
+ 		73F2463B17739422006986BE /* integrity.sh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73F2463617739422006986BE /* integrity.sh */; };
+ 		73F2463C17739422006986BE /* keys-command.sh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73F2463717739422006986BE /* keys-command.sh */; };
+ 		73F2463D17739422006986BE /* krl.sh in CopyFiles */ = {isa = PBXBuildFile; fileRef = 73F2463817739422006986BE /* krl.sh */; };
+ 		73F2463F1773974F006986BE /* krl.c in Sources */ = {isa = PBXBuildFile; fileRef = 73F246231773930F006986BE /* krl.c */; };
+ 		90F7275D1F6DC0A5000FE301 /* libnetwork.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 90F7275C1F6DC0A5000FE301 /* libnetwork.tbd */; };
++		AAC81118208053C4003192B7 /* recallocarray.c in Sources */ = {isa = PBXBuildFile; fileRef = FE77103A1F9AC6920092A263 /* recallocarray.c */; };
+ 		EB17A9CC16A8041600B18CD6 /* ssh-pkcs11.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C919EDB1162C3E4002924A5 /* ssh-pkcs11.c */; };
+ 		EB17A9CE16A8046200B18CD6 /* ssh-pkcs11-client.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C919ED91162C3E4002924A5 /* ssh-pkcs11-client.c */; };
+ 		EB17A9DC16A804F100B18CD6 /* ssh-pkcs11-helper.c in Sources */ = {isa = PBXBuildFile; fileRef = 1C919EDA1162C3E4002924A5 /* ssh-pkcs11-helper.c */; };
+ 		EB17A9E416A8059100B18CD6 /* libopenbsd-compat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C6B2CBB0FEC4E73004F1935 /* libopenbsd-compat.a */; };
+ 		EB17A9E516A8059100B18CD6 /* libssh.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1C6B2DAC0FEC5695004F1935 /* libssh.a */; };
+@@ -3654,10 +3655,11 @@
+ /* Begin PBXSourcesBuildPhase section */
+ 		1C6B2CB80FEC4E73004F1935 /* Sources */ = {
+ 			isa = PBXSourcesBuildPhase;
+ 			buildActionMask = 2147483647;
+ 			files = (
++				AAC81118208053C4003192B7 /* recallocarray.c in Sources */,
+ 				1C6B2D0D0FEC4F58004F1935 /* base64.c in Sources */,
+ 				1C6B2D0F0FEC4F58004F1935 /* basename.c in Sources */,
+ 				1C6B2D100FEC4F58004F1935 /* bindresvport.c in Sources */,
+ 				1C6B2D120FEC4F58004F1935 /* bsd-asprintf.c in Sources */,
+ 				1C6B2D130FEC4F58004F1935 /* bsd-closefrom.c in Sources */,
+Only in B/OpenSSH-220.30.2/OpenSSH.xcodeproj: project.xcworkspace
+Only in B/OpenSSH-220.30.2/OpenSSH.xcodeproj: xcuserdata
+Only in B/OpenSSH-220.30.2: obj
+diff -rwU5 A/OpenSSH-220.30.2/openssh/config.h B/OpenSSH-220.30.2/openssh/config.h
+--- A/OpenSSH-220.30.2/openssh/config.h	2017-10-22 23:16:50.000000000 +0100
++++ B/OpenSSH-220.30.2/openssh/config.h	2018-07-02 12:15:27.000000000 +0100
+@@ -1523,14 +1523,14 @@
+ 
+ /* libcrypto has NID_secp521r1 */
+ #define OPENSSL_HAS_NISTP521 1
+ 
+ /* libcrypto has EVP AES CTR */
+-#define OPENSSL_HAVE_EVPCTR 1
++//#define OPENSSL_HAVE_EVPCTR 1
+ 
+ /* libcrypto has EVP AES GCM */
+-#define OPENSSL_HAVE_EVPGCM 1
++//#define OPENSSL_HAVE_EVPGCM 1
+ 
+ /* libcrypto is missing AES 192 and 256 bit functions */
+ /* #undef OPENSSL_LOBOTOMISED_AES */
+ 
+ /* Define if you want the OpenSSL internally seeded PRNG only */
+@@ -1578,11 +1578,12 @@
+ 
+ /* Sandbox using capsicum */
+ /* #undef SANDBOX_CAPSICUM */
+ 
+ /* Sandbox using Darwin sandbox_init(3) */
+-#define SANDBOX_DARWIN 1
++//#define SANDBOX_DARWIN 1
++#define SANDBOX_NULL 1
+ 
+ /* no privsep sandboxing */
+ /* #undef SANDBOX_NULL */
+ 
+ /* Sandbox using pledge(2) */
+Only in B/OpenSSH-220.30.2: sym

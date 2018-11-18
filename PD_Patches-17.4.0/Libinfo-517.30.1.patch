@@ -1,0 +1,214 @@
+Only in B/Libinfo-517.30.1/Libinfo.xcodeproj: project.pbxproj.rej
+Only in B/Libinfo-517.30.1/Libinfo.xcodeproj: project.xcworkspace
+Only in B/Libinfo-517.30.1/Libinfo.xcodeproj: xcuserdata
+diff -rwU5 A/Libinfo-517.30.1/gen.subproj/configuration_profile.c B/Libinfo-517.30.1/gen.subproj/configuration_profile.c
+--- A/Libinfo-517.30.1/gen.subproj/configuration_profile.c	2017-06-22 01:19:45.000000000 +0100
++++ B/Libinfo-517.30.1/gen.subproj/configuration_profile.c	2018-07-02 12:13:38.000000000 +0100
+@@ -21,11 +21,15 @@
+  * @APPLE_LICENSE_HEADER_END@
+  */
+ 
+ #include <stdlib.h>
+ #include <string.h>
++
++#if !defined(__PUREDARWIN__)
+ #include <xpc/private.h>
++#endif /* !defined(__PUREDARWIN__) */
++
+ #include <sys/stat.h>
+ #include <TargetConditionals.h>
+ #include "configuration_profile.h"
+ 
+ #define NOTIFY_PATH_SERVICE "com.apple.system.notify.service.path:0x87:"
+@@ -88,15 +92,17 @@
+ 		return NULL;
+ 	}
+ 
+ 	data = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+ 	
++    #if !defined(__PUREDARWIN__) /* PureDarwin doesn't have libxpc */
+ 	if (data != MAP_FAILED)
+ 	{
+ 		out = xpc_create_from_plist(data, sb.st_size);
+ 		munmap(data, sb.st_size);
+ 	}
++    #endif /* !defined(__PUREDARWIN__) */
+ 
+ 	close(fd);
+ 
+ 	return out;
+ }
+Only in B/Libinfo-517.30.1/gen.subproj: configuration_profile.c.orig
+Only in B/Libinfo-517.30.1/gen.subproj: configuration_profile.c.rej
+Only in B/Libinfo-517.30.1: libinfo_debug_dst
+diff -rwU5 A/Libinfo-517.30.1/lookup.subproj/file_module.c B/Libinfo-517.30.1/lookup.subproj/file_module.c
+--- A/Libinfo-517.30.1/lookup.subproj/file_module.c	2017-02-21 22:13:49.000000000 +0000
++++ B/Libinfo-517.30.1/lookup.subproj/file_module.c	2018-07-02 12:13:38.000000000 +0100
+@@ -824,10 +824,12 @@
+ }
+ 
+ static void *
+ _fsi_get_user(si_mod_t *si, const char *name, uid_t uid, int which)
+ {
++	printf("fsi_get_user()\n");
++	
+ 	char *line;
+ 	si_item_t *item;
+ 	int fmt;
+ 	FILE *f;
+ 	si_list_t *all;
+diff -rwU5 A/Libinfo-517.30.1/lookup.subproj/mdns_module.c B/Libinfo-517.30.1/lookup.subproj/mdns_module.c
+--- A/Libinfo-517.30.1/lookup.subproj/mdns_module.c	2016-09-28 17:48:13.000000000 +0100
++++ B/Libinfo-517.30.1/lookup.subproj/mdns_module.c	2018-07-02 12:13:38.000000000 +0100
+@@ -220,11 +220,13 @@
+ 	vasprintf(&out, str, v);
+ 	if (out == NULL) return;
+ 
+ 	if (_mdns_debug & MDNS_DEBUG_STDOUT) fprintf(stdout, "%s", out);
+ 	if (_mdns_debug & MDNS_DEBUG_STDERR) fprintf(stderr, "%s", out);
++	#if !defined(__PUREDARWIN__)
+ 	if (_mdns_debug & MDNS_DEBUG_ASL) os_log(OS_LOG_DEFAULT, "%s", out);
++	#endif /* !defined(__PUREDARWIN__) */
+ 	free(out);
+ 
+ 	va_end(v);
+ }
+ 
+diff -rwU5 A/Libinfo-517.30.1/lookup.subproj/search_module.c B/Libinfo-517.30.1/lookup.subproj/search_module.c
+--- A/Libinfo-517.30.1/lookup.subproj/search_module.c	2016-03-17 21:45:38.000000000 +0000
++++ B/Libinfo-517.30.1/lookup.subproj/search_module.c	2018-07-02 12:13:38.000000000 +0100
+@@ -195,10 +195,12 @@
+ }
+ 
+ static si_item_t *
+ search_item_bynumber(si_mod_t *si, uint32_t number, int cat, si_item_t *(*call)(si_mod_t *, uint32_t))
+ {
++	printf("search_item_bynumber()\n");
++	
+ 	int i;
+ 	search_si_private_t *pp;
+ 	si_item_t *item;
+ 	si_mod_t *src;
+ 
+diff -rwU5 A/Libinfo-517.30.1/lookup.subproj/si_getaddrinfo.c B/Libinfo-517.30.1/lookup.subproj/si_getaddrinfo.c
+--- A/Libinfo-517.30.1/lookup.subproj/si_getaddrinfo.c	2017-01-18 19:13:55.000000000 +0000
++++ B/Libinfo-517.30.1/lookup.subproj/si_getaddrinfo.c	2018-07-02 12:13:38.000000000 +0100
+@@ -27,13 +27,17 @@
+ #include <stdio.h>
+ #include <stdint.h>
+ #include <sys/socket.h>
+ #include <net/if.h>
+ #include <netinet/in.h>
++
++#if !defined(__PUREDARWIN__)
+ #include <network/sa_compare.h>
+ #include <network/nat64.h>
+ #include <network/path_evaluation.h>
++#endif /* defined(__PUREDARWIN__) */
++
+ #include <arpa/inet.h>
+ #include <ifaddrs.h>
+ #include <net/if.h>
+ #include <string.h>
+ #include <sys/param.h>
+@@ -781,11 +785,16 @@
+ 	/*
+ 	 * sa_dst_compare(A,B) returns -1 if A is less desirable than B,
+ 	 * 0 if they are equally desirable, and 1 if A is more desirable.
+ 	 * qsort() expects the inverse, so we swap sp and sq.
+ 	 */
++
++    #if !defined(__PUREDARWIN__)
+ 	return sa_dst_compare(sq, sp, 0);
++    #else /* defined(__PUREDARWIN__) */
++    return 0;
++    #endif /* !defined(__PUREDARWIN__) */
+ }
+ 
+ static si_list_t *
+ _gai_sort_list(si_list_t *in, uint32_t flags)
+ {
+@@ -1028,10 +1037,12 @@
+ 	}
+ 
+ 	return result;
+ }
+ 
++#if !defined(__PUREDARWIN__)
++
+ static si_list_t *
+ _gai_nat64_synthesis(si_mod_t *si, const char *node, const void *servptr, int numericserv,
+ 					 uint32_t family, uint32_t socktype, uint32_t proto, uint32_t flags, const char *interface)
+ {
+ 	if (NULL == node)
+@@ -1274,10 +1285,28 @@
+ 		}
+ 	}
+ 	return out_list;
+ }
+ 
++#else /* defined(__PUREDARWIN__) */
++
++static si_list_t *
++_gai_nat64_synthesis(si_mod_t *si, const char *node, const void *servptr, int numericserv,
++                     uint32_t family, uint32_t socktype, uint32_t proto, uint32_t flags, const char *interface)
++{
++    return NULL;
++}
++
++static si_list_t *
++_gai_nat64_second_pass(si_list_t *out, si_mod_t *si, const char *serv, uint32_t family, uint32_t socktype,
++                       uint32_t proto, uint32_t flags, const char *interface)
++{
++    return NULL;
++}
++
++#endif /* !defined(__PUREDARWIN__) */
++
+ si_list_t *
+ si_addrinfo(si_mod_t *si, const char *node, const char *serv, uint32_t family, uint32_t socktype, uint32_t proto, uint32_t flags, const char *interface, uint32_t *err)
+ {
+ 	const uint32_t family_ori = family, flags_ori = flags;
+ 	int numerichost, numericserv = 0;
+Only in B/Libinfo-517.30.1: obj
+Only in B/Libinfo-517.30.1: sym
+diff -rwU5 A/Libinfo-517.30.1/xcodescripts/Libinfo.xcconfig B/Libinfo-517.30.1/xcodescripts/Libinfo.xcconfig
+--- A/Libinfo-517.30.1/xcodescripts/Libinfo.xcconfig	2016-12-14 23:14:56.000000000 +0000
++++ B/Libinfo-517.30.1/xcodescripts/Libinfo.xcconfig	2018-07-02 12:13:38.000000000 +0100
+@@ -3,15 +3,15 @@
+ HEADER_SEARCH_PATHS = /usr/local/include $(SDKROOT)/System/Library/Frameworks/System.framework/PrivateHeaders
+ INSTALLHDRS_SCRIPT_PHASE = YES
+ SDKROOT = macosx.internal
+ SUPPORTED_PLATFORMS = macosx iphoneos iphonesimulator appletvos appletvsimulator watchos watchsimulator
+ 
+-GCC_PREPROCESSOR_DEFINITIONS = __DARWIN_NON_CANCELABLE=1 __MigTypeCheck=1 INET6=1
++GCC_PREPROCESSOR_DEFINITIONS = __DARWIN_NON_CANCELABLE=1 __MigTypeCheck=1 INET6=1 __PUREDARWIN__=1
+ GCC_PREPROCESSOR_DEFINITIONS[sdk=iphoneos*] = MUSER_AVAILABLE $(GCC_PREPROCESSOR_DEFINITIONS)
+ GCC_PREPROCESSOR_DEFINITIONS[sdk=watchos*] = MUSER_AVAILABLE $(GCC_PREPROCESSOR_DEFINITIONS)
+ GCC_PREPROCESSOR_DEFINITIONS[sdk=appletvos*] = MUSER_AVAILABLE $(GCC_PREPROCESSOR_DEFINITIONS)
+-GCC_PREPROCESSOR_DEFINITIONS[sdk=macosx*] = CONFIG_MAC DS_AVAILABLE SYNTH_ROOTFS $(GCC_PREPROCESSOR_DEFINITIONS)
++GCC_PREPROCESSOR_DEFINITIONS[sdk=macosx*] = CONFIG_MAC SYNTH_ROOTFS $(GCC_PREPROCESSOR_DEFINITIONS)
+ 
+ BUILD_VARIANTS = normal profile debug
+ 
+ INSTALL_PATH = /usr/lib/system
+ 
+@@ -38,13 +38,13 @@
+ LIBLAUNCH_LDFLAGS = -llaunch
+ LIBASL_LDFLAGS = -lsystem_asl
+ LIBBLOCKS_LDFLAGS = -lsystem_blocks
+ LIBDNSD_LDFLAGS = -lsystem_dnssd
+ LIBNOTIFY_LDFLAGS = -lsystem_notify
+-LIBXPC_LDFLAGS = -lxpc
+-LIBNETWORK_LDFLAGS = -lsystem_network
+-LIBTRACE_LDFLAGS = -lsystem_trace
++LIBXPC_LDFLAGS = //-lxpc
++LIBNETWORK_LDFLAGS = //-lsystem_network
++LIBTRACE_LDFLAGS = //-lsystem_trace
+ 
+ CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+ CLANG_WARN_BOOL_CONVERSION = YES;
+ CLANG_WARN_CONSTANT_CONVERSION = YES;
+ CLANG_WARN_EMPTY_BODY = YES;
+Only in B/Libinfo-517.30.1/xcodescripts: Libinfo.xcconfig.orig
+Only in B/Libinfo-517.30.1/xcodescripts: Libinfo.xcconfig.rej

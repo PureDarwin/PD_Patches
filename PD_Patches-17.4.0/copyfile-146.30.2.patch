@@ -1,0 +1,109 @@
+diff -rwU5 A/copyfile-146.30.2/copyfile.c B/copyfile-146.30.2/copyfile.c
+--- A/copyfile-146.30.2/copyfile.c	2017-09-15 21:18:15.000000000 +0100
++++ B/copyfile-146.30.2/copyfile.c	2018-07-02 12:22:43.000000000 +0100
+@@ -51,15 +51,15 @@
+ #ifdef VOL_CAP_FMT_DECMPFS_COMPRESSION
+ # include <Kernel/sys/decmpfs.h>
+ #endif
+ 
+ #include <TargetConditionals.h>
+-#if !TARGET_OS_IPHONE
++#if !TARGET_OS_IPHONE && !defined(__PUREDARWIN__)
+ #include <quarantine.h>
+ 
+ #define	XATTR_QUARANTINE_NAME qtn_xattr_name
+-#else /* TARGET_OS_IPHONE */
++#else /* TARGET_OS_IPHONE || defined(__PUREDARWIN__) */
+ #define qtn_file_t void *
+ #define QTN_SERIALIZED_DATA_MAX 0
+ static void * qtn_file_alloc(void) { return NULL; }
+ static int qtn_file_init_with_fd(void *x, int y) { return -1; }
+ static int qtn_file_init_with_path(void *x, const char *path) { return -1; }
+@@ -71,11 +71,11 @@
+ static void *qtn_file_clone(void *x) { return NULL; }
+ static uint32_t qtn_file_get_flags(void *x) { return 0; }
+ static int qtn_file_set_flags(void *x, uint32_t flags) { return 0; }
+ #define	XATTR_QUARANTINE_NAME "figgledidiggledy"
+ #define QTN_FLAG_DO_NOT_TRANSLOCATE 0
+-#endif /* TARGET_OS_IPHONE */
++#endif /* !TARGET_OS_IPHONE && !defined(__PUREDARWIN__) */
+ 
+ #include "copyfile.h"
+ #include "copyfile_private.h"
+ #include "xattr_flags.h"
+ 
+diff -rwU5 A/copyfile-146.30.2/copyfile.xcodeproj/project.pbxproj B/copyfile-146.30.2/copyfile.xcodeproj/project.pbxproj
+--- A/copyfile-146.30.2/copyfile.xcodeproj/project.pbxproj	2015-07-17 20:44:59.000000000 +0100
++++ B/copyfile-146.30.2/copyfile.xcodeproj/project.pbxproj	2018-07-02 12:22:43.000000000 +0100
+@@ -184,25 +184,26 @@
+ 		FCCE17BD135A6444002CEE6D /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			buildSettings = {
+ 				EXECUTABLE_PREFIX = lib;
+ 				GCC_NO_COMMON_BLOCKS = YES;
+-				GCC_PREPROCESSOR_DEFINITIONS = "__DARWIN_NOW_CANCELABLE=1";
++				GCC_PREPROCESSOR_DEFINITIONS = (
++					__PUREDARWIN__,
++					"__DARWIN_NOW_CANCELABLE=1",
++				);
+ 				LINK_WITH_STANDARD_LIBRARIES = NO;
+ 				OTHER_LDFLAGS = (
+ 					"-Wl,-umbrella,System",
+ 					"-L/usr/lib/system",
+ 					"-ldyld",
+ 					"-lcompiler_rt",
+ 					"-lsystem_kernel",
+ 					"-lsystem_malloc",
+ 					"-lsystem_c",
+ 					"-lsystem_blocks",
+-					"-lquarantine",
+ 					"-lsystem_asl",
+ 					"-lsystem_info",
+-					"-lxpc",
+ 					"-ldispatch",
+ 				);
+ 				"OTHER_LDFLAGS[sdk=iphone*]" = (
+ 					"-Wl,-umbrella,System",
+ 					"-L/usr/lib/system",
+Only in B/copyfile-146.30.2/copyfile.xcodeproj: project.xcworkspace
+Only in B/copyfile-146.30.2/copyfile.xcodeproj: xcuserdata
+Only in B/copyfile-146.30.2: obj
+Only in B/copyfile-146.30.2: sym
+diff -rwU5 A/copyfile-146.30.2/xattr_flags.c B/copyfile-146.30.2/xattr_flags.c
+--- A/copyfile-146.30.2/xattr_flags.c	2014-06-28 03:02:58.000000000 +0100
++++ B/copyfile-146.30.2/xattr_flags.c	2018-07-02 12:22:43.000000000 +0100
+@@ -28,11 +28,14 @@
+ #include <err.h>
+ #include <errno.h>
+ #include <sys/types.h>
+ #include <sys/xattr.h>
+ #include <dispatch/dispatch.h>
++
++#if !defined(__PUREDARWIN__)
+ #include <xpc/private.h>
++#endif /* !defined(__PUREDARWIN__) */
+ 
+ #include <xattr_flags.h>
+ 
+ #define FLAG_DELIM_CHAR	'#'
+ #define FLAG_DELIM_STR "#"
+@@ -137,15 +140,19 @@
+ {
+ 	const struct defaultList *retval;
+ 	static dispatch_once_t onceToken;
+     
+ 	dispatch_once(&onceToken, ^{
++		#if !defined(__PUREDARWIN__)
+ 		if (_xpc_runtime_is_app_sandboxed()) {
+ 			defaultPropertyTable = defaultSandboxedPropertyTable;
+ 		} else {
+ 			defaultPropertyTable = defaultUnboxedPropertyTable;
+ 		}
++		#else /* defined(__PUREDARWIN__) */
++		defaultPropertyTable = defaultUnboxedPropertyTable;
++		#endif /* !defined(__PUREDARWIN__) */
+ 	});
+ 
+ 	for (retval = defaultPropertyTable; retval->eaName; retval++) {
+ 		if ((retval->flags & propFlagsPrefix) != 0 &&
+ 		    strncmp(retval->eaName, eaname, strlen(retval->eaName)) == 0)

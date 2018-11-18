@@ -1,0 +1,35 @@
+diff -rwU5 A/libclosure-67/Blocks.xcodeproj/project.pbxproj B/libclosure-67/Blocks.xcodeproj/project.pbxproj
+--- A/libclosure-67/Blocks.xcodeproj/project.pbxproj	2016-11-02 22:54:33.000000000 +0000
++++ B/libclosure-67/Blocks.xcodeproj/project.pbxproj	2018-07-02 12:56:40.000000000 +0100
+@@ -409,12 +409,12 @@
+ 				GCC_WARN_SIGN_COMPARE = YES;
+ 				GCC_WARN_UNUSED_FUNCTION = YES;
+ 				GCC_WARN_UNUSED_LABEL = YES;
+ 				GCC_WARN_UNUSED_PARAMETER = YES;
+ 				GCC_WARN_UNUSED_VARIABLE = YES;
+-				OTHER_LDFLAGS = "-lCrashReporterClient";
+ 				PREBINDING = NO;
++				SDKROOT = macosx.internal;
+ 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)";
+ 				USE_HEADERMAP = NO;
+ 				VERSIONING_SYSTEM = "apple-generic";
+ 				WARNING_CFLAGS = (
+ 					"-Wall",
+@@ -447,12 +447,12 @@
+ 				GCC_WARN_UNUSED_LABEL = YES;
+ 				GCC_WARN_UNUSED_PARAMETER = YES;
+ 				GCC_WARN_UNUSED_VARIABLE = YES;
+ 				"OTHER_CFLAGS[arch=i386]" = "-momit-leaf-frame-pointer";
+ 				"OTHER_CFLAGS[arch=x86_64]" = "-momit-leaf-frame-pointer";
+-				OTHER_LDFLAGS = "-lCrashReporterClient";
+ 				PREBINDING = NO;
++				SDKROOT = macosx.internal;
+ 				USER_HEADER_SEARCH_PATHS = "$(SRCROOT)";
+ 				USE_HEADERMAP = NO;
+ 				VERSIONING_SYSTEM = "apple-generic";
+ 				WARNING_CFLAGS = (
+ 					"-Wall",
+Only in B/libclosure-67/Blocks.xcodeproj: project.xcworkspace
+Only in B/libclosure-67/Blocks.xcodeproj: xcuserdata
+Only in B/libclosure-67: obj
+Only in B/libclosure-67: sym

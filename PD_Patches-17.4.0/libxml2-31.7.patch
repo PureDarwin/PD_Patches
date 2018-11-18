@@ -1,0 +1,142 @@
+diff -rwU5 A/libxml2-31.7/Configurations/Base.xcconfig B/libxml2-31.7/Configurations/Base.xcconfig
+--- A/libxml2-31.7/Configurations/Base.xcconfig	2017-01-25 02:43:01.000000000 +0000
++++ B/libxml2-31.7/Configurations/Base.xcconfig	2018-07-02 13:00:04.000000000 +0100
+@@ -1,9 +1,9 @@
+ DEBUG_INFORMATION_FORMAT = dwarf-with-dsym;
+ CLANG_ANALYZER_NONNULL = YES;
+ CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+-CLANG_ENABLE_MODULES = YES;
++//CLANG_ENABLE_MODULES = YES;
+ CLANG_ENABLE_OBJC_ARC = YES;
+ CLANG_WARN_BOOL_CONVERSION = YES;
+ CLANG_WARN_CONSTANT_CONVERSION = YES;
+ CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+ CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+Only in B/libxml2-31.7: build
+diff -rwU5 A/libxml2-31.7/libxml2.xcodeproj/project.pbxproj B/libxml2-31.7/libxml2.xcodeproj/project.pbxproj
+--- A/libxml2-31.7/libxml2.xcodeproj/project.pbxproj	2017-06-11 20:44:31.000000000 +0100
++++ B/libxml2-31.7/libxml2.xcodeproj/project.pbxproj	2018-07-02 13:00:08.000000000 +0100
+@@ -2674,24 +2674,27 @@
+ 		};
+ 		448D7E2E1EA5BF8000ECC756 /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 448D7E351EA5C3B700ECC756 /* libxml2.a.xcconfig */;
+ 			buildSettings = {
++				CLANG_ENABLE_MODULES = NO;
+ 			};
+ 			name = Debug;
+ 		};
+ 		448D7E2F1EA5BF8000ECC756 /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 448D7E351EA5C3B700ECC756 /* libxml2.a.xcconfig */;
+ 			buildSettings = {
++				CLANG_ENABLE_MODULES = NO;
+ 			};
+ 			name = Release;
+ 		};
+ 		448D7E301EA5BF8000ECC756 /* Production */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 448D7E351EA5C3B700ECC756 /* libxml2.a.xcconfig */;
+ 			buildSettings = {
++				CLANG_ENABLE_MODULES = NO;
+ 			};
+ 			name = Production;
+ 		};
+ 		44F286AD1EADAEF500BA8B08 /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+@@ -2754,17 +2757,19 @@
+ 		};
+ 		5D58AF6114F815F500BE69D8 /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 5D58AF6B14F816DF00BE69D8 /* libxml2.xcconfig */;
+ 			buildSettings = {
++				CLANG_ENABLE_MODULES = NO;
+ 			};
+ 			name = Debug;
+ 		};
+ 		5D58AF6214F815F500BE69D8 /* Release */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 5D58AF6B14F816DF00BE69D8 /* libxml2.xcconfig */;
+ 			buildSettings = {
++				CLANG_ENABLE_MODULES = NO;
+ 			};
+ 			name = Release;
+ 		};
+ 		5D58AF6714F8164A00BE69D8 /* Production */ = {
+ 			isa = XCBuildConfiguration;
+@@ -2775,10 +2780,11 @@
+ 		};
+ 		5D58AF6814F8164A00BE69D8 /* Production */ = {
+ 			isa = XCBuildConfiguration;
+ 			baseConfigurationReference = 5D58AF6B14F816DF00BE69D8 /* libxml2.xcconfig */;
+ 			buildSettings = {
++				CLANG_ENABLE_MODULES = NO;
+ 			};
+ 			name = Production;
+ 		};
+ 		5DB38AE814F87AE80060A507 /* Debug */ = {
+ 			isa = XCBuildConfiguration;
+Only in B/libxml2-31.7/libxml2.xcodeproj: project.xcworkspace
+diff -rwU5 A/libxml2-31.7/libxml2.xcodeproj/xcshareddata/xcschemes/All.xcscheme B/libxml2-31.7/libxml2.xcodeproj/xcshareddata/xcschemes/All.xcscheme
+--- A/libxml2-31.7/libxml2.xcodeproj/xcshareddata/xcschemes/All.xcscheme	2017-01-12 00:25:30.000000000 +0000
++++ B/libxml2-31.7/libxml2.xcodeproj/xcshareddata/xcschemes/All.xcscheme	2018-07-02 13:00:08.000000000 +0100
+@@ -18,42 +18,18 @@
+                BuildableName = "All"
+                BlueprintName = "All"
+                ReferencedContainer = "container:libxml2.xcodeproj">
+             </BuildableReference>
+          </BuildActionEntry>
+-         <BuildActionEntry
+-            buildForTesting = "YES"
+-            buildForRunning = "NO"
+-            buildForProfiling = "NO"
+-            buildForArchiving = "YES"
+-            buildForAnalyzing = "NO">
+-            <BuildableReference
+-               BuildableIdentifier = "primary"
+-               BlueprintIdentifier = "44258B5A1E241DA500DEB7B7"
+-               BuildableName = "Libxml2XCTests.xctest"
+-               BlueprintName = "Libxml2XCTests"
+-               ReferencedContainer = "container:libxml2.xcodeproj">
+-            </BuildableReference>
+-         </BuildActionEntry>
+       </BuildActionEntries>
+    </BuildAction>
+    <TestAction
+       buildConfiguration = "Debug"
+       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+       shouldUseLaunchSchemeArgsEnv = "YES">
+       <Testables>
+-         <TestableReference
+-            skipped = "NO">
+-            <BuildableReference
+-               BuildableIdentifier = "primary"
+-               BlueprintIdentifier = "44258B5A1E241DA500DEB7B7"
+-               BuildableName = "Libxml2XCTests.xctest"
+-               BlueprintName = "Libxml2XCTests"
+-               ReferencedContainer = "container:libxml2.xcodeproj">
+-            </BuildableReference>
+-         </TestableReference>
+       </Testables>
+       <MacroExpansion>
+          <BuildableReference
+             BuildableIdentifier = "primary"
+             BlueprintIdentifier = "5DB38AEE14F87BDD0060A507"
+@@ -64,11 +40,11 @@
+       </MacroExpansion>
+       <AdditionalOptions>
+       </AdditionalOptions>
+    </TestAction>
+    <LaunchAction
+-      buildConfiguration = "Debug"
++      buildConfiguration = "Production"
+       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
+       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+       launchStyle = "0"
+       useCustomWorkingDirectory = "NO"
+       ignoresPersistentStateOnLaunch = "NO"
+Only in B/libxml2-31.7/libxml2.xcodeproj: xcuserdata
+Only in B/libxml2-31.7: obj
+Only in B/libxml2-31.7: pd_build
+Only in B/libxml2-31.7: sym

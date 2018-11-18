@@ -1,0 +1,128 @@
+diff -rwU5 A/ApplePS2Controller-8/ApplePS2Controller.cpp B/ApplePS2Controller-8/ApplePS2Controller.cpp
+--- A/ApplePS2Controller-8/ApplePS2Controller.cpp	2004-08-14 14:38:11.000000000 +0100
++++ B/ApplePS2Controller-8/ApplePS2Controller.cpp	2018-07-02 12:06:34.000000000 +0100
+@@ -198,15 +198,18 @@
+   return true;
+ }
+ 
+ void ApplePS2Controller::free(void)
+ {
++    #if !defined(__PUREDARWIN__)
+     if (_controllerLock)
+     {
+         IOSimpleLockFree(_controllerLock);
+         _controllerLock = 0;
+     }
++    #endif /* !defined(__PUREDARWIN__) */
++    
+     super::free();
+ }
+ 
+ // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ 
+@@ -279,15 +282,21 @@
+   // sources.  The work loop can accept requests after this step.
+   //
+ 
+   _workLoop                = IOWorkLoop::workLoop();
+   _interruptSourceMouse    = IOInterruptEventSource::interruptEventSource(
+-        this, (IOInterruptEventAction) &ApplePS2Controller::interruptOccurred);
++        this, OSMemberFunctionCast(IOInterruptEventSource::Action,
++                                   this,
++                                   &ApplePS2Controller::interruptOccurred));
+   _interruptSourceKeyboard = IOInterruptEventSource::interruptEventSource(
+-        this, (IOInterruptEventAction) &ApplePS2Controller::interruptOccurred);
++        this, OSMemberFunctionCast(IOInterruptEventSource::Action,
++                                   this,
++                                   &ApplePS2Controller::interruptOccurred));
+   _interruptSourceQueue    = IOInterruptEventSource::interruptEventSource(
+-        this, (IOInterruptEventAction) &ApplePS2Controller::processRequestQueue);
++        this, OSMemberFunctionCast(IOInterruptEventSource::Action,
++                                   this,
++                                   &ApplePS2Controller::processRequestQueue));
+ 
+   if ( !_workLoop                ||
+        !_interruptSourceMouse    ||
+        !_interruptSourceKeyboard ||
+        !_interruptSourceQueue )  goto fail;
+@@ -590,11 +599,11 @@
+   }
+ }
+ 
+ // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ 
+-void ApplePS2Controller::interruptOccurred(IOInterruptEventSource *, int)
++void ApplePS2Controller::interruptOccurred(OSObject*, IOInterruptEventSource *, int)
+ {                                                      // IOInterruptEventAction
+   //
+   // Our work loop has informed us of an interrupt, that is, asynchronous
+   // data has arrived on our input stream.  Read the data and dispatch it
+   // to the appropriate driver.
+@@ -1347,11 +1356,11 @@
+ IOReturn ApplePS2Controller::setPowerStateAction( OSObject * target,
+                                                   void * arg0, void * arg1,
+                                                   void * arg2, void * arg3 )
+ {
+   ApplePS2Controller * me = (ApplePS2Controller *) target;
+-  UInt32       powerState = (UInt32) arg0;
++  UInt64       powerState = (UInt64) arg0;
+ 
+   me->setPowerStateGated( powerState );
+ 
+   return kIOReturnSuccess;
+ }
+diff -rwU5 A/ApplePS2Controller-8/ApplePS2Controller.h B/ApplePS2Controller-8/ApplePS2Controller.h
+--- A/ApplePS2Controller-8/ApplePS2Controller.h	2004-08-14 14:38:11.000000000 +0100
++++ B/ApplePS2Controller-8/ApplePS2Controller.h	2018-07-02 12:06:34.000000000 +0100
+@@ -99,11 +99,11 @@
+ // Definitions
+ //
+ 
+ // Enable debugger support (eg. mini-monitor).
+ 
+-#define DEBUGGER_SUPPORT 1
++#define DEBUGGER_SUPPORT 0
+ 
+ // Enable dynamic "second chance" re-ordering of input stream data if a
+ // command response fails to match the expected byte.
+ 
+ #define OUT_OF_ORDER_DATA_CORRECTION_FEATURE 1
+@@ -211,11 +211,11 @@
+   thread_call_t            _powerChangeThreadCall;
+   UInt32                   _currentPowerState;
+   bool                     _hardwareOffline;
+ 
+   virtual void  dispatchDriverInterrupt(PS2DeviceType deviceType, UInt8 data);
+-  virtual void  interruptOccurred(IOInterruptEventSource *, int);
++  virtual void  interruptOccurred(OSObject *, IOInterruptEventSource *, int);
+   virtual void  processRequest(PS2Request * request);
+   virtual void  processRequestQueue(IOInterruptEventSource *, int);
+   static  void  submitRequestAndBlockCompletion(void *, void * param);
+ 
+   virtual UInt8 readDataPort(PS2DeviceType deviceType);
+Only in B/ApplePS2Controller-8: ApplePS2Controller.xcodeproj
+Only in B/ApplePS2Controller-8: build
+Only in B/ApplePS2Controller-8: obj
+diff -rwU5 A/ApplePS2Controller-8/pbxbuild.data/ApplePS2Controller.build/Info.plist B/ApplePS2Controller-8/pbxbuild.data/ApplePS2Controller.build/Info.plist
+--- A/ApplePS2Controller-8/pbxbuild.data/ApplePS2Controller.build/Info.plist	2003-10-15 18:56:42.000000000 +0100
++++ B/ApplePS2Controller-8/pbxbuild.data/ApplePS2Controller.build/Info.plist	2018-07-02 12:06:34.000000000 +0100
+@@ -40,15 +40,15 @@
+ 	<string>Copyright Apple Computer, Inc. 2000-2002</string>
+ 	<key>OSBundleCompatibleVersion</key>
+ 	<string>1.1.0</string>
+ 	<key>OSBundleLibraries</key>
+ 	<dict>
+-		<key>com.apple.kernel.iokit</key>
++		<key>com.apple.kpi.iokit</key>
+ 		<string>1.1</string>
+-		<key>com.apple.kernel.libkern</key>
++		<key>com.apple.kpi.libkern</key>
+ 		<string>1.1</string>
+-		<key>com.apple.kernel.mach</key>
++		<key>com.apple.kpi.mach</key>
+ 		<string>1.1</string>
+ 	</dict>
+ 	<key>OSBundleRequired</key>
+ 	<string>Console</string>
+ </dict>
+Only in B/ApplePS2Controller-8: sym

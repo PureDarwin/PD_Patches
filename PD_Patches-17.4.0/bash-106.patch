@@ -1,0 +1,78 @@
+diff -rwU5 A/bash-106/bash-3.2/shell.c B/bash-106/bash-3.2/shell.c
+--- A/bash-106/bash-3.2/shell.c	2016-02-17 15:58:32.000000000 +0000
++++ B/bash-106/bash-3.2/shell.c	2018-07-02 12:20:15.000000000 +0100
+@@ -43,11 +43,13 @@
+ #  include <unistd.h>
+ #endif
+ 
+ #if defined(__APPLE__)
+ #include <get_compat.h>
++#if !defined(__PUREDARWIN__)
+ #include <rootless.h>
++#endif /* !defined(__PUREDARWIN__) */
+ #endif /* __APPLE__ */
+ 
+ #include "bashintl.h"
+ 
+ #define NEED_SH_SETLINEBUF_DECL		/* used in externs.h */
+@@ -487,11 +489,15 @@
+     if (-1 == setuid(euid))
+       internal_error( _("setuid(%u) failed: %s"), euid, strerror(errno));
+     if (-1 == setreuid(ruid, euid))
+       internal_error( _("setreuid(%u,%u) failed: %s"), ruid, euid, strerror(errno));   
+   }
++  #if !defined(__PUREDARWIN__)
+   int rootless = rootless_restricted_environment();
++  #else /* defined(__PUREDARWIN__) */
++    int rootless = 0;
++  #endif /* !defined(__PUREDARWIN__) */
+   if (-1 == rootless)
+     internal_error( _("Unable to determine rootless status: %s"), strerror(errno));
+   running_setuid |= rootless;
+ #else  /* !__APPLE__ */
+   if (running_setuid && privileged_mode == 0)
+@@ -1085,10 +1091,11 @@
+ 
+ 	  /* Execute /etc/profile and one of the personal login shell
+ 	     initialization files. */
+ 	  if (no_profile == 0)
+ 	    {
++            printf("maybe_execute_file (SYS_PROFILE, 1);\n");
+ 	      maybe_execute_file (SYS_PROFILE, 1);
+ 
+ 	      if (act_like_sh)	/* sh */
+ 		maybe_execute_file ("~/.profile", 1);
+ 	      else if ((maybe_execute_file ("~/.bash_profile", 1) == 0) &&
+diff -rwU5 A/bash-106/bash.xcodeproj/project.pbxproj B/bash-106/bash.xcodeproj/project.pbxproj
+--- A/bash-106/bash.xcodeproj/project.pbxproj	2017-02-17 02:10:19.000000000 +0000
++++ B/bash-106/bash.xcodeproj/project.pbxproj	2018-07-02 12:20:14.000000000 +0100
+@@ -1934,10 +1934,11 @@
+ 					"CONF_VENDOR='\"apple\"'",
+ 					"CONF_MACHTYPE='\"Mac\"'",
+ 					MACOSX,
+ 					SHELL,
+ 					HAVE_CONFIG_H,
++					__PUREDARWIN__,
+ 				);
+ 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
+ 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+ 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+ 				GCC_WARN_UNDECLARED_SELECTOR = YES;
+@@ -2070,10 +2071,11 @@
+ 					"CONF_VENDOR='\"apple\"'",
+ 					"CONF_MACHTYPE='\"Mac\"'",
+ 					MACOSX,
+ 					SHELL,
+ 					HAVE_CONFIG_H,
++					__PUREDARWIN__,
+ 				);
+ 				INSTALL_PATH = /bin;
+ 				OTHER_LDFLAGS = "-Wl,-search_paths_first";
+ 				PRODUCT_NAME = sh;
+ 				STRIP_INSTALLED_PRODUCT = YES;
+Only in B/bash-106/bash.xcodeproj: project.xcworkspace
+Only in B/bash-106/bash.xcodeproj: xcuserdata
+Only in B/bash-106: build
+Only in B/bash-106: dst
+Only in B/bash-106: obj
+Only in B/bash-106: sym
